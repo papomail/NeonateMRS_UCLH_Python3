@@ -30,7 +30,10 @@ import datetime
 import PyPDF2
 from PyQt5 import QtGui
 from PyQt5 import QtCore
+from pathlib import Path
+import pandas as pd
 
+BASE_DIR = Path(__file__).parent.parent.parent
 
 
 class SpecObject(object):
@@ -52,6 +55,7 @@ class SpecObject(object):
         self.adop_const = 128.0
         SpecObject.NumSpecObjects += 1        
         print(filename)
+        
         try:
             self.ds = dcm.read_file(self.filename)
         except:
@@ -380,7 +384,9 @@ class SpecObject(object):
 
 
     def writejmruidata2(self, outpath):
-        jmruidir = outpath + '\\' + 'jMRUI_files'
+        outpath=Path(outpath)
+        jmruidir = outpath / 'jMRUI_files'
+        #jmruidir = outpath + '\\' + 'jMRUI_files'
 
         if os.path.isdir(jmruidir) == False:
             os.chdir(outpath)
@@ -388,8 +394,13 @@ class SpecObject(object):
             
         if self.isspec != 0:
             name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-            file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'proc_jmrui.txt'   
-            self.text_file = open(file_path, 'w')
+            #file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'proc_jmrui.txt'  
+            file_path = Path(jmruidir , name + 'proc_jmrui.txt')  
+
+
+            self.text_file = open(str(file_path.resolve()), 'w')
+            #self.text_file = open(str(file_path.resolve()), 'w')
+
              # Write header
             self.text_file.write('jMRUI Data textfile\n\n')
             
@@ -423,7 +434,9 @@ class SpecObject(object):
 
 
     def writejmruidata2orig(self, outpath):
-        jmruidir = outpath + '\\' + 'jMRUI_files'
+        outpath=Path(outpath)
+        jmruidir = outpath / 'jMRUI_files'
+        #jmruidir = outpath + '\\' + 'jMRUI_files'
 
         if os.path.isdir(jmruidir) == False:
             os.chdir(outpath)
@@ -431,8 +444,13 @@ class SpecObject(object):
             
         if self.isspec != 0:
             name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-            file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'orig_jmrui.txt'   
-            self.text_file = open(file_path, 'w')
+
+
+
+            file_path = Path(jmruidir ,  name + 'orig_jmrui.txt'  )
+            #file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'orig_jmrui.txt'   
+
+            self.text_file = open(str(file_path.resolve()), 'w')
              # Write header
             self.text_file.write('jMRUI Data textfile\n\n')
             
@@ -467,14 +485,17 @@ class SpecObject(object):
 
 
     def writeTarquin(self, outpath):
-        Tarquindir = outpath + '\\' + 'Tarquin_files'
+        #Tarquindir = outpath + '\\' + 'Tarquin_files'
+        outpath=Path(outpath)
+        Tarquindir = outpath / 'Tarquin_files'
 
         if os.path.isdir(Tarquindir) == False:
             os.chdir(outpath)
             os.mkdir('Tarquin_files')
 
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-        file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'proc_Tarquin'
+        #file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'proc_Tarquin'
+        file_path = Path(Tarquindir , name + 'proc_Tarquin')
         print(file_path)
         
         Spec_temp = self.SpecData
@@ -489,18 +510,21 @@ class SpecObject(object):
                 counter = counter + 1
                 
         self.ds[0x5600,0x0020].value = Spec_temp  
-        self.ds.save_as(file_path)
+        self.ds.save_as(str(file_path.resolve()))
  
        
     def writeTarquinorig(self, outpath):
-        Tarquindir = outpath + '\\' + 'Tarquin_files'
+        #Tarquindir = outpath + '\\' + 'Tarquin_files'
+        outpath=Path(outpath)
+        Tarquindir = outpath / 'Tarquin_files'
 
         if os.path.isdir(Tarquindir) == False:
             os.chdir(outpath)
             os.mkdir('Tarquin_files')
             
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-        file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'orig_Tarquin'
+        #file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'orig_Tarquin'
+        file_path = Path(Tarquindir ,  name + 'orig_Tarquin')
         print(file_path)
         
         Spec_temp = self.SpecData
@@ -516,7 +540,7 @@ class SpecObject(object):
                 counter = counter + 1
                 
         self.ds[0x5600,0x0020].value = Spec_temp  
-        self.ds.save_as(file_path)
+        self.ds.save_as(str(file_path.resolve()))
         
     def undophase(self):    
         self.curcomplex = self.Spectrum
@@ -547,7 +571,9 @@ class SpecObject(object):
         self.set_current_frame()
         
     def writelogfile(self, outpath, version):
-        Logdir = outpath + '\\' + 'Log_files'
+        outpath=Path(outpath)
+        #Logdir = outpath + '\\' + 'Log_files'
+        Logdir = outpath / 'Log_files'
 
         if os.path.isdir(Logdir) == False:
             os.chdir(outpath)
@@ -559,8 +585,12 @@ class SpecObject(object):
             frames = old_div(self.Frames,2) #self.Frames / 2 because NWS data also stored in Dicom file
                 
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-        file_path = Logdir + '\\' + self.dirpass + '__' + name + 'log_file.txt'   
-        self.text_file = open(file_path, 'w')
+        #file_path = Logdir + '\\' + self.dirpass + '__' + name + 'log_file.txt'  
+        file_path = Path(Logdir , name + 'log_file.txt'  )
+         
+        #self.text_file = open(file_path, 'w')
+        self.text_file = open(str(file_path.resolve()), 'w')
+
          # Write Log File
         self.text_file.write('Tarquin Pre-processing Log file\n\n')
         print('Filename: %s\n' % (file_path), file=self.text_file)
@@ -588,132 +618,152 @@ class SpecObject(object):
         except:
             self.PatName = nameinit        
         
-        
-        Tarquindir = outpath + '\\' + 'Tarquin_files'
+        outpath=Path(outpath)
+        #Tarquindir = outpath + '\\' + 'Tarquin_files'
+        Tarquindir = outpath / 'Tarquin_files'
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-        filename = self.dirpass + '__' + name + 'proc_Tarquin'
-        file_path = Tarquindir + '\\' + filename
+        filename =  name + 'proc_Tarquin'
+        #file_path = Tarquindir + '\\' + filename
+        file_path = str(Path(Tarquindir , filename).resolve())
         
-        Tarquinfitdir = Tarquindir + '\\' + 'Tarquin_fit'
+        #Tarquinfitdir = Tarquindir + '\\' + 'Tarquin_fit'
+        Tarquinfitdir = Tarquindir / 'Tarquin_fit'
 
-        if os.path.isdir(Tarquinfitdir) == False:
-            os.chdir(Tarquindir)
-            os.mkdir('Tarquin_fit')   
+        # if os.path.isdir(Tarquinfitdir) == False:
+        #     os.chdir(Tarquindir)
+        #     os.mkdir('Tarquin_fit')
+        #    
+        Tarquinfitdir.mkdir(parents=True, exist_ok=True)
 
 
             
-        reportout = Tarquinfitdir + '\\' + self.PatName + '_Report.pdf'
-        tempout = Tarquinfitdir + '\\' + filename + '_temp.pdf'
-        pdfout = Tarquinfitdir + '\\' + filename + '_plot.pdf'
-        dataout = Tarquinfitdir + '\\' + filename + '_data.csv'
-        moddataout = Tarquinfitdir + '\\' + filename + '_data_with_ratios.csv'
-        resout = Tarquinfitdir + '\\' + filename + '_results.csv'
-        self.fitout = Tarquinfitdir + '\\' + filename + '_fit.txt'
-        basis = 'S:\\Neonate_data\\Tarquin\\3_0T_basis_threonine_no_MM'
-        tarquin = 'S:\\Neonate_data\\Tarquin\\TARQUIN_Windows_4.3.7\\tarquin\\tarquin'
+        # reportout = Tarquinfitdir + '\\' + self.PatName + '_Report.pdf'
+        # tempout = Tarquinfitdir + '\\' + filename + '_temp.pdf'
+        # pdfout = Tarquinfitdir + '\\' + filename + '_plot.pdf'
+        # dataout = Tarquinfitdir + '\\' + filename + '_data.csv'
+        # moddataout = Tarquinfitdir + '\\' + filename + '_data_with_ratios.csv'
+        # resout = Tarquinfitdir + '\\' + filename + '_results.csv'
+        # self.fitout = Tarquinfitdir + '\\' + filename + '_fit.txt'
+        # basis = 'S:\\Neonate_data\\Tarquin\\3_0T_basis_threonine_no_MM'
+        # tarquin = 'S:\\Neonate_data\\Tarquin\\TARQUIN_Windows_4.3.7\\tarquin\\tarquin'
+
+        reportout = str(Path(Tarquinfitdir , str(self.PatName) + '_Report.pdf').resolve())
+        #reportout = Path(Tarquinfitdir , self.PatName + '_Report.pdf')
+        tempout = str(Path(Tarquinfitdir ,filename + '_temp.pdf').resolve())
+        pdfout = str(Path(Tarquinfitdir , filename + '_plot.pdf').resolve())
+        dataout = str(Path(Tarquinfitdir , filename + '_data.csv').resolve())
+        moddataout = str(Path(Tarquinfitdir , filename + '_data_with_ratios.csv').resolve())
+        resout = str(Path(Tarquinfitdir , filename + '_results.csv').resolve())
+        self.fitout = str(Path(Tarquinfitdir , filename + '_fit.txt').resolve())
+
+        basis = str(Path(BASE_DIR ,'3_0T_basis_threonine_no_MM').resolve())
+        tarquin = str(Path(BASE_DIR ,'tarquingui.app/Contents/MacOS/tarquin').resolve())
+
   
         command =  (tarquin + ' --input ' + file_path + ' --output_pdf ' +  pdfout + 
             ' --output_csv ' + dataout + ' --output_fit ' + self.fitout  +
             ' --basis_csv ' + basis)
 
 
-        # run the command  
+        # run the command 
+        print('this the the command for tarquin: ',command) 
         os.system(command)
-        print(file_path)
         
         #Add in sode code to automatically calculate the Lac/Naa ratio
         #Note that this will assume that the correct basis set is used
-        csvfile = open(dataout, 'rb')
+        #csvfile = open(dataout, 'rb')
         
+        with open(dataout) as csvfile:
+            linereader = csv.reader(csvfile, delimiter = ',')
+            #linereader = pd.read_csv(dataout,delimiter = ',') 
+            CSVstore = []
         
-        linereader = csv.reader(csvfile, delimiter = ',')
-        
-        
-        CSVstore = []
-        
-        counter = 0
-        for row in linereader:
-            counter += 1
+            counter = 0
+            for row in linereader:
+                counter += 1
           
-            if counter == 2:
-                row.append('Lac+T/tNaa')
-                row.append('tNaa/tCho')
-                row.append('tNaa/Cr')
-                row.append('tCho/Cr')
-                row.append('Lac+T/tCho')
-                row.append('Lac+T/Cr')
+                if counter == 2:
+                    row.append('Lac+T/tNaa')
+                    row.append('tNaa/tCho')
+                    row.append('tNaa/Cr')
+                    row.append('tCho/Cr')
+                    row.append('Lac+T/tCho')
+                    row.append('Lac+T/Cr')
                 
-            if counter == 5:
-                row.append('Lac+T/tNaa')
-                row.append('tNaa/tCho')
-                row.append('tNaa/Cr')
-                row.append('tCho/Cr')
-                row.append('Lac+T/tCho')
-                row.append('Lac+T/Cr')
-        #Calc ratio        
-            if counter == 3:
-                dummy = str(row)
-                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
-                fields = dummy.split(",")
-                Lac = np.float(fields[14])
-                Naa =  np.float(fields[15])
-                NaaG =  np.float(fields[16])
-                Thre = np.float(fields[21])
-                Cr = np.float(fields[6])
-                tCho = np.float(fields[23])
-                L_N = old_div((Lac + Thre), (Naa + NaaG))
-                N_Ch = old_div((Naa + NaaG), tCho)
-                N_Cr = old_div((Naa + NaaG), Cr)
-                Ch_Cr = old_div(tCho, Cr)
-                L_Ch = old_div((Lac + Thre), tCho)
-                L_Cr = old_div((Lac + Thre), Cr)
-                row.append(str(L_N))
-                row.append(str(N_Ch))
-                row.append(str(N_Cr))
-                row.append(str(Ch_Cr))
-                row.append(str(L_Ch))
-                row.append(str(L_Cr))
-        
-        #calc error        
-            if counter == 6:
-                dummy = str(row)
-                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
-                fields = dummy.split(",")
-                Lace = np.float(fields[14])
-                Naae =  np.float(fields[15])
-                NaaGe =  np.float(fields[16])
-                Three = np.float(fields[21])
-                Cre = np.float(fields[6])
-                tChoe = np.float(fields[23])
-                
-                Lerr = np.sqrt(np.power(Lace,2) + np.power(Three,2))
-                Nerr = np.sqrt(np.power(Naae,2) + np.power(NaaGe,2))
-                L_Ne = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(Nerr,(Naa + NaaG)), 2)) * L_N
-                N_Che = np.sqrt(np.power(old_div(Nerr,(Naa + NaaG)),2) + np.power(old_div(tChoe,(tCho)), 2)) * N_Ch
-                N_Cre = np.sqrt(np.power(old_div(Nerr,(Naa + NaaG)),2) + np.power(old_div(Cre,(Cr)), 2)) * N_Cr
-                Ch_Cre = np.sqrt(np.power(old_div(tChoe,(tCho)),2) + np.power(old_div(Cre,(Cr)), 2)) * Ch_Cr
-                L_Che = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(tChoe,(tCho)), 2)) * L_Ch
-                L_Cre = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(Cre,(Cr)), 2)) * L_Cr
-                row.append(str(L_Ne))
-                row.append(str(N_Che))
-                row.append(str(N_Cre))
-                row.append(str(Ch_Cre))
-                row.append(str(L_Che))
-                row.append(str(L_Cre))
-                
-        #get FWHM and SNR
-            if counter == 9:
-                dummy = str(row)
-                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
-                fields = dummy.split(",")
-                FWHM = np.float(fields[7])
-                SNR =  np.float(fields[9])
-        
-         
-            CSVstore.append(row)
-            #linewriter.writerow(row)
-            #    
-        csvfile.close()
+                if counter == 5:
+                    row.append('Lac+T/tNaa')
+                    row.append('tNaa/tCho')
+                    row.append('tNaa/Cr')
+                    row.append('tCho/Cr')
+                    row.append('Lac+T/tCho')
+                    row.append('Lac+T/Cr')
+            #Calc ratio        
+                if counter == 3:
+                    dummy = str(row)
+                    #dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
+                    #dummy = dummy.translate(''.join(["[", "'", "]"]))
+                    fields = dummy.split(", ")
+                    print('type of fields[14] is: ',type(fields[14]))
+                    Lac = np.float(fields[14])
+                    Naa =  np.float(fields[15])
+                    NaaG =  np.float(fields[16])
+                    Thre = np.float(fields[21])
+                    Cr = np.float(fields[6])
+                    tCho = np.float(fields[23])
+                    L_N = old_div((Lac + Thre), (Naa + NaaG))
+                    N_Ch = old_div((Naa + NaaG), tCho)
+                    N_Cr = old_div((Naa + NaaG), Cr)
+                    Ch_Cr = old_div(tCho, Cr)
+                    L_Ch = old_div((Lac + Thre), tCho)
+                    L_Cr = old_div((Lac + Thre), Cr)
+                    row.append(str(L_N))
+                    row.append(str(N_Ch))
+                    row.append(str(N_Cr))
+                    row.append(str(Ch_Cr))
+                    row.append(str(L_Ch))
+                    row.append(str(L_Cr))
+            
+            #calc error        
+                if counter == 6:
+                    dummy = str(row)
+                    # #dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
+                    #dummy = dummy.translate(''.join(["[", "'", "]"]))
+                    fields = dummy.split(", ")
+                    Lace = np.float(fields[14])
+                    Naae =  np.float(fields[15])
+                    NaaGe =  np.float(fields[16])
+                    Three = np.float(fields[21])
+                    Cre = np.float(fields[6])
+                    tChoe = np.float(fields[23])
+                    
+                    Lerr = np.sqrt(np.power(Lace,2) + np.power(Three,2))
+                    Nerr = np.sqrt(np.power(Naae,2) + np.power(NaaGe,2))
+                    L_Ne = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(Nerr,(Naa + NaaG)), 2)) * L_N
+                    N_Che = np.sqrt(np.power(old_div(Nerr,(Naa + NaaG)),2) + np.power(old_div(tChoe,(tCho)), 2)) * N_Ch
+                    N_Cre = np.sqrt(np.power(old_div(Nerr,(Naa + NaaG)),2) + np.power(old_div(Cre,(Cr)), 2)) * N_Cr
+                    Ch_Cre = np.sqrt(np.power(old_div(tChoe,(tCho)),2) + np.power(old_div(Cre,(Cr)), 2)) * Ch_Cr
+                    L_Che = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(tChoe,(tCho)), 2)) * L_Ch
+                    L_Cre = np.sqrt(np.power(old_div(Lerr,(Lac + Thre)),2) + np.power(old_div(Cre,(Cr)), 2)) * L_Cr
+                    row.append(str(L_Ne))
+                    row.append(str(N_Che))
+                    row.append(str(N_Cre))
+                    row.append(str(Ch_Cre))
+                    row.append(str(L_Che))
+                    row.append(str(L_Cre))
+                    
+            #get FWHM and SNR
+                if counter == 9:
+                    dummy = str(row)
+                    #dummy = dummy.translate(''.join(["[", "'", "]"]))
+                    fields = dummy.split(", ")
+                    FWHM = np.float(fields[7])
+                    SNR =  np.float(fields[9])
+            
+            
+                CSVstore.append(row)
+                #linewriter.writerow(row)
+                #    
+            #csvfile.close()
         
         
         resultsout = open(resout, 'w')
@@ -744,7 +794,8 @@ class SpecObject(object):
         csvout = open(moddataout, 'w')
         for line in CSVstore:
             c = str(line)
-            line2 = c.translate(None, ''.join(["[", "'", "]"]))
+            #line2 = c.translate(None, ''.join(["[", "'", "]"]))
+            line2 = c.translate(''.join(["[", "'", "]"]))
             #print line2
             csvout.write(line2)
             csvout.write('\n')
@@ -877,8 +928,8 @@ class SpecObject(object):
         pdf.output(tempout, 'F')
         
         # Merge PDF files
-        pdfFileObj1 =open(tempout, 'rb')
-        pdfFileObj2 =open(pdfout, 'rb')
+        pdfFileObj1 =open(tempout)
+        pdfFileObj2 =open(pdfout)
         
         pdfReader1 = PyPDF2.PdfFileReader(pdfFileObj1)
         pdfReader2 = PyPDF2.PdfFileReader(pdfFileObj2)
@@ -964,6 +1015,7 @@ class PatNameDialog(QtGui.QDialog):
         grid.addWidget(buttonbox, 2,0,3,2)
 
         self.setLayout(grid)
-        self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
-        #self.connect(buttonbox, QtCore.SIGNAL("rejected()"), self, QtCore.SLOT("reject()"))
+        #self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
+        #self.buttonbox.QtCore.SIGNAL("accepted()").connect(QtCore.SLOT("accept()"))
+
         self.setWindowTitle("Check Name")                  

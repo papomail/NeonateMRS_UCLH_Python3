@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+'Last Modified by Patxi on August 2019.' \
+
+
 MRS_Convert.py
 
 Version 1.3.1
@@ -13,6 +16,7 @@ can be adjusted manually
 Created on Thu Oct 01 11:36:59 2015
 
 @author: Alan Bainbridge
+
 """
 
 # Import methods
@@ -25,10 +29,17 @@ from PyQt5 import QtCore
 import pyqtgraph as pg
 import Spec_Module as sp
 import csv as csv 
+from pathlib import Path
 
 
 #Main function to run script is at the end of the file
 
+#BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
+
+ICONS_DIR= BASE_DIR / 'Icons' 
+
+HOME_DIR = Path.home()
 
 #Define class for main GUI
 class Maingui(QtGui.QMainWindow):
@@ -50,40 +61,49 @@ class Maingui(QtGui.QMainWindow):
         #Items in 'File' menu
 
         #Get Directory Name
-        openDir = QtGui.QAction(QtGui.QIcon('C:\\icons\\menu\\open.png'),
+        OpenDirIcon=ICONS_DIR / 'opened-folder.png'
+        OpenDirIcon=str(OpenDirIcon.resolve())
+        openDir = QtGui.QAction(QtGui.QIcon(OpenDirIcon),
                                 'Open Dir', self)
         openDir.setShortcut('Ctrl+D')
         openDir.triggered.connect(self.getdir)
         
         #Get Save Directory Name
-        saveDir = QtGui.QAction(QtGui.QIcon('C:\\icons\\menu\\save.png'),
+        SaveDirIcon=ICONS_DIR / 'save-48.png'
+        SaveDirIcon=str(SaveDirIcon.resolve())
+        saveDir = QtGui.QAction(QtGui.QIcon(SaveDirIcon),
                                 'Save Dir', self)
         saveDir.setShortcut('Ctrl+S')
         saveDir.triggered.connect(self.savedir)        
         
         #Items in 'Tools' menu ++++++++++++++++++++++++
         #Convert individual file to JMRUI format     
-        convfile = QtGui.QAction(QtGui.QIcon('C:\\icons\\toolbar\\pref.png'),
+        tarqIcon=ICONS_DIR / 'hat.ico'
+        tarqIcon=str(tarqIcon.resolve())
+
+        convfile = QtGui.QAction(QtGui.QIcon(tarqIcon),
                                     'Convert processed to JMRUI', self)
         convfile.triggered.connect(self.jmrui)
 
-        convfile = QtGui.QAction(QtGui.QIcon('C:\\icons\\toolbar\\pref.png'),
+        convfile = QtGui.QAction(QtGui.QIcon(tarqIcon),
                                     'Convert to JMRUI and Tarquin', self)
         convfile.triggered.connect(self.convert_to_all)
 
 
         #Convert individual file to Tarquin format         
-        convfileTarquin = QtGui.QAction(QtGui.QIcon('C:\\icons\\toolbar\\pref.png'),
+        convfileTarquin = QtGui.QAction(QtGui.QIcon(tarqIcon),
                                     'Convert processed to Tarquin', self)
         convfileTarquin.triggered.connect(self.Tarquin)
 
-        convfileTarquinorig = QtGui.QAction(QtGui.QIcon('C:\\icons\\toolbar\\pref.png'),
+        convfileTarquinorig = QtGui.QAction(QtGui.QIcon(tarqIcon),
                                     'Convert original to Tarquin', self)
         convfileTarquinorig.triggered.connect(self.Tarquinorig)         
         
         
         #Items in 'Phasing' menu +++++++++++++++++++++++++++
-        phaseregion = QtGui.QAction(QtGui.QIcon('C:\\icons\\menu\\variable.png'),
+        phaseIcon=ICONS_DIR / 'wave.png'
+        phaseIcon=str(phaseIcon.resolve())
+        phaseregion = QtGui.QAction(QtGui.QIcon(phaseIcon),
                                     'Phasing and Adopisation', self)
         phaseregion.triggered.connect(self.Phasereg)                            
        
@@ -262,7 +282,6 @@ class Maingui(QtGui.QMainWindow):
         self.mssg.setWindowTitle('About')
         self.mssg.setText('Version 1.3.1 \n\n' \
                 + 'Convert spectroscopy data to Tarquin and Jmrui format.\n\n' \
-                + 'Last Modified 28th July 2017. \n\n' \
                 + 'Please send any errors to balangb@gmail.com')
                 
         self.dcmfmt = QtGui.QMessageBox()
@@ -296,7 +315,7 @@ class Maingui(QtGui.QMainWindow):
         
         #Standard Open Directory Dialog box
         self.dirname = str(QtGui.QFileDialog.getExistingDirectory(self,
-                'Open Directory', 'S:\\Neonate_data\\3T\\PA'))
+                'Open Directory',  str(HOME_DIR.resolve())  ))
         
         #Display name of 'open' directory in main window (self.lb1)                      
         textout = 'Open directory name: ' + self.dirname
@@ -306,19 +325,22 @@ class Maingui(QtGui.QMainWindow):
         #dirpass string passed when initialising SpecObject object
         #Used for naming files that are written later
         dirpass = self.dirname.replace(':', '').replace('\\', '_')
-        
         # use os.chdir to get into chosen directory
         os.chdir(self.dirname)
         
         #get list of files in chosen directory
-        filelist = os.listdir(self.dirname) 
+        filelist = os.listdir(self.dirname)
+ 
           
         # loop through files in dir and determine which ones are enhanced dicoms
         for curfile in filelist:
+
             #If curfile is a directory
             if os.path.isdir(curfile):
                 #change to daughter directory
-                curdir = self.dirname + '\\' + curfile
+                #curdir = self.dirname + '\\' + curfile
+                curdir = str(Path(self.dirname , curfile).resolve())
+
                 os.chdir(curdir)
                 #Get filelist in daughter directory
                 filelist2 = os.listdir(curdir)
@@ -335,6 +357,9 @@ class Maingui(QtGui.QMainWindow):
             #Make sure we are in parent directory
             os.chdir(self.dirname)
             #Create object of type SpecObject
+            
+
+
             temp_spec_object = sp.SpecObject(curfile, dirpass)
             #If temp_spec_object is from a DICOM 4 MRS file
             if temp_spec_object.isspec != 0:
@@ -533,7 +558,8 @@ class Maingui(QtGui.QMainWindow):
     def IncFrame(self):
         cur_frame = self.specoblist[self.curobject].curframe
         self.specoblist[self.curobject].IncludeFrame[cur_frame] = 1
-        textout = 'Include Frame: ' + str(cur_frame) + ' :' +self.specoblist[self.curobject].PatName
+
+        textout = 'Include Frame: ' + str(cur_frame) + ' :' +str(self.specoblist[self.curobject].PatName)
         self.lbl5.setText(textout)
         self.lbl5.adjustSize() 
         self.specoblist[self.curobject].addframes()
@@ -542,7 +568,7 @@ class Maingui(QtGui.QMainWindow):
     def ExcFrame(self):
         cur_frame = self.specoblist[self.curobject].curframe
         self.specoblist[self.curobject].IncludeFrame[cur_frame] = 0
-        textout = 'Exclude Frame: ' + str(cur_frame) + ' :' +self.specoblist[self.curobject].PatName
+        textout = 'Exclude Frame: ' + str(cur_frame) + ' :' +str(self.specoblist[self.curobject].PatName)
         self.lbl5.setText(textout)
         self.lbl5.adjustSize() 
         self.specoblist[self.curobject].addframes()      
@@ -649,7 +675,9 @@ class PhaseDialog(QtGui.QDialog):
         grid.addWidget(buttonbox, 4,0,3,2)
         self.setLayout(grid)
         self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
-        #self.connect(buttonbox, QtCore.SIGNAL("rejected()"), self, QtCore.SLOT("reject()"))
+        #self.buttonbox.QtCore.SIGNAL("accepted()").connect(QtCore.SLOT("accept()"))
+
+        
         self.setWindowTitle("Enter Limits")           
         
         
