@@ -21,14 +21,15 @@ Created on Thu Oct 01 11:36:59 2015
 
 # Import methods
 import sys
-import os as os
+import os 
 import numpy as np
 #import dicom as dcm
-from PyQt5 import QtGui
-from PyQt5 import QtCore
+#from PyQt5 import QtGui
+#from PyQt5 import QtCore
+from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
 import Spec_Module as sp
-import csv as csv 
+import csv 
 from pathlib import Path
 
 
@@ -261,6 +262,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         self.plotwidget = pg.PlotWidget(self)
+        
         self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
         self.plotwidget.show()
         self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 1})
@@ -273,8 +275,8 @@ class Maingui(QtGui.QMainWindow):
         self.p21 = self.plotwidget2.plot(pen = {'color': 'b', 'width': 1})
         self.p22 = self.plotwidget2.plot(pen = {'color': 'r', 'width': 1})
         self.p23 = self.plotwidget2.plot(pen = {'color': 'g', 'width': 1})
-        
-        
+
+
         #--------Add Message Box---------------
         #Note this opens a separate windpw with a message
         self.mssg = QtGui.QMessageBox()
