@@ -681,7 +681,8 @@ class SpecObject(object):
             counter = 0
             for row in linereader:
                 counter += 1
-          
+                print(row)
+
                 if counter == 2:
                     row.append('Lac+T/tNaa')
                     row.append('tNaa/tCho')
