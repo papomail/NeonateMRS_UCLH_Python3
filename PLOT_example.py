@@ -25,7 +25,6 @@ win.setWindowTitle('pyqtgraph example: Plotting')
 pg.setConfigOptions(antialias=True)
 
 p1 = win.addPlot(title="Basic array plotting", y=np.random.normal(size=100))
-
 p2 = win.addPlot(title="Multiple curves")
 p2.plot(np.random.normal(size=100), pen=(255,0,0), name="Red curve")
 p2.plot(np.random.normal(size=110)+5, pen=(0,255,0), name="Green curve")

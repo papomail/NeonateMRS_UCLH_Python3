@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-§'Last Modified by Patxi on August 2019.' \
+'Last Modified by Patxi on August 2019.' \
 
 
 MRS_Convert.py
@@ -259,19 +259,16 @@ class Maingui(QtGui.QMainWindow):
         
         #------- Add pyqtgraph objects ---------------------
         ## Switch to using white background and black foreground
-        pg.setConfigOption('background', 'w')
-        pg.setConfigOption('foreground', 'k')
+        #pg.setConfigOption('background', 'w')
+        #pg.setConfigOption('foreground', 'k')
         
-        #win = pg.GraphicsWindow()
-        #self.p1 = win.addPlot()
-        #self.p2 = win.addPlot()
-        #self.p3 = win.addPlot()
-        self.plotwidget = pg.PlotWidget(self)
-        self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
-        self.plotwidget.show()
-        self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 1})
-        self.p2 = self.plotwidget.plot(pen = {'color': 'r', 'width': 1})
-        self.p3 = self.plotwidget.plot(pen = {'color': 'r', 'width': 1})
+        win = pg.GraphicsWindow()
+        self.p1 = win.addPlot()
+        self.p2 = win.addPlot()
+        self.p3 = win.addPlot()
+        # self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 1})
+        # self.p2 = self.plotwidget.plot(pen = {'color': 'r', 'width': 1})
+        # self.p3 = self.plotwidget.plot(pen = {'color': 'r', 'width': 1})
 
         self.plotwidget2 = pg.PlotWidget(self)
         self.plotwidget2.setGeometry(QtCore.QRect(540, 100, 500, 400))
