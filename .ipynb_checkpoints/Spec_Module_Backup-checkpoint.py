@@ -36,14 +36,6 @@ import pandas as pd
 BASE_DIR = Path(__file__).parent.parent.parent
 
 
-
-ICONS_DIR= BASE_DIR / 'Icons' 
-UCLH_header=ICONS_DIR / 'UCLH_header.png'
-UCLH_header=str(UCLH_header.resolve())
-
-UCLH_footer=ICONS_DIR / 'UCLH_footer.png'
-UCLH_footer=str(UCLH_footer.resolve())
-
 class SpecObject(object):
     NumSpecObjects = 0  #To keep track of how many spec objects there are
     
@@ -689,8 +681,7 @@ class SpecObject(object):
             counter = 0
             for row in linereader:
                 counter += 1
-                print(row)
-
+          
                 if counter == 2:
                     row.append('Lac+T/tNaa')
                     row.append('tNaa/tCho')
@@ -708,17 +699,11 @@ class SpecObject(object):
                     row.append('Lac+T/Cr')
             #Calc ratio        
                 if counter == 3:
-                    #dummy = str(row)
+                    dummy = str(row)
                     #dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
-                  
-                    #print('dummy is: ',dummy)
-                    
-                    #fields = dummy.split(', ')
-                    fields = row
-                    
+                    #dummy = dummy.translate(''.join(["[", "'", "]"]))
+                    fields = dummy.split(", ")
                     print('type of fields[14] is: ',type(fields[14]))
-                    print('fields[14] is: ',fields[14])
-                    
                     Lac = np.float(fields[14])
                     Naa =  np.float(fields[15])
                     NaaG =  np.float(fields[16])
@@ -743,7 +728,7 @@ class SpecObject(object):
                     dummy = str(row)
                     # #dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
                     #dummy = dummy.translate(''.join(["[", "'", "]"]))
-                    fields = row
+                    fields = dummy.split(", ")
                     Lace = np.float(fields[14])
                     Naae =  np.float(fields[15])
                     NaaGe =  np.float(fields[16])
@@ -768,10 +753,9 @@ class SpecObject(object):
                     
             #get FWHM and SNR
                 if counter == 9:
-                    #dummy = str(row)
+                    dummy = str(row)
                     #dummy = dummy.translate(''.join(["[", "'", "]"]))
-                    #fields = dummy.split(", ")
-                    fields = row
+                    fields = dummy.split(", ")
                     FWHM = np.float(fields[7])
                     SNR =  np.float(fields[9])
             
@@ -944,8 +928,8 @@ class SpecObject(object):
         pdf.output(tempout, 'F')
         
         # Merge PDF files
-        pdfFileObj1 =open(tempout,'rb')
-        pdfFileObj2 =open(pdfout,'rb')
+        pdfFileObj1 =open(tempout)
+        pdfFileObj2 =open(pdfout)
         
         pdfReader1 = PyPDF2.PdfFileReader(pdfFileObj1)
         pdfReader2 = PyPDF2.PdfFileReader(pdfFileObj2)
@@ -978,11 +962,9 @@ class SpecObject(object):
 
         
 class PDF(FPDF):
-   
     def header(self):
-        
         # Logo
-        self.image(UCLH_header, 120, 12, 80)
+        self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_header.png', 120, 12, 80)
         # Arial bold 15
         self.set_font('Arial', '', 10)
         # Move to the right
@@ -998,10 +980,7 @@ class PDF(FPDF):
     # Page footer
     def footer(self):
         # Logo
-       
-        
-        self.image(UCLH_footer, 20, 270, 160)
-        #self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_Footer.png', 20, 270, 160)
+        self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_Footer.png', 20, 270, 160)
         # Position at 1.5 cm from bottom
         self.set_y(-40)
         # Arial italic 8
@@ -1010,7 +989,7 @@ class PDF(FPDF):
         self.cell(10)
         self.cell(45, 10, 'Neonatal MRS Report', 1, 0, 'C')
         #self.cell(90)
-        self.cell(45, 10, 'Tarquin Version 4.3.11', 1, 0, 'C')
+        self.cell(45, 10, 'Tarquin Version 4.3.7', 1, 0, 'C')
         i = datetime.datetime.now()
         datetext = 'Date: ' +str(i.day) + '/' + str(i.month) + '/' + str(i.year)
         self.cell(45,10, datetext, 1,0,'C')

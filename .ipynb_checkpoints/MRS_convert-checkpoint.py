@@ -51,7 +51,7 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0          #Index of current object
         self.setsavedir = 0         #Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI()
-        self.version = '1.3.1'               
+        self.version = '1.4.0'               
 
         
     def initUI(self):  
@@ -305,6 +305,12 @@ class Maingui(QtGui.QMainWindow):
         self.setGeometry(300, 300, 1060, 580)
         self.setWindowTitle('Tarquin Conversion Tool')
         self.setWindowIcon(QtGui.QIcon('C:\\icons\\menu\\advanced.png'))
+        
+        #self.setStyleSheet("QMainWindow {background: 'white';}");
+        self.setStyleSheet("color: blue;"
+                        "background-color: white;"
+                        "selection-color: blue;"
+                        "selection-background-color: white;")
         self.show()
         
         
@@ -655,6 +661,7 @@ class Maingui(QtGui.QMainWindow):
 
         
 class PhaseDialog(QtGui.QDialog):
+    #SLOT = QtCore.pyqtSignal(str)
     
     def __init__(self, leftinit, rightinit, adop_const, parent = None):
         super(PhaseDialog, self).__init__(parent)
@@ -685,15 +692,37 @@ class PhaseDialog(QtGui.QDialog):
         grid.addWidget(self.adop_const, 2,1)
         grid.addWidget(buttonbox, 4,0,3,2)
         self.setLayout(grid)
-        self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
-        #self.buttonbox.QtCore.SIGNAL("accepted()").connect(QtCore.SLOT("accept()"))
+        
+        #The old style signal and slot, which is not longer supported in PyQt5.:
+        #self.connect(origin, SIGNAL('completed'), self._show_results)
+        #should now be written in the new style:
+        #origin.completed.connect(self._show_results)
+        
+        #self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
+        buttonbox.accepted.connect(QtCore.pyqtSignal("accept()"))
+        
+        
+        self.setWindowTitle("Enter Limits")      
 
+    
         
-        self.setWindowTitle("Enter Limits")           
-        
-        
-        
-        
+######### In PyQt5 you need to use the connect() and emit() methods of the bound signal directly, e.g. instead of:
+######### 
+######### self.emit(pyqtSignal('add_post(QString)'), top_post)
+######### ...
+######### self.connect(self.get_thread, pyqtSignal("add_post(QString)"), self.add_post)
+######### self.connect(self.get_thread, pyqtSignal("finished()"), self.done)
+######### use:
+#########
+######### self.add_post.emit(top_post)
+######### ...
+######### self.get_thread.add_post.connect(self.add_post)
+######### self.get_thread.finished.connect(self.done)
+######### However for this to work you need to explicitly define the add_post signal on your getPostsThread first, otherwise you'll get an attribute error.
+######### 
+######### class getPostsThread(QThread):
+#########     add_post = pyqtSignal(str)
+#########     ...
         
         
 

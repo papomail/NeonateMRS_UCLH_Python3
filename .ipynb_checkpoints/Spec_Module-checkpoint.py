@@ -36,6 +36,14 @@ import pandas as pd
 BASE_DIR = Path(__file__).parent.parent.parent
 
 
+
+ICONS_DIR= BASE_DIR / 'Icons' 
+UCLH_header=ICONS_DIR / 'UCLH_header.png'
+UCLH_header=str(UCLH_header.resolve())
+
+UCLH_footer=ICONS_DIR / 'UCLH_footer.png'
+UCLH_footer=str(UCLH_footer.resolve())
+
 class SpecObject(object):
     NumSpecObjects = 0  #To keep track of how many spec objects there are
     
@@ -936,8 +944,8 @@ class SpecObject(object):
         pdf.output(tempout, 'F')
         
         # Merge PDF files
-        pdfFileObj1 =open(tempout)
-        pdfFileObj2 =open(pdfout)
+        pdfFileObj1 =open(tempout,'rb')
+        pdfFileObj2 =open(pdfout,'rb')
         
         pdfReader1 = PyPDF2.PdfFileReader(pdfFileObj1)
         pdfReader2 = PyPDF2.PdfFileReader(pdfFileObj2)
@@ -970,9 +978,11 @@ class SpecObject(object):
 
         
 class PDF(FPDF):
+   
     def header(self):
+        
         # Logo
-        self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_header.png', 120, 12, 80)
+        self.image(UCLH_header, 120, 12, 80)
         # Arial bold 15
         self.set_font('Arial', '', 10)
         # Move to the right
@@ -988,7 +998,10 @@ class PDF(FPDF):
     # Page footer
     def footer(self):
         # Logo
-        self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_Footer.png', 20, 270, 160)
+       
+        
+        self.image(UCLH_footer, 20, 270, 160)
+        #self.image('S:\\Alan_projects\\Logos_do_not_alter\\UCLH_Footer.png', 20, 270, 160)
         # Position at 1.5 cm from bottom
         self.set_y(-40)
         # Arial italic 8
@@ -997,7 +1010,7 @@ class PDF(FPDF):
         self.cell(10)
         self.cell(45, 10, 'Neonatal MRS Report', 1, 0, 'C')
         #self.cell(90)
-        self.cell(45, 10, 'Tarquin Version 4.3.7', 1, 0, 'C')
+        self.cell(45, 10, 'Tarquin Version 4.3.11', 1, 0, 'C')
         i = datetime.datetime.now()
         datetext = 'Date: ' +str(i.day) + '/' + str(i.month) + '/' + str(i.year)
         self.cell(45,10, datetext, 1,0,'C')
