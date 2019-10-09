@@ -262,13 +262,13 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         
-        #win = pg.GraphicsWindow()
-        #win.resize(1000,600)
-        #self.p1 = win.addPlot()
+        win = pg.GraphicsWindow()
+        win.resize(1000,600)
+        self.p1 = win.addPlot()
         #self.p2 = win.addPlot()
         #self.p3 = win.addPlot()
-        self.plotwidget = pg.PlotWidget(self)
-        self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
+        #self.plotwidget = pg.PlotWidget(self)
+        #self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
         
         self.plotwidget.show()
         self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 2})
