@@ -263,6 +263,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption('foreground', 'k')
         
         #win = pg.GraphicsWindow()
+        #win.resize(1000,600)
         #self.p1 = win.addPlot()
         #self.p2 = win.addPlot()
         #self.p3 = win.addPlot()
@@ -739,3 +740,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    w = Window()
+    w.show()
+    sys.exit(app.exec_())
+    
