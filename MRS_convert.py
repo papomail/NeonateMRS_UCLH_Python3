@@ -262,13 +262,13 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         
-        win = pg.GraphicsWindow()
-        win.resize(1000,600)
-        self.p1 = win.addPlot()
+        #win = pg.GraphicsWindow()
+        #win.resize(1000,600)
+        #self.p1 = win.addPlot()
         #self.p2 = win.addPlot()
         #self.p3 = win.addPlot()
-        #self.plotwidget = pg.PlotWidget(self)
-        #self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
+        self.plotwidget = pg.PlotWidget(self)
+        self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
         
         self.plotwidget.show()
         self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 2})
@@ -305,7 +305,7 @@ class Maingui(QtGui.QMainWindow):
         #This should come at the end once all GUI item are created
         self.setGeometry(300, 300, 1060, 580)
         self.setWindowTitle('Tarquin Conversion Tool')
-        self.setWindowIcon(QtGui.QIcon('C:\\icons\\menu\\advanced.png'))
+        self.setWindowIcon(QtGui.QIcon(tarqIcon))
         
         #self.setStyleSheet("QMainWindow {background: 'white';}");
         # self.setStyleSheet("color: blue;"
@@ -484,8 +484,21 @@ class Maingui(QtGui.QMainWindow):
            
             
     def savedir(self):
-        self.savedirname = str(QtGui.QFileDialog.getExistingDirectory(self,
-                'Save Directory', 'S:\\Neonate_data\\3T\\PA'))
+        proposed_savedir=Path(self.dirname).parent
+        proposed_savedir=proposed_savedir / 'resultsMRS' 
+        if proposed_savedir.exists() :
+            self.savedirname = str(QtGui.QFileDialog.getExistingDirectory(self,
+                'Save Directory (WARNING: saving in "resultMRS" will overwrite previous results)', str( Path(self.dirname).parent.resolve() )  ))
+        else :
+            proposed_savedir.mkdir(parents=True, exist_ok=True)
+            self.savedirname = str(QtGui.QFileDialog.getExistingDirectory(self,
+                'Save Directory (default: "resultMRS" inside patient folder)', str( proposed_savedir.resolve() )  ))
+            if self.savedirname != str(proposed_savedir.resolve()):
+                proposed_savedir.rmdir()
+            
+
+    
+    
         textout = 'Save directory name: ' + self.savedirname
         self.lbl2.setText(textout)
         self.lbl2.adjustSize()
