@@ -267,24 +267,24 @@ class Maingui(QtGui.QMainWindow):
         #self.p1 = win.addPlot()
         #self.p2 = win.addPlot()
         #self.p3 = win.addPlot()
-        self.plotwidget = pg.PlotWidget(self)
-        self.plotwidget.setGeometry(QtCore.QRect(10, 100, 500, 400))
+        self.pw1 = pg.PlotWidget(self)
+        self.pw1.setGeometry(QtCore.QRect(10, 100, 500, 400))
         
-        self.plotwidget.show()
-        self.p1 = self.plotwidget.plot(pen = {'color': 'b', 'width': 2})
-        self.p2 = self.plotwidget.plot(pen = {'color': 'r', 'width': 2})
-        self.p3 = self.plotwidget.plot(pen = {'color': 'r', 'width': 2})
+        self.pw1.show()
+        self.p1 = self.pw1.plot(pen = {'color': 'b', 'width': 2})
+        self.p2 = self.pw1.plot(pen = {'color': 'r', 'width': 2})
+        self.p3 = self.pw1.plot(pen = {'color': 'r', 'width': 2})
 
         
         
         
-        self.plotwidget2 = pg.PlotWidget(self)
-        self.plotwidget2.setGeometry(QtCore.QRect(540, 100, 500, 400))      
+        self.pw2 = pg.PlotWidget(self)
+        self.pw2.setGeometry(QtCore.QRect(540, 100, 500, 400))      
         
-        self.plotwidget2.show()
-        self.p21 = self.plotwidget2.plot(pen = {'color': 'b', 'width': 2})
-        self.p22 = self.plotwidget2.plot(pen = {'color': 'r', 'width': 2})
-        self.p23 = self.plotwidget2.plot(pen = {'color': 'g', 'width': 2})
+        self.pw2.show()
+        self.p21 = self.pw2.plot(pen = {'color': 'b', 'width': 2})
+        self.p22 = self.pw2.plot(pen = {'color': 'r', 'width': 2})
+        self.p23 = self.pw2.plot(pen = {'color': 'g', 'width': 2})
 
 
         #--------Add Message Box---------------
@@ -313,6 +313,16 @@ class Maingui(QtGui.QMainWindow):
         #                 "selection-color: blue;"
         #                 "selection-background-color: white;")
         self.show()
+        
+        
+        # ## Handle view resizing 
+        # def updateViews():
+        #     ## view has resized; update auxiliary views to match
+        #     self.pw2.setGeometry(self.pw1.sceneBoundingRect())
+        #     self.pw1.linkedViewChanged(self.pw1, self.pw2.XAxis)
+
+        # updateViews()
+        # self.pw1.vb.sigResized.connect(updateViews)
         
         
     #--------Class Methods-----------------------------------  
@@ -695,7 +705,7 @@ class PhaseDialog(QtGui.QDialog):
         self.adop_const = QtGui.QLineEdit(self.adop_string)
         adoplabel.setBuddy(self.adop_const)
         
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
+        #buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
         buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
         grid = QtGui.QGridLayout()
         grid.addWidget(leftlabel, 0,0)
@@ -713,7 +723,7 @@ class PhaseDialog(QtGui.QDialog):
         #origin.completed.connect(self._show_results)
         
         #self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
-        buttonbox.accepted.connect(QtCore.pyqtSignal("accept()"))
+        #buttonbox.accepted.connect(QtCore.pyqtSignal("accept()"))
         
         
         self.setWindowTitle("Enter Limits")      
@@ -753,11 +763,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    w = Window()
-    w.show()
-    sys.exit(app.exec_())
     
