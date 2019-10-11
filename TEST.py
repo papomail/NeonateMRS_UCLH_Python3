@@ -2,7 +2,6 @@
 from PyQt5.QtCore import QRect, QSize, Qt
 from PyQt5.QtWidgets import QComboBox, QDialogButtonBox
 
-UiColormapDialog()
 class UiColormapDialog(object):
 
     """
