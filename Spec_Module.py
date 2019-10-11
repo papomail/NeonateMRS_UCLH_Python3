@@ -967,6 +967,8 @@ class SpecObject(object):
         
         pdfFileObj1.close()
         pdfFileObj2.close()
+        
+        print(f'\n\nMRS Report saved in {reportout}')
 
 
 
