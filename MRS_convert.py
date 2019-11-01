@@ -44,6 +44,8 @@ HOME_DIR = Path.home()
 
 #Define class for main GUI
 class Maingui(QtGui.QMainWindow):
+#class Maingui(QtWidgets.QWidget):
+    
     #--------Class Construction--------------------
     def __init__(self):
         super(Maingui, self).__init__()
@@ -105,17 +107,19 @@ class Maingui(QtGui.QMainWindow):
         phaseIcon=ICONS_DIR / 'wave.png'
         phaseIcon=str(phaseIcon.resolve())
         phaseregion = QtGui.QAction(QtGui.QIcon(phaseIcon),
-                                    'Phasing and Adopisation', self)
+                                    'Phasing and Apodisation', self)
         phaseregion.triggered.connect(self.Phasereg)                            
        
-       
-       
+        #about icon
+        about_icon=ICONS_DIR / 'about_icon.png'
+        about_icon=str(about_icon.resolve())
+
         #Program Notes +++++++++++++++++++++++++++++++++++++++
-        about = QtGui.QAction(QtGui.QIcon('C:\\icons\\menu\\about.png'),
+        about = QtGui.QAction(QtGui.QIcon(about_icon),
                                 'About', self)
         about.triggered.connect(self.about)  
         
-        dcmmssg = QtGui.QAction(QtGui.QIcon('C:\\icons\\menu\\about.png'),
+        dcmmssg = QtGui.QAction(QtGui.QIcon(about_icon),
                                 'DICOM formats', self)
         dcmmssg.triggered.connect(self.dcmmssg) 
         
@@ -158,8 +162,16 @@ class Maingui(QtGui.QMainWindow):
         btnnophase = QtGui.QPushButton('undo phase', self)
         btnnoshift = QtGui.QPushButton('undo shift', self) 
         btnfit = QtGui.QPushButton('Show Fit', self)
+
+        self.btnopen = QtGui.QPushButton('1)  Select folder with MRS data', self)
+        
         
         #Set button attributes
+        self.btnopen.resize(250,30)
+        self.btnopen.move(10,2)  
+        self.btnopen.clicked.connect(self.btnopen_clicked)
+        
+        
         btnup.resize(btnup.sizeHint())
         btnup.move(20,510)  
         btnup.clicked.connect(self.specup)
@@ -231,7 +243,7 @@ class Maingui(QtGui.QMainWindow):
            
         #-------Add text-------------------------------------------------------
         self.lbl = QtGui.QLabel(self)
-        self.lbl.move(10,30)
+        self.lbl.move(10,35)
         self.lbl.setText('Open directory name:')
         self.lbl.adjustSize()     
         
@@ -262,11 +274,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
         
-        #win = pg.GraphicsWindow()
-        #win.resize(1000,600)
-        #self.p1 = win.addPlot()
-        #self.p2 = win.addPlot()
-        #self.p3 = win.addPlot()
+      
         self.pw1 = pg.PlotWidget(self)
         self.pw1.setGeometry(QtCore.QRect(10, 100, 500, 400))
         
@@ -314,7 +322,6 @@ class Maingui(QtGui.QMainWindow):
         #                 "selection-background-color: white;")
         self.show()
         
-        
         # ## Handle view resizing 
         # def updateViews():
         #     ## view has resized; update auxiliary views to match
@@ -325,7 +332,38 @@ class Maingui(QtGui.QMainWindow):
         # self.pw1.vb.sigResized.connect(updateViews)
         
         
-    #--------Class Methods-----------------------------------  
+    #--------Class Methods-----------------------------------   
+
+    def btnopen_clicked(self):
+
+        if '1)' in self.btnopen.text():
+            self.getdir()
+            self.btnopen.move(200,2) 
+            framenum = str(self.specoblist[self.curobject].curframe + 1)
+            self.btnopen.setText(f'2) Check and adjust spectra if needed: {framenum}/16') 
+            self.btnopen.setStyleSheet('QPushButton {color: #f2c885;}')
+            self.btnopen.adjustSize()
+
+        elif '2)' in self.btnopen.text() and self.specoblist[self.curobject].curframe ==  15:
+            self.btnopen.move(600,2)  
+            self.btnopen.setText('3) Generate report') 
+            self.btnopen.adjustSize()
+            self.btnopen.setStyleSheet('QPushButton {background-color: green;}')
+            #self.btnopen.setStyleSheet('QPushButton {background-color: #A3C1DA; color: red;}')
+
+        elif '2)' in self.btnopen.text():
+            self.frameup()
+            framenum = str(self.specoblist[self.curobject].curframe + 1)
+            self.btnopen.setText(f'2) Check and adjust spectra if needed: {framenum}/16') 
+            self.btnopen.setStyleSheet('QPushButton {color: #f2c885;}')
+            
+
+            
+        elif '3)' in self.btnopen.text():
+            self.convert_to_all()
+           
+
+
     def about(self):
         #Message box to display script information
         self.mssg.show()
@@ -401,6 +439,9 @@ class Maingui(QtGui.QMainWindow):
         textout = 'Number of MRS files found: ' + str(np.size(self.specoblist))
         self.lbl4.setText(textout)
         self.lbl4.adjustSize()
+        
+      
+            
 
 
 
@@ -463,12 +504,12 @@ class Maingui(QtGui.QMainWindow):
     def Phasereg(self):
         leftinit = self.specoblist[self.curobject].plim_l
         rightinit = self.specoblist[self.curobject].plim_r
-        adopinit = self.specoblist[self.curobject].adop_const
-        dialog = PhaseDialog(leftinit, rightinit, adopinit)
+        apodinit = self.specoblist[self.curobject].apod_const
+        dialog = PhaseDialog(leftinit, rightinit, apodinit)
         if dialog.exec_():
             leftlim = dialog.leftlim.text()        
             rightlim = dialog.rightlim.text()
-            adop_const = dialog.adop_const.text()
+            apod_const = dialog.apod_const.text()
             
         try:
             left_int = int(leftlim)
@@ -481,13 +522,13 @@ class Maingui(QtGui.QMainWindow):
             right_int = rightinit  
             
         try:
-            adop_int = int(adop_const)
+            apod_int = float(apod_const)
         except:
-            adop_int = adopinit  
+            apod_int = apodinit  
             
         self.specoblist[self.curobject].plim_l = left_int
         self.specoblist[self.curobject].plim_r = right_int 
-        self.specoblist[self.curobject].adop_const = adop_int
+        self.specoblist[self.curobject].apod_const = apod_int
         
         self.specoblist[self.curobject].autophase()
 
@@ -505,14 +546,13 @@ class Maingui(QtGui.QMainWindow):
                 'Save Directory (default: "resultMRS" inside patient folder)', str( proposed_savedir.resolve() )  ))
             if self.savedirname != str(proposed_savedir.resolve()):
                 proposed_savedir.rmdir()
-            
-
-    
+        
     
         textout = 'Save directory name: ' + self.savedirname
         self.lbl2.setText(textout)
         self.lbl2.adjustSize()
         self.setsavedir = 1
+
 
     def specup(self):
         self.curobject += 1
@@ -549,6 +589,10 @@ class Maingui(QtGui.QMainWindow):
         self.specoblist[self.curobject].fitTarquin(self.savedirname)
         #self.plotfit()
         
+        self.lbl2.setText(self.specoblist[self.curobject].report_completed_msg)
+        self.lbl2.adjustSize()
+        self.lbl2.setStyleSheet('QLabel {color: green;}')
+
     def Tarquinorig(self):
         if self.setsavedir == 0:
             self.savedir()
@@ -578,11 +622,23 @@ class Maingui(QtGui.QMainWindow):
         self.p22.setData(x1_marker, y_marker)
         self.p23.setData(x2_marker, y_marker)        
         
-        
-        if self.specoblist[self.curobject].IncludeFrame[cur_frame] == 1:
-            textout = 'Include Frame: ' + str(cur_frame) + ' :' +str(self.specoblist[self.curobject].PatName)
+        if cur_frame+1 == 1:
+            ordinal_sufix='st' 
+
+        elif cur_frame+1 == 2:
+            ordinal_sufix='nd' 
+
+        elif cur_frame+1 == 3:
+            ordinal_sufix='rd' 
+
         else:
-            textout = 'Exclude Frame: ' + str(cur_frame) + ' :' +str(self.specoblist[self.curobject].PatName)
+            ordinal_sufix='th'
+
+
+        if self.specoblist[self.curobject].IncludeFrame[cur_frame] == 1:
+            textout = 'Include Frame: ' + str(cur_frame+1) + ordinal_sufix + '  :' +str(self.specoblist[self.curobject].PatName)
+        else:
+            textout = 'Exclude Frame: ' + str(cur_frame+1) + ordinal_sufix + '  :' +str(self.specoblist[self.curobject].PatName)
         self.lbl5.setText(textout)
         self.lbl5.adjustSize()     
 
@@ -687,11 +743,11 @@ class Maingui(QtGui.QMainWindow):
 class PhaseDialog(QtGui.QDialog):
     #SLOT = QtCore.pyqtSignal(str)
     
-    def __init__(self, leftinit, rightinit, adop_const, parent = None):
+    def __init__(self, leftinit, rightinit, apod_const, parent = None):
         super(PhaseDialog, self).__init__(parent)
         self.left_string = str(leftinit)
         self.right_string = str(rightinit)
-        self.adop_string = str(adop_const)
+        self.apod_string = str(apod_const)
         
         rightlabel = QtGui.QLabel("&Right Limit:")
         self.rightlim = QtGui.QLineEdit(self.right_string)
@@ -701,53 +757,29 @@ class PhaseDialog(QtGui.QDialog):
         self.leftlim = QtGui.QLineEdit(self.left_string)
         leftlabel.setBuddy(self.leftlim)
 
-        adoplabel = QtGui.QLabel("&Adopisation:")
-        self.adop_const = QtGui.QLineEdit(self.adop_string)
-        adoplabel.setBuddy(self.adop_const)
+        apodlabel = QtGui.QLabel("&Apodisation:")
+        self.apod_const = QtGui.QLineEdit(self.apod_string)
+        apodlabel.setBuddy(self.apod_const)
         
-        #buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        self.buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        #buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        
         grid = QtGui.QGridLayout()
         grid.addWidget(leftlabel, 0,0)
         grid.addWidget(self.leftlim, 0,1)
         grid.addWidget(rightlabel, 1,0)
         grid.addWidget(self.rightlim, 1,1)
-        grid.addWidget(adoplabel, 2,0)
-        grid.addWidget(self.adop_const, 2,1)
-        grid.addWidget(buttonbox, 4,0,3,2)
+        grid.addWidget(apodlabel, 2,0)
+        grid.addWidget(self.apod_const, 2,1)
+        grid.addWidget(self.buttonbox, 4,0,3,2)
         self.setLayout(grid)
         
-        #The old style signal and slot, which is not longer supported in PyQt5.:
-        #self.connect(origin, SIGNAL('completed'), self._show_results)
-        #should now be written in the new style:
-        #origin.completed.connect(self._show_results)
-        
-        #self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
-        #buttonbox.accepted.connect(QtCore.pyqtSignal("accept()"))
-        
-        
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
         self.setWindowTitle("Enter Limits")      
 
     
-        
-######### In PyQt5 you need to use the connect() and emit() methods of the bound signal directly, e.g. instead of:
-######### 
-######### self.emit(pyqtSignal('add_post(QString)'), top_post)
-######### ...
-######### self.connect(self.get_thread, pyqtSignal("add_post(QString)"), self.add_post)
-######### self.connect(self.get_thread, pyqtSignal("finished()"), self.done)
-######### use:
-#########
-######### self.add_post.emit(top_post)
-######### ...
-######### self.get_thread.add_post.connect(self.add_post)
-######### self.get_thread.finished.connect(self.done)
-######### However for this to work you need to explicitly define the add_post signal on your getPostsThread first, otherwise you'll get an attribute error.
-######### 
-######### class getPostsThread(QThread):
-#########     add_post = pyqtSignal(str)
-#########     ...
-        
         
 
         

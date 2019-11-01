@@ -60,7 +60,7 @@ class SpecObject(object):
         self.mruiload = 0
         self.plim_l = 1110
         self.plim_r = 1140
-        self.adop_const = 128.0
+        self.apod_const = 128.0
         SpecObject.NumSpecObjects += 1        
         print(filename)
         
@@ -100,58 +100,58 @@ class SpecObject(object):
             
  
 
-    #Form complex k-space data and FFT to complex spectra.  Adopise also.      
+    #Form complex k-space data and FFT to complex spectra.  Apodise also.      
     def complex_data(self):
         #Set up arrays to store data and flags for each dynamic acquisition
         #Number of dynamic acquisitions = self.Frames
         self.Kspace = []        #To store raw K-space
         self.Kspacewrite = []        #To store raw K-space
-        self.Kspaceadop = []    #To store adopised K-space
+        self.Kspaceapod = []    #To store apodised K-space
         self.Spectrum = []      #To store raw spectrum
-        self.Spectrumadop = []  #To store adopised spectrum
+        self.Spectrumapod = []  #To store apodised spectrum
         self.IncludeFrame = []  #To store include frame flags
               
         #Set up apodisation function
-        #adop = 1 in ranmge [0:512] pts
-        #adop = decaying exponential thereafter (decay const = 64)
+        #apod = 1 in ranmge [0:512] pts
+        #apod = decaying exponential thereafter (decay const = 64)
         #Note division by 64.0 and not 64
         #Need to do this otherwise you get rounded integers rather than float values
-        adop = np.ones(shape = [int(self.Datapoints)], dtype = float)
+        apod = np.ones(shape = [int(self.Datapoints)], dtype = float)
         for cntexp in range(512, int(self.Datapoints)):
-            adop[cntexp] = np.exp(old_div(-(cntexp-512),self.adop_const))
-        self.adop = adop
+            apod[cntexp] = np.exp(old_div(-(cntexp-512),self.apod_const))
+        self.apod = apod
 
         #Loop through each frame
         for b in range(0, self.Frames):
             counter = 0
-            #Set up dammy arrays to temporarily hold K-space and adopised K-space
+            #Set up dammy arrays to temporarily hold K-space and apodised K-space
             #data for an individual frame
             dummyKspace = np.zeros(shape = [self.Datapoints], dtype = complex)
-            dummyKspaceadop = np.zeros(shape = [self.Datapoints], dtype = complex)
+            dummyKspaceapod = np.zeros(shape = [self.Datapoints], dtype = complex)
             
             #Data are store R,I,R,I,... in self.SpecData.  Loop through and 
             #extract R and I data pairs and then store as an array of complex
             #numbers of size self.Datapoints
             for a in range(0, self.Datapoints*2, 2):
                 dummyKspace[counter] = complex(self.SpecData[(b*self.Datapoints*2) + a], self.SpecData[(b*self.Datapoints*2)+a+1])
-                dummyKspaceadop[counter] = dummyKspace[counter] * adop[counter]
+                dummyKspaceapod[counter] = dummyKspace[counter] * apod[counter]
                 counter  = counter + 1
 
-            #Apply adopisation 
-            #dummyKspaceadop = dummyKspace * adop
+            #Apply apodisation 
+            dummyKspaceapod = dummyKspace * apod
             
-            #Append adopised and non-adopised k-space data to appropriate array
+            #Append apodised and non-apodised k-space data to appropriate array
             self.Kspace.append(dummyKspace)
             self.Kspacewrite.append(dummyKspace)
-            self.Kspaceadop.append(dummyKspaceadop)
+            self.Kspaceapod.append(dummyKspaceapod)
             
             #For each frame, fft and fftshift to display spectrum propoerly
             dummyspectrum = np.fft.fftshift(np.fft.fft(np.conj(dummyKspace)))
-            dummyspectrumadop = np.fft.fftshift(np.fft.fft(np.conj(dummyKspaceadop)))
+            dummyspectrumapod = np.fft.fftshift(np.fft.fft(np.conj(dummyKspaceapod)))
             
-            #Append adopised and non-adopised spectra to appropriate array
+            #Append apodised and non-apodised spectra to appropriate array
             self.Spectrum.append(dummyspectrum)
-            self.Spectrumadop.append(dummyspectrumadop)
+            self.Spectrumapod.append(dummyspectrumapod)
             
             #At this point all data are included (so =1)
             self.IncludeFrame.append(1)
@@ -183,7 +183,7 @@ class SpecObject(object):
         
         #Create list for frame data
         self.Spectrumauto = []
-        self.Spectrumautoadop = []
+        self.Spectrumautoapod = []
         if self.Frames == 1:
             frames = 1
         else:
@@ -205,8 +205,8 @@ class SpecObject(object):
             
             #Only use data in pre-set phasing range
             #Get initial mag and phase data
-            curmag = np.abs(self.Spectrumadop[cnt][self.plim_l:self.plim_r])
-            curangle = np.angle(self.Spectrumadop[cnt][self.plim_l:self.plim_r])
+            curmag = np.abs(self.Spectrumapod[cnt][self.plim_l:self.plim_r])
+            curangle = np.angle(self.Spectrumapod[cnt][self.plim_l:self.plim_r])
         
             #Going to loop through 0-360
             #apply phase shift and then cal diff between magnitude and real data
@@ -228,9 +228,9 @@ class SpecObject(object):
             curimagf = curmagf * np.sin(curangle2f)
             self.curcomplex.append(currealf + 1j*curimagf)
 
-            #Apply optimum phase shift to adopised whole spectrum            
-            acurmagf = np.abs(self.Spectrumadop[cnt])
-            acuranglef = np.angle(self.Spectrumadop[cnt])
+            #Apply optimum phase shift to apodised whole spectrum            
+            acurmagf = np.abs(self.Spectrumapod[cnt])
+            acuranglef = np.angle(self.Spectrumapod[cnt])
             acurangle2f = acuranglef + (old_div(optphase*np.pi,180)) 
             acurrealf = acurmagf * np.cos(acurangle2f)
             acurimagf = acurmagf * np.sin(acurangle2f)
@@ -324,13 +324,13 @@ class SpecObject(object):
                 #self.Kspace[cnt] = np.fft.ifft(np.fft.fftshift(curcomplex[cnt]))
                 self.Kspacewrite[cnt] = np.zeros(shape = [self.Datapoints], dtype = complex)
             self.Spectrumauto.append(self.curcomplex[cnt])
-            #self.Spectrumautoadop.append(self.acurcomplex[cnt])
+            #self.Spectrumautoapod.append(self.acurcomplex[cnt])
         self.set_current_frame()
         
         #IFT to get time domain data
         self.FinalKspaceauto = np.fft.ifft(np.fft.fftshift(self.FinalSpectrumauto))
 
-        #self.shiftadop()
+        #self.shiftapod()
 
     def phaseinc(self, increment):
         #Apply optimum phase shift to whole spectrum
@@ -342,7 +342,7 @@ class SpecObject(object):
         temp_complex = currealf + 1j*curimagf        
         self.curcomplex[self.curframe] = temp_complex
         
-        #Apply optimum phase shift to adopised whole spectrum            
+        #Apply optimum phase shift to apodised whole spectrum            
         acurmagf = np.abs(self.acurcomplex[self.curframe])
         acuranglef = np.angle(self.acurcomplex[self.curframe])
         acurangle2f = acuranglef + (old_div(increment*np.pi,180)) 
@@ -384,7 +384,7 @@ class SpecObject(object):
             
     def set_current_frame(self):
         self.current_frame = self.acurcomplex[self.curframe]
-        #self.current_frame = self.Spectrumautoadop[self.curframe]
+        #self.current_frame = self.Spectrumautoapod[self.curframe]
         #print self.peakposarr[self.curframe]
         #print self.shiftindex[self.curframe]
         
@@ -552,7 +552,7 @@ class SpecObject(object):
         
     def undophase(self):    
         self.curcomplex = self.Spectrum
-        self.acurcomplex = self.Spectrumadop
+        self.acurcomplex = self.Spectrumapod
         
         if self.Frames == 1:
             frames = 1
@@ -577,7 +577,11 @@ class SpecObject(object):
             
         self.addframes()
         self.set_current_frame()
-        
+
+    def report_completed(self,report_path):
+        self.report_completed_msg=f'MRS Report saved in {report_path}'
+
+
     def writelogfile(self, outpath, version):
         outpath=Path(outpath)
         #Logdir = outpath + '\\' + 'Log_files'
@@ -968,12 +972,14 @@ class SpecObject(object):
         pdfFileObj1.close()
         pdfFileObj2.close()
         
+        
         print(f'\n\nMRS Report saved in {reportout}')
+        self.report_completed(reportout)
 
 
 
 
-
+    
 
 
 
@@ -1026,19 +1032,28 @@ class PatNameDialog(QtGui.QDialog):
         self.name_string = str(nameinit)
 
         
-        namelabel = QtGui.QLabel("&Patient Name:")
+        namelabel = QtGui.QLabel("&Patient ID:")
         self.name = QtGui.QLineEdit(self.name_string)
         namelabel.setBuddy(self.name)
         
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
-        buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        #buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
+        self.buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        
         grid = QtGui.QGridLayout()
         grid.addWidget(namelabel, 0,0)
         grid.addWidget(self.name, 0,1)
-        grid.addWidget(buttonbox, 2,0,3,2)
+        grid.addWidget(self.buttonbox, 2,0,3,2)
 
         self.setLayout(grid)
+        
+        #self.connect(buttonbox, SIGNAL(accepted()), self.name, SLOT(accept()))
         #self.connect(buttonbox, QtCore.SIGNAL("accepted()"), self, QtCore.SLOT("accept()"))
         #self.buttonbox.QtCore.SIGNAL("accepted()").connect(QtCore.SLOT("accept()"))
+        #self.buttonbox.connect()
+        #self.buttonbox.accepted.connect(QtCore.SLOT("accept()")
+        self.buttonbox.accepted.connect(self.accept)
 
-        self.setWindowTitle("Check Name")                  
+        self.setWindowTitle("Check Name")     
+
+
+
