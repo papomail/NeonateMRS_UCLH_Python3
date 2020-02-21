@@ -85,10 +85,6 @@ class Maingui(QtGui.QMainWindow):
         tarqIcon=str(tarqIcon.resolve())
 
         convfile = QtGui.QAction(QtGui.QIcon(tarqIcon),
-                                    'Convert processed to JMRUI', self)
-        convfile.triggered.connect(self.jmrui)
-
-        convfile = QtGui.QAction(QtGui.QIcon(tarqIcon),
                                     'Convert to JMRUI and Tarquin', self)
         convfile.triggered.connect(self.convert_to_all)
 
@@ -572,10 +568,6 @@ class Maingui(QtGui.QMainWindow):
             self.plotorigspec()
 
 
-    def jmrui(self):
-        if self.setsavedir == 0:
-            self.savedir()
-        self.specoblist[self.curobject].writejmruidata2(self.savedirname)
 
     def Tarquin(self):
         if self.setsavedir == 0:
@@ -586,9 +578,7 @@ class Maingui(QtGui.QMainWindow):
     def convert_to_all(self):
         if self.setsavedir == 0:
             self.savedir()
-        self.specoblist[self.curobject].writejmruidata2orig(self.savedirname)
-        self.specoblist[self.curobject].writeTarquinorig(self.savedirname)
-        self.specoblist[self.curobject].writejmruidata2(self.savedirname)
+        
         self.specoblist[self.curobject].writeTarquin(self.savedirname)
         self.specoblist[self.curobject].writelogfile(self.savedirname, self.version)
         self.specoblist[self.curobject].fitTarquin(self.savedirname)

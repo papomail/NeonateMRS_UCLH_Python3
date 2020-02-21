@@ -181,12 +181,12 @@ class SpecObject(object):
     #Do Autophasing of individual frames        
     def autophase(self):
         #Create data array to store processed spectrum and k-space
-        # self.FinalKspaceauto = np.zeros(shape = [self.Datapoints], dtype = complex)
-        # self.FinalSpectrumauto = np.zeros(shape = [self.Datapoints], dtype = complex)
+        self.FinalKspaceauto = np.zeros(shape = [self.Datapoints], dtype = complex)
+        self.FinalSpectrumauto = np.zeros(shape = [self.Datapoints], dtype = complex)
         
         #Create list for frame data
         # self.Spectrumauto = []
-        # self.Spectrumautoapod = []
+        self.Spectrumautoapod = []
         if self.Frames == 1:
             frames = 1
         else:
