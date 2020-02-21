@@ -365,18 +365,21 @@ class Maingui(QtGui.QMainWindow):
 
 
     def about(self):
-        #Message box to display script information
+        """Message box to display script information
+        """
         self.mssg.show()
         
     def dcmmssg(self):
-        #Message box to display info about how DICOM formats are treated
+        """Message box to display info about how DICOM formats are treated
+        """
         self.dcmfmt.show()
         
     def getdir(self):
-        #Array to hold list of SpecObject objects - initialised empty
+        """Array to hold list of SpecObject objects - initialised empty
+        """
         self.specoblist = []
-
-        #self.curobject is index of current object in self.specoblist list        
+        """self.curobject is index of current object in self.specoblist list        
+        """
         self.curobject = 0
         
         #Standard Open Directory Dialog box
@@ -434,6 +437,8 @@ class Maingui(QtGui.QMainWindow):
                 #Call function to plot original spectrum in window
                 self.plotorigspec()
                 self.plotframe()
+
+                print(self.specoblist) #Patcheck
                 
         #Display message in main window (self.lb4): number of MRS files found      
         textout = 'Number of MRS files found: ' + str(np.size(self.specoblist))
@@ -531,7 +536,7 @@ class Maingui(QtGui.QMainWindow):
         self.specoblist[self.curobject].apod_const = apod_int
         
         self.specoblist[self.curobject].autophase()
-
+        self.plotprocspec()
            
             
     def savedir(self):
@@ -744,7 +749,7 @@ class PhaseDialog(QtGui.QDialog):
     #SLOT = QtCore.pyqtSignal(str)
     
     def __init__(self, leftinit, rightinit, apod_const, parent = None):
-        super(, self).__init__(parent)
+        super(PhaseDialog, self).__init__(parent)
         self.left_string = str(leftinit)
         self.right_string = str(rightinit)
         self.apod_string = str(apod_const)

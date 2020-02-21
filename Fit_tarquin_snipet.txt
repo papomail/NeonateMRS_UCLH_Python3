@@ -1,0 +1,174 @@
+    def fitTarquin(self, outpath):
+        nameinit = self.PatName
+        dialog = PatNameDialog(nameinit)
+        if dialog.exec_():
+            name = dialog.name.text()        
+
+            
+        try:
+            self.PatName = name
+        except:
+            self.PatName = nameinit        
+        
+        
+        Tarquindir = outpath + '\\' + 'Tarquin_files'
+        name = self.filename[(self.filename.rfind('\\')+1):].translate(None, r'.')
+        filename = self.dirpass + '__' + name + 'proc_Tarquin'
+        file_path = Tarquindir + '\\' + filename
+        
+        Tarquinfitdir = Tarquindir + '\\' + 'Tarquin_fit'
+
+        if os.path.isdir(Tarquinfitdir) == False:
+            os.chdir(Tarquindir)
+            os.mkdir('Tarquin_fit')   
+
+
+            
+        reportout = Tarquinfitdir + '\\' + self.PatName + '_Report.pdf'
+        tempout = Tarquinfitdir + '\\' + filename + '_temp.pdf'
+        pdfout = Tarquinfitdir + '\\' + filename + '_plot.pdf'
+        dataout = Tarquinfitdir + '\\' + filename + '_data.csv'
+        moddataout = Tarquinfitdir + '\\' + filename + '_data_with_ratios.csv'
+        resout = Tarquinfitdir + '\\' + filename + '_results.csv'
+        self.fitout = Tarquinfitdir + '\\' + filename + '_fit.txt'
+        basis = 'S:\\Neonate_data\\Tarquin\\3_0T_basis_threonine_no_MM'
+        tarquin = 'S:\\Neonate_data\\Tarquin\\TARQUIN_Windows_4.3.7\\tarquin\\tarquin'
+  
+        command =  (tarquin + ' --input ' + file_path + ' --output_pdf ' +  pdfout + 
+            ' --output_csv ' + dataout + ' --output_fit ' + self.fitout  +
+            ' --basis_csv ' + basis)
+
+
+        # run the command  
+        os.system(command)
+        print file_path
+        
+        #Add in sode code to automatically calculate the Lac/Naa ratio
+        #Note that this will assume that the correct basis set is used
+        csvfile = open(dataout, 'rb')
+        
+        
+        linereader = csv.reader(csvfile, delimiter = ',')
+        
+        
+        CSVstore = []
+        
+        counter = 0
+        for row in linereader:
+            counter += 1
+          
+            if counter == 2:
+                row.append('Lac+T/tNaa')
+                row.append('tNaa/tCho')
+                row.append('tNaa/Cr')
+                row.append('tCho/Cr')
+                row.append('Lac+T/tCho')
+                row.append('Lac+T/Cr')
+                
+            if counter == 5:
+                row.append('Lac+T/tNaa')
+                row.append('tNaa/tCho')
+                row.append('tNaa/Cr')
+                row.append('tCho/Cr')
+                row.append('Lac+T/tCho')
+                row.append('Lac+T/Cr')
+        #Calc ratio        
+            if counter == 3:
+                dummy = str(row)
+                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
+                fields = dummy.split(",")
+                Lac = np.float(fields[14])
+                Naa =  np.float(fields[15])
+                NaaG =  np.float(fields[16])
+                Thre = np.float(fields[21])
+                Cr = np.float(fields[6])
+                tCho = np.float(fields[23])
+                L_N = (Lac + Thre) / (Naa + NaaG)
+                N_Ch = (Naa + NaaG) / tCho
+                N_Cr = (Naa + NaaG) / Cr
+                Ch_Cr = tCho / Cr
+                L_Ch = (Lac + Thre) / tCho
+                L_Cr = (Lac + Thre) / Cr
+                row.append(str(L_N))
+                row.append(str(N_Ch))
+                row.append(str(N_Cr))
+                row.append(str(Ch_Cr))
+                row.append(str(L_Ch))
+                row.append(str(L_Cr))
+        
+        #calc error        
+            if counter == 6:
+                dummy = str(row)
+                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
+                fields = dummy.split(",")
+                Lace = np.float(fields[14])
+                Naae =  np.float(fields[15])
+                NaaGe =  np.float(fields[16])
+                Three = np.float(fields[21])
+                Cre = np.float(fields[6])
+                tChoe = np.float(fields[23])
+                
+                Lerr = np.sqrt(np.power(Lace,2) + np.power(Three,2))
+                Nerr = np.sqrt(np.power(Naae,2) + np.power(NaaGe,2))
+                L_Ne = np.sqrt(np.power(Lerr/(Lac + Thre),2) + np.power(Nerr/(Naa + NaaG), 2)) * L_N
+                N_Che = np.sqrt(np.power(Nerr/(Naa + NaaG),2) + np.power(tChoe/(tCho), 2)) * N_Ch
+                N_Cre = np.sqrt(np.power(Nerr/(Naa + NaaG),2) + np.power(Cre/(Cr), 2)) * N_Cr
+                Ch_Cre = np.sqrt(np.power(tChoe/(tCho),2) + np.power(Cre/(Cr), 2)) * Ch_Cr
+                L_Che = np.sqrt(np.power(Lerr/(Lac + Thre),2) + np.power(tChoe/(tCho), 2)) * L_Ch
+                L_Cre = np.sqrt(np.power(Lerr/(Lac + Thre),2) + np.power(Cre/(Cr), 2)) * L_Cr
+                row.append(str(L_Ne))
+                row.append(str(N_Che))
+                row.append(str(N_Cre))
+                row.append(str(Ch_Cre))
+                row.append(str(L_Che))
+                row.append(str(L_Cre))
+                
+        #get FWHM and SNR
+            if counter == 9:
+                dummy = str(row)
+                dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
+                fields = dummy.split(",")
+                FWHM = np.float(fields[7])
+                SNR =  np.float(fields[9])
+        
+         
+            CSVstore.append(row)
+            #linewriter.writerow(row)
+            #    
+        csvfile.close()
+        
+        
+        resultsout = open(resout, 'w')
+        line1 = 'Ratio, Value, Error, Proc FWHM, Proc SNR'
+        print line1
+        line2 = 'L+T/tNaa,' + str(L_N) + ',' + str(L_Ne) + ',' + str(FWHM) + ',' + str(SNR)
+        line3 = 'tNaa/tCho,' + str(N_Ch) + ',' + str(N_Che)
+        line4 = 'tNaa/Cr,' + str(N_Cr) + ',' + str(N_Cre)
+        line5 = 'tCho/Cr,' + str(Ch_Cr) + ',' + str(Ch_Cre)
+        line6 = 'L+T/tCho,' + str(L_Ch) + ',' + str(L_Che)
+        line7 = 'L+T/Cr,' + str(L_Cr) + ',' + str(L_Cre)
+        resultsout.write(line1)
+        resultsout.write('\n')
+        resultsout.write(line2)
+        resultsout.write('\n')
+        resultsout.write(line3)
+        resultsout.write('\n')
+        resultsout.write(line4)
+        resultsout.write('\n')
+        resultsout.write(line5)
+        resultsout.write('\n')
+        resultsout.write(line6)
+        resultsout.write('\n')
+        resultsout.write(line7)
+        
+        resultsout.close()
+        
+        csvout = open(moddataout, 'w')
+        for line in CSVstore:
+            c = str(line)
+            line2 = c.translate(None, ''.join(["[", "'", "]"]))
+            #print line2
+            csvout.write(line2)
+            csvout.write('\n')
+        
+        csvout.close() 

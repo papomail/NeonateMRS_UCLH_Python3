@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+  <key>CFBundleGetInfoString</key>
+  <string>tarquingui</string>
+  <key>CFBundleExecutable</key>
+  <string>tarquingui</string>
+  <key>CFBundleIdentifier</key>
+  <string>http://tarquin.sourceforge.net/</string>
+  <key>CFBundleName</key>
+  <string>tarquingui</string>
+  <key>CFBundleIconFile</key>
+  <string>tarquingui.icns</string>
+  <key>CFBundleShortVersionString</key>
+  <string>0.0</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>IFMajorVersion</key>
+  <integer>0</integer>
+  <key>IFMinorVersion</key>
+  <integer>1</integer>
+</dict>
+</plist>

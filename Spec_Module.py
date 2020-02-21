@@ -33,7 +33,9 @@ from PyQt5 import QtCore
 from pathlib import Path
 import pandas as pd
 
-BASE_DIR = Path(__file__).parent.parent.parent
+#BASE_DIR = Path(__file__).parent.parent.parent
+BASE_DIR = Path(__file__).parent
+print(BASE_DIR)
 
 
 
@@ -112,11 +114,12 @@ class SpecObject(object):
         self.IncludeFrame = []  #To store include frame flags
               
         #Set up apodisation function
-        #apod = 1 in ranmge [0:512] pts
+        #apod = 1 in range [0:512] pts
         #apod = decaying exponential thereafter (decay const = 64)
         #Note division by 64.0 and not 64
         #Need to do this otherwise you get rounded integers rather than float values
         apod = np.ones(shape = [int(self.Datapoints)], dtype = float)
+        
         for cntexp in range(512, int(self.Datapoints)):
             apod[cntexp] = np.exp(old_div(-(cntexp-512),self.apod_const))
         self.apod = apod
@@ -134,11 +137,11 @@ class SpecObject(object):
             #numbers of size self.Datapoints
             for a in range(0, self.Datapoints*2, 2):
                 dummyKspace[counter] = complex(self.SpecData[(b*self.Datapoints*2) + a], self.SpecData[(b*self.Datapoints*2)+a+1])
-                dummyKspaceapod[counter] = dummyKspace[counter] * apod[counter]
+                #dummyKspaceapod[counter] = dummyKspace[counter] * apod[counter]
                 counter  = counter + 1
 
             #Apply apodisation 
-            dummyKspaceapod = dummyKspace * apod
+            dummyKspaceapod = dummyKspace * self.apod
             
             #Append apodised and non-apodised k-space data to appropriate array
             self.Kspace.append(dummyKspace)
@@ -316,15 +319,17 @@ class SpecObject(object):
             if self.IncludeFrame[cnt] == 1: 
                 shift = int(med_shift_index - self.shiftindex[cnt])
                 #print shift
-                addcomplex = np.roll(self.curcomplex[cnt], shift)
+                #addcomplex = np.roll(self.curcomplex[cnt], shift)
+                addcomplex = np.roll(self.acurcomplex[cnt], shift) #Patxi
+
                 #self.Kspace[cnt] = np.fft.ifft(np.fft.fftshift(curcomplex[cnt]))
                 self.Kspacewrite[cnt] = np.fft.ifft(np.fft.fftshift(addcomplex))
                 self.FinalSpectrumauto = self.FinalSpectrumauto + addcomplex 
             else:
                 #self.Kspace[cnt] = np.fft.ifft(np.fft.fftshift(curcomplex[cnt]))
                 self.Kspacewrite[cnt] = np.zeros(shape = [self.Datapoints], dtype = complex)
-            self.Spectrumauto.append(self.curcomplex[cnt])
-            #self.Spectrumautoapod.append(self.acurcomplex[cnt])
+            #self.Spectrumauto.append(self.curcomplex[cnt])
+            self.Spectrumautoapod.append(self.acurcomplex[cnt]) #Patxi
         self.set_current_frame()
         
         #IFT to get time domain data
