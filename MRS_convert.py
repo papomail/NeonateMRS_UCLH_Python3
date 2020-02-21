@@ -180,8 +180,9 @@ class Maingui(QtGui.QMainWindow):
         btnfup.resize(btnfup.sizeHint())
         btnfup.move(560,510)  
         btnfup.clicked.connect(self.frameup)
+        # print(btnfup.size())
         
-        btnfdown.resize(btndown.sizeHint())
+        btnfdown.resize(btnfup.size()) ## Modified to take the same size as F_up button. (Patxi)
         btnfdown.move(560,540)  
         btnfdown.clicked.connect(self.framedown)
         

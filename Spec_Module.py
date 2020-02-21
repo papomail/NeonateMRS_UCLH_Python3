@@ -59,7 +59,7 @@ class SpecObject(object):
         
         self.filename = filename
         self.dirpass = dirpass
-        self.mruiload = 0
+        # self.mruiload = 0
         self.plim_l = 1110
         self.plim_r = 1140
         self.apod_const = 128.0
