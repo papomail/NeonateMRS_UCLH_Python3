@@ -181,12 +181,12 @@ class SpecObject(object):
     #Do Autophasing of individual frames        
     def autophase(self):
         #Create data array to store processed spectrum and k-space
-        self.FinalKspaceauto = np.zeros(shape = [self.Datapoints], dtype = complex)
-        self.FinalSpectrumauto = np.zeros(shape = [self.Datapoints], dtype = complex)
+        # self.FinalKspaceauto = np.zeros(shape = [self.Datapoints], dtype = complex)
+        # self.FinalSpectrumauto = np.zeros(shape = [self.Datapoints], dtype = complex)
         
         #Create list for frame data
-        self.Spectrumauto = []
-        self.Spectrumautoapod = []
+        # self.Spectrumauto = []
+        # self.Spectrumautoapod = []
         if self.Frames == 1:
             frames = 1
         else:
@@ -195,11 +195,11 @@ class SpecObject(object):
         #Set lists
         self.optphasearr = []  #Store phasing angle for each frame
         self.peakposarr = []
-        self.shiftarr = []
-        self.shiftindex = []
+        # self.shiftarr = []
+        # self.shiftindex = []
         self.curcomplex = []
         self.acurcomplex = []
-        self.med = []
+        # self.med = []
 
         
         #First do the phasing
@@ -396,106 +396,6 @@ class SpecObject(object):
 
 
 
-    def writejmruidata2(self, outpath):
-        outpath=Path(outpath)
-        jmruidir = outpath / 'jMRUI_files'
-        #jmruidir = outpath + '\\' + 'jMRUI_files'
-
-        if os.path.isdir(jmruidir) == False:
-            os.chdir(outpath)
-            os.mkdir('jMRUI_files')
-            
-        if self.isspec != 0:
-            name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-            #file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'proc_jmrui.txt'  
-            file_path = Path(jmruidir , name + 'proc_jmrui.txt')  
-
-
-            self.text_file = open(str(file_path.resolve()), 'w')
-            #self.text_file = open(str(file_path.resolve()), 'w')
-
-             # Write header
-            self.text_file.write('jMRUI Data textfile\n\n')
-            
-            print('Filename: %s\n' % (file_path), file=self.text_file)
-            print('PointsInDataset: %i' % (self.Datapoints), file=self.text_file)
-            print('DatasetsInFile: %i' % (old_div(self.Frames,2)), file=self.text_file)
-            print('SamplingInterval: %f' % (old_div(1000,self.SpectralWidth)), file=self.text_file)
-            self.text_file.write('ZeroOrderPhase: 0E0\n')
-            self.text_file.write('BeginTime: 0E0\n')
-            print('TransmitterFrequency: %f' % (float(self.TransmitterFrequency) * 1e6), file=self.text_file)
-            print('MagneticField: %f' % (self.FieldStrength), file=self.text_file)
-            self.text_file.write('TypeOfNucleus: 0E0\n')
-            print('NameOfPatient: %s' % (self.PatID), file=self.text_file)
-            print('DateOfExperiment: %s' % (self.AcquisitionDateTime), file=self.text_file)
-            print('Spectrometer: Blank', file=self.text_file) 
-            print('AdditionalInfo: %s' % (self.ProtocolName), file=self.text_file)
-            
-            self.text_file.write('\n\nSignal and FFT\n')
-            self.text_file.write('sig(real)   sig(imag)\n')
-            for cntr1 in range(0, old_div(self.Frames,2)):
-                print('Signal %i out of %i in file' % ((cntr1 + 1), old_div(self.Frames,2)), file=self.text_file)
-                
-                for cntr in range(0, self.Datapoints):
-                    intostr = str(old_div(np.real(self.Kspacewrite[cntr1][cntr]),1000)) + ' ' + str(old_div(np.imag(self.Kspace[cntr1][cntr]),-1000))
-                    self.text_file.write(intostr + '\n')
-                                    
-            self.text_file.close()
-            print('jmrui file written')
-        else:
-            print('no file written - not a spectroscopy file')
-
-
-    def writejmruidata2orig(self, outpath):
-        outpath=Path(outpath)
-        jmruidir = outpath / 'jMRUI_files'
-        #jmruidir = outpath + '\\' + 'jMRUI_files'
-
-        if os.path.isdir(jmruidir) == False:
-            os.chdir(outpath)
-            os.makedirs('jMRUI_files', exist_ok=True)
-            
-        if self.isspec != 0:
-            name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-
-
-
-            file_path = Path(jmruidir ,  name + 'orig_jmrui.txt'  )
-            #file_path = jmruidir + '\\' + self.dirpass + '__' + name + 'orig_jmrui.txt'   
-
-            self.text_file = open(str(file_path.resolve()), 'w')
-             # Write header
-            self.text_file.write('jMRUI Data textfile\n\n')
-            
-            print('Filename: %s\n' % (file_path), file=self.text_file)
-            print('PointsInDataset: %i' % (self.Datapoints), file=self.text_file)
-            print('DatasetsInFile: %i' % (old_div(self.Frames,2)), file=self.text_file)
-            print('SamplingInterval: %f' % (old_div(1000,self.SpectralWidth)), file=self.text_file)
-            self.text_file.write('ZeroOrderPhase: 0E0\n')
-            self.text_file.write('BeginTime: 0E0\n')
-            print('TransmitterFrequency: %f' % (float(self.TransmitterFrequency) * 1e6), file=self.text_file)
-            print('MagneticField: %f' % (self.FieldStrength), file=self.text_file)
-            self.text_file.write('TypeOfNucleus: 0E0\n')
-            print('NameOfPatient: %s' % (self.PatID), file=self.text_file)
-            print('DateOfExperiment: %s' % (self.AcquisitionDateTime), file=self.text_file)
-            print('Spectrometer: Blank', file=self.text_file) 
-            print('AdditionalInfo: %s' % (self.ProtocolName), file=self.text_file)
-            
-            self.text_file.write('\n\nSignal and FFT\n')
-            self.text_file.write('sig(real)   sig(imag)\n')
-            for cntr1 in range(0, old_div(self.Frames,2)):
-                print('Signal %i out of %i in file' % ((cntr1 + 1), old_div(self.Frames,2)), file=self.text_file)
-                
-                for cntr in range(0, self.Datapoints):
-                    intostr = str(old_div(np.real(self.Kspace[cntr1][cntr]),1000)) + ' ' + str(old_div(np.imag(self.Kspace[cntr1][cntr]),-1000))
-                    self.text_file.write(intostr + '\n')
-                                    
-            self.text_file.close()
-            print('jmrui file written')
-        else:
-            print('no file written - not a spectroscopy file')
-
-
 
     def writeTarquin(self, outpath):
         #Tarquindir = outpath + '\\' + 'Tarquin_files'
@@ -526,34 +426,6 @@ class SpecObject(object):
         self.ds.save_as(str(file_path.resolve()))
  
        
-    def writeTarquinorig(self, outpath):
-        #Tarquindir = outpath + '\\' + 'Tarquin_files'
-        outpath=Path(outpath)
-        Tarquindir = outpath / 'Tarquin_files'
-
-        if os.path.isdir(Tarquindir) == False:
-            os.chdir(outpath)
-            os.mkdir('Tarquin_files')
-            
-        name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
-        #file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'orig_Tarquin'
-        file_path = Path(Tarquindir ,  name + 'orig_Tarquin')
-        print(file_path)
-        
-        Spec_temp = self.SpecData
-        counter = 0
-        
-        #Note don't need complex conj for correct display here 
-        #Fudge - reason isn't obvious
-        for b in range(0,old_div(self.Frames,2)):
-            for a in range(0, self.Datapoints):
-                Spec_temp[counter] = self.Kspace[b][a].real 
-                counter = counter + 1
-                Spec_temp[counter] = self.Kspace[b][a].imag 
-                counter = counter + 1
-                
-        self.ds[0x5600,0x0020].value = Spec_temp  
-        self.ds.save_as(str(file_path.resolve()))
         
     def undophase(self):    
         self.curcomplex = self.Spectrum
