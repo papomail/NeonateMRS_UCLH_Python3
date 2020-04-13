@@ -1,5 +1,0 @@
-.//Python_code/module install/pyfpdf-master/pyfpdf-master/fpdf/py3k.pyc
-.//Python_code/module install/pyfpdf-master/pyfpdf-master/fpdf/fpdf.pyc
-.//Python_code/module install/pyfpdf-master/pyfpdf-master/build/lib/fpdf/py3k.py
-.//Python_code/module install/pyfpdf-master/pyfpdf-master/build/lib/fpdf/fpdf.py
-.//Python_code/module install/pyPDF2/PyPDF2-1.26.0/PyPDF2-1.26.0/build/lib/PyPDF2/pdf.py
