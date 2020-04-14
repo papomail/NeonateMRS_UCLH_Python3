@@ -48,7 +48,7 @@ UCLH_header=str(UCLH_header.resolve())
 UCLH_footer=ICONS_DIR / 'UCLH_footer.png'
 UCLH_footer=str(UCLH_footer.resolve())
 
-class SpecObject(object):
+class SpecObject():
     NumSpecObjects = 0  #To keep track of how many spec objects there are
     
     spectypes = {0 : "Not a spectroscopy dataset", \
@@ -312,9 +312,9 @@ class SpecObject(object):
                 self.med.append(ind)  
 
 
-        print(self.med)
+        # print(self.med)
         med_shift_index = np.floor(np.median(self.med))
-        print('median shift index:' + str(med_shift_index))
+        # print('median shift index:' + str(med_shift_index))
       
         
         for cnt in range(0, frames): 
@@ -914,7 +914,7 @@ class PDF(FPDF):
         self.cell(45,10, 'Page 1 of 2', 1,0,'C')
  
 
-class PatNameDialog(QtGui.QDialog):
+class PatNameDialog():
     
     def __init__(self, nameinit, parent = None):
         super(PatNameDialog, self).__init__(parent)

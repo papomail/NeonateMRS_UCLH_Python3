@@ -304,7 +304,7 @@ class Maingui(QtGui.QMainWindow):
         self.mssg.setWindowTitle('About')
         self.mssg.setText('Version 1.4.0 \n\n' \
                 + 'Convert spectroscopy data to Tarquin and Jmrui format.\n\n' \
-                + 'Please send any errors to balangb@gmail.com')
+                + 'Please send any errors to balangb@gmail.com or papomail@gmail.com')
                 
         self.dcmfmt = QtGui.QMessageBox()
         self.dcmfmt.setGeometry(310, 240, 280,280)
