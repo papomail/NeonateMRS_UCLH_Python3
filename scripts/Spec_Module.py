@@ -187,7 +187,7 @@ class SpecObject():
         self.FinalSpectrumauto = np.zeros(shape = [self.Datapoints], dtype = complex)
         
         #Create list for frame data
-        # self.Spectrumauto = []
+        self.Spectrumauto = []
         self.Spectrumautoapod = []
         if self.Frames == 1:
             frames = 1
@@ -321,8 +321,8 @@ class SpecObject():
             if self.IncludeFrame[cnt] == 1: 
                 shift = int(med_shift_index - self.shiftindex[cnt])
                 #print shift
-                #addcomplex = np.roll(self.curcomplex[cnt], shift)
-                addcomplex = np.roll(self.acurcomplex[cnt], shift) #Patxi
+                addcomplex = np.roll(self.curcomplex[cnt], shift)
+                #addcomplex = np.roll(self.acurcomplex[cnt], shift) #Patxi
 
                 #self.Kspace[cnt] = np.fft.ifft(np.fft.fftshift(curcomplex[cnt]))
                 self.Kspacewrite[cnt] = np.fft.ifft(np.fft.fftshift(addcomplex))
@@ -330,7 +330,7 @@ class SpecObject():
             else:
                 #self.Kspace[cnt] = np.fft.ifft(np.fft.fftshift(curcomplex[cnt]))
                 self.Kspacewrite[cnt] = np.zeros(shape = [self.Datapoints], dtype = complex)
-            #self.Spectrumauto.append(self.curcomplex[cnt])
+            self.Spectrumauto.append(self.curcomplex[cnt])
             self.Spectrumautoapod.append(self.acurcomplex[cnt]) #Patxi
         self.set_current_frame()
         
