@@ -3,7 +3,7 @@ import Spec_Module as sp
 import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
-import sys
+import copy
 
 
 
@@ -14,12 +14,16 @@ class Test_Spec_Module(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        filename='/Users/papo/Sync/myDocker/DICOMMRS/XX_0060'
-        HOME_DIR=Path.home()
-        dirpass=str(HOME_DIR.resolve())
-        cls.output_figure=HOME_DIR/'Desktop/unittest_fig.png'
+        filename=str(Path.cwd()/'UnittestFiles/XX_0060')
+        BaseDir=Path.cwd()
+        dirpass=str(BaseDir.resolve())
+        cls.output_figure=BaseDir/'UnittestFiles/unittest_fig.png'
+        # print(f'cls.output_figure={cls.output_figure}')
         cls.mysp=sp.SpecObject(filename,dirpass)
-        cls.mysp.curframe=6
+        cls.chosen_frame=3
+        cls.excludeFrames=[0, 5, 15]
+        cls.mysp.curframe=cls.chosen_frame
+
         return super().setUpClass()
 
     @classmethod
@@ -35,8 +39,8 @@ class Test_Spec_Module(unittest.TestCase):
 
     def test_phaseinc(self):
         curframe=self.mysp.curframe
-
         self.complex_init=self.mysp.curcomplex[curframe]
+
         zeros_array=np.zeros(self.complex_init.size,dtype='complex')
 
         self.mysp.phaseinc(0)
@@ -65,8 +69,8 @@ class Test_Spec_Module(unittest.TestCase):
         self.assertFalse(should_be_false)
         print(f'  Spectrum(a+180) != Spectrum(a) test: PASSED\n')
 
+        self.mysp.phaseinc(180) # back to original phase 
         self.plot_test_phaseinc()
-        
 
 
         
@@ -120,7 +124,76 @@ class Test_Spec_Module(unittest.TestCase):
         print(f'  Cr position + Crinc(1) + Crinc(-1) = Cr position  test: PASSED')
 
 
-   
+    def test_addframes(self):
+        complex_init=self.mysp.curcomplex[self.mysp.curframe]
+        shift_peak_by=200
+        x=1000
+        
+        mysp2=copy.copy(self.mysp)
+        nframes=len(mysp2.curcomplex)
+        myinclude=[0 if ii in self.excludeFrames else 1 for ii in range(nframes)]
+        mysp2.IncludeFrame=myinclude
+
+        mysp2.curframe=self.chosen_frame
+        KSpace_initial=self.mysp.Kspacewrite[mysp2.curframe]
+    
+        print('\nCheking test_addframes:')
+        KSnew=mysp2.Kspacewrite[mysp2.curframe]
+        self.assertAlmostEqual(KSpace_initial[x],KSnew[x])
+        print(f'  KSpace1[x] = KSpace2[x]  test: PASSED')  
+        # print(f'mysp2.peakposarr={mysp2.peakposarr}')
+        mysp2.Choinc(shift_peak_by)  # Update Cho peak 
+        # print(f'mysp2.peakposarr={mysp2.peakposarr}')
+
+        KSnew=mysp2.Kspacewrite[mysp2.curframe]
+        self.assertNotAlmostEqual(KSpace_initial[x],KSnew[x])
+        print(f'  KSpace1[x] != KSpace2.Choinc(s)[x]  test: PASSED')  
+        complex_new = np.fft.fftshift(np.fft.fft(KSnew))
+
+                # self.Kspacewrite[cnt] = np.fft.ifft(np.fft.fftshift(addcomplex))
+
+        shiftindex=[]
+        med=[]
+        mysum=[]
+        for cnt in range(0, nframes): 
+
+            # try:
+            #     ind = np.int(np.floor(   (mysp2.peakposarr[cnt][0] + mysp2.peakposarr[cnt][1])/2  ) ) 
+            #     shiftindex.append(ind)
+            # except:
+            #     ind = 0
+            #     shiftindex.append(ind)
+            # if ind > 0:
+            #     med.append(ind)  
+            ind = np.int(np.floor((mysp2.peakposarr[cnt][0] + mysp2.peakposarr[cnt][1])/2)) 
+            shiftindex.append(ind)
+            med.append(ind)
+            mysum.append(mysp2.Kspacewrite[cnt].sum())
+
+        med_shift_index = np.floor(np.median(med))
+        # print(f'med_shift_index={med_shift_index}')
+        shift=int(med_shift_index - shiftindex[mysp2.curframe])
+        # print(f'shift={shift}')
+        # self.assertAlmostEqual(KSpace_initial[x],KSnew[x]*np.exp(1j*2*np.pi*shift*mytime)[x])
+        self.assertAlmostEqual(complex_init[x],complex_new[x+shift])
+        print(f'  Sp1[x] = Sp2.Choinc(s)[x+s/2]   test: PASSED')  
+
+
+        for ii,ks in enumerate(mysum):
+            if ii in self.excludeFrames:
+                self.assertEqual(0,ks)
+            else:
+                self.assertNotEqual(0,ks)
+        print(f'  KSpace[includeFrame] != 0   test: PASSED')          
+        print(f'  KSpace[excludeFrame] = 0   test: PASSED\n')          
+
+
+
+
+
+    """
+    PLOTS:
+    """
     def plot_test_phaseinc(self):
         fig,(ax1,ax2)=plt.subplots(2,1)
 
@@ -146,9 +219,12 @@ class Test_Spec_Module(unittest.TestCase):
         plt.tight_layout()
 
 
-
+'''
+MAIN:
+'''
 def main():   
     unittest.main(exit=True)
+
 
 
 if __name__ == "__main__":

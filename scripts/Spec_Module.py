@@ -28,8 +28,7 @@ import csv as csv
 from fpdf import FPDF
 import datetime
 import PyPDF2
-from PyQt5 import QtGui
-from PyQt5 import QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from pathlib import Path
 import pandas as pd
 import shutil 
@@ -66,7 +65,7 @@ class SpecObject():
         self.plim_r = 1140
         self.apod_const = 128.0
         SpecObject.NumSpecObjects += 1        
-        print(filename)
+        # print(filename)
         
         try:
             self.ds = dcm.read_file(self.filename)
@@ -301,15 +300,21 @@ class SpecObject():
         for cnt in range(0, frames): 
             #Store the mid point between the peaks in a list
             #If something goes wrong then a value of zero is stored
-            try:
-                ind = np.int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
-                self.shiftindex.append(ind)
-            except:
-                ind = 0
-                self.shiftindex.append(ind)
+            
+            '''Remove try/if block & include negative values to the median   Patxi'''
+            # try:
+            #     ind = np.int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
+            #     self.shiftindex.append(ind)
+            # except:
+            #     ind = 0
+            #     self.shiftindex.append(ind)
                 
-            if ind > 0:
-                self.med.append(ind)  
+            # if ind > 0:
+            #     self.med.append(ind)  
+            
+            ind = np.int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
+            self.shiftindex.append(ind)
+            self.med.append(ind) 
 
 
         # print(self.med)
@@ -582,7 +587,7 @@ class SpecObject():
             counter = 0
             for row in linereader:
                 counter += 1
-                print(row)
+                # print(row)
 
                 if counter == 2:
                     row.append('Lac+T/tNaa')
@@ -609,8 +614,8 @@ class SpecObject():
                     #fields = dummy.split(', ')
                     fields = row
                     
-                    print('type of fields[14] is: ',type(fields[14]))
-                    print('fields[14] is: ',fields[14])
+                    # print('type of fields[14] is: ',type(fields[14]))
+                    # print('fields[14] is: ',fields[14])
                     
                     Lac = np.float(fields[14])
                     Naa =  np.float(fields[15])
@@ -677,7 +682,7 @@ class SpecObject():
         
         resultsout = open(resout, 'w')
         line1 = 'Ratio, Value, Error, Proc FWHM, Proc SNR'
-        print(line1)
+        # print(line1)
         line2 = 'L+T/tNaa,' + str(L_N) + ',' + str(L_Ne) + ',' + str(FWHM) + ',' + str(SNR)
         line3 = 'tNaa/tCho,' + str(N_Ch) + ',' + str(N_Che)
         line4 = 'tNaa/Cr,' + str(N_Cr) + ',' + str(N_Cre)
@@ -914,7 +919,7 @@ class PDF(FPDF):
         self.cell(45,10, 'Page 1 of 2', 1,0,'C')
  
 
-class PatNameDialog():
+class PatNameDialog(QtWidgets.QDialog):
     
     def __init__(self, nameinit, parent = None):
         super(PatNameDialog, self).__init__(parent)

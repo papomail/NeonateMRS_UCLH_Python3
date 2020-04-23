@@ -741,7 +741,7 @@ class Maingui(QtGui.QMainWindow):
 
 
         
-class PhaseDialog(QtGui.QDialog):
+class PhaseDialog(QtWidgets.QDialog):
     #SLOT = QtCore.pyqtSignal(str)
     
     def __init__(self, leftinit, rightinit, apod_const, parent = None):
