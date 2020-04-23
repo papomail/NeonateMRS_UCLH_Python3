@@ -26,7 +26,7 @@ Created on Thu Oct 2015
 
 # Script data-flow diagram:
 
- <img src="NeonateMRS_DataFlow2.png" width="900" height="600">
+ <img src="NeonateMRS_DataFlow.png" width="900" height="600">
 
 The diagram shows the overview data-flow produced by the NeonateMRS-UCLH script; starting from the DICOM files to the generation of the PDF report.
 The *Class definitions* section below provides specific information on each component.  
