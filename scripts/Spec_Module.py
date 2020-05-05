@@ -869,7 +869,10 @@ class SpecObject():
         
         print(f'\n\nMRS Report saved in {reportout}')
         self.report_completed(reportout)
-
+        try:
+            os.startfile
+        except:     
+            os.system(f'open {reportout}')
 
 
 
