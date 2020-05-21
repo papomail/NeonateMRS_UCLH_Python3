@@ -30,7 +30,6 @@ import datetime
 import PyPDF2
 from PyQt5 import QtGui, QtCore, QtWidgets
 from pathlib import Path
-import pandas as pd
 import shutil 
 import sys
 
@@ -581,7 +580,6 @@ class SpecObject():
         
         with open(dataout) as csvfile:
             linereader = csv.reader(csvfile, delimiter = ',')
-            #linereader = pd.read_csv(dataout,delimiter = ',') 
             CSVstore = []
         
             counter = 0
