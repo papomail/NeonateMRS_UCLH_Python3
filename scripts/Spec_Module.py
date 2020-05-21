@@ -3,6 +3,15 @@
 
 Spec_Module
 
+Version 1.4 
+Modified 21/02/2020
+
+Python3 version of the script. Converted from: Version 1.3.1
+
+Created on 11 Dic 2019 @author: Patxi Torrealdea
+
+...
+
 Version 1.3.1
 Modified 1/10/2015
 
@@ -13,15 +22,8 @@ Created on Thu Oct 01 11:41:45 2015
 
 @author: Alan Bainbridge
 """
-from __future__ import division
-from __future__ import print_function
-#Import methods
-from builtins import str
-from builtins import range
-from builtins import object
 from past.utils import old_div
 import pydicom as dcm
-import struct as st
 import numpy as np
 import os as os
 import csv as csv

@@ -5,7 +5,7 @@ MRS_Convert.py
 Version 1.4 
 Modified 21/02/2020
 
-Python3 version of the script. Imported from: Version 1.3.1
+Python3 version of the script. Converted from: Version 1.3.1
 
 Created on 11 Dic 2019 @author: Patxi Torrealdea
 
@@ -28,10 +28,6 @@ Created on Thu Oct 01 11:36:59 2015
 import sys
 import os
 import numpy as np
-
-# import dicom as dcm
-# from PyQt5 import QtGui
-# from PyQt5 import QtCore
 from PyQt5 import QtGui, QtCore, QtWidgets
 import pyqtgraph as pg
 import Spec_Module as sp

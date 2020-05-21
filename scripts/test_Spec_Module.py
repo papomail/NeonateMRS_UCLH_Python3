@@ -1,3 +1,16 @@
+'''
+UNITTEST: test_Spec_Module
+
+Version 0.9
+Modified 21/05/2020
+
+Unitest for Spec_Module.py
+
+Created on 10/04/020 @author: Patxi Torrealdea
+'''
+
+
+
 import unittest
 import Spec_Module as sp
 import numpy as np
