@@ -4,6 +4,6 @@ numpy
 pydicom
 pyqtgraph
 matplotlib
-# -c travis fpdf
+fpdf
 PyPDF2
 PyQt
