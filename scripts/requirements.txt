@@ -1,4 +1,3 @@
-pandas
 future
 numpy
 pydicom
@@ -7,3 +6,4 @@ matplotlib
 fpdf
 PyPDF2
 PyQt5
+pathlib
