@@ -9,7 +9,9 @@ scripts/__pycache__/
 *.py[cod]
 *$py.class
 
-UnittestFiles/unittest_fig.png
+UnittestFiles/*.png
+UnittestFiles/*.txt
+
 # C extensions
 *.so
 
