@@ -6,4 +6,4 @@ pyqtgraph
 matplotlib
 fpdf
 PyPDF2
-PyQt
+PyQt5
