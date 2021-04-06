@@ -36,6 +36,7 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
   `cd NeonateMRS_UCLH_Python3`   
   `python3 -m venv env`   
   `source enc/bin/activate`    
+  
   *On Windows:*   
   `cd NeonateMRS_UCLH_Python3`   
   `py -m venv env`   
@@ -44,8 +45,9 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
 
 * Install python requirements:  
   *On Linux or macOS:*   
-  `pip3 install --upgrade pip`  
-  `pip3 install -r requirements.txt`   
+  `pip3 -m install --upgrade pip`   
+  `pip3 -m install -r requirements.txt`    
+  
   *On Windows:*   
   `py -m pip install --upgrade pip`   
   `py -m pip install -r requirements.txt`   
@@ -64,7 +66,7 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
     *On Linux or macOS:*    
     `python3 MRS_Convert.py`   
     *On Windows:*   
-    `python3 MRS_Convert.py`   
+    `py MRS_Convert.py`   
      
      
 2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
