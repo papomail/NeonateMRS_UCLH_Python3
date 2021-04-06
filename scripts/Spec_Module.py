@@ -555,10 +555,15 @@ class SpecObject():
 
         basis = str(Path(BASE_DIR ,'3_0T_basis_threonine_no_MM').resolve())
         print(f'basis: {basis}')
-        tarquin_path=Path(BASE_DIR ,'tarquingui.app/Contents/MacOS/tarquin')
+        
+        if sys.platform == "darwin":
+            tarquin_path=Path(BASE_DIR ,'TARQUIN/tarquingui.app/Contents/MacOS/tarquin')
+        elif sys.platform == "win32":   
+            tarquin_path=Path(BASE_DIR ,'TARQUIN/TARQUIN_Windows_4.3.10/tarquin/tarquin.exe')
+
         
         if tarquin_path.exists():
-            tarquin = str(tarquin_path.resolve())
+            tarquin = str(tarquin_path.resolve())    
         elif shutil.which("tarquin"):
             tarquin = shutil.which("tarquin")
         else:
