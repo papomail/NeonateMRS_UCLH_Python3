@@ -29,7 +29,7 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
 * Clone or download this repository into a folder of your choosing, e.g. '~/projects':  
 `mkdir ~/projets`  
 `cd ~/projets`  
-`git clone https://github.com/papomail/Daily_QA_UCLH.git`  
+`git clone https://github.com/papomail/NeonateMRS_UCLH_Python3.git`  
 
 * Create and activate a virtual environment inside the new repository NeonateMRS_UCLH_Python3 (recommended):  
   `cd NeonateMRS_UCLH_Python3`  
@@ -42,11 +42,23 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
 
 
 # How to use it:
+0) Activate the virtual environment where the required modules have been installed (if needed):
+    - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
+      *In Linux or macOS:*   
+      > ```source env/bin/activate```   
+      *In Windows:*   
+      > ```.\env\Scripts\activate```   
+
 1) Run **MRS_Convert.py** script:
-   - In a terminal open the folder with the NeonateMRS_UCLH_Python3 scripts and type: 
-      >```python3 MRS_Convert.py```
-2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):
-     - From the menubar click on *File > Open Dir* to select folder with the DICOM files to analyse.  
+      - Execute the main script by typing:   
+      *In Linux or macOS:*   
+      >```python3 MRS_Convert.py```   
+      *In Windows:*   
+      > ```python3 MRS_Convert.py```  
+     
+     
+2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
+    - From the menubar click on *File > Open Dir* to select folder with the DICOM files to analyse.  
     - From the menubar select also a folder where output of the code will be saved:   
 File > Save Dir  
 
