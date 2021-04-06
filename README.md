@@ -2,15 +2,14 @@
 #### The Department of Medical Physics and Biomedical Engineering at University College London Hospitals.
 This repository contains the software used to process and produce automated reports of neonatal NMR spectra acquired at 3T MRI scanners at University College London Hospital.    
 
-***Reports must be approved by a MRI Clinical Scientist @UCLH before being forwarded to the Neonatal Care Unit @UCLH***
-
 
 
 ## Who is it for
-This software is meant to be used by MRI Clinical Scientists.  
-Its purpose is to assist in the processing of MRS data acquired @UCLH and to generate reports for the clinical team in a quick and robust manner. However, it does not exclude the need of MR expertise and knowledge of neonate MR spectroscopy for its correct use.  
+This software is meant to be used by MRI Clinical Scientists. Its purpose is to assist in the processing of MRS data acquired @UCLH and to generate reports for the clinical team in a quick and robust manner. However, it does not exclude the need of MR expertise and knowledge of neonate MR spectroscopy for its correct use.  
 
-***This script is NOT intended as an unsupervised data processing solution.***
+
+* **This software is NOT intended as an unsupervised data processing solution.**    
+* **Reports produced by this sofware must be approved by a MRI Clinical Scientist @UCLH**
 
 
 
