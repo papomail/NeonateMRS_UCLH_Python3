@@ -1,18 +1,13 @@
 # Neonate MRS UCLH (Python3)
 #### The Department of Medical Physics and Biomedical Engineering at University College London Hospitals.
-This repository contains the scripts used to process and produce automated reports of neonatal NMR spectra acquired at 3T MRI scanners at University College London Hospital.    
+This repository contains the software used to process and produce automated reports of neonatal NMR spectra acquired at 3T MRI scanners at University College London Hospital.    
 
 ***Reports must be approved by a MRI Clinical Scientist @UCLH before being forwarded to the Neonatal Care Unit @UCLH***
 
 
 
-
-
-
-
-
 ## Who is it for
-This script is meant to be used by MRI Clinical Scientists.  
+This software is meant to be used by MRI Clinical Scientists.  
 Its purpose is to assist in the processing of MRS data acquired @UCLH and to generate reports for the clinical team in a quick and robust manner. However, it does not exclude the need of MR expertise and knowledge of neonate MR spectroscopy for its correct use.  
 
 ***This script is NOT intended as an unsupervised data processing solution.***
@@ -22,7 +17,7 @@ Its purpose is to assist in the processing of MRS data acquired @UCLH and to gen
 
 # Installation
 #### 1) Prerequisites
-The script needs [Python 3](https://www.python.org/downloads/) and [TARQUIN](http://tarquin.sourceforge.net/index.php) software to work.  
+NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and [TARQUIN](http://tarquin.sourceforge.net/index.php) software to work.  
 * To check if you have the required versions of Python and TARQUIN installed, in a terminal run:    
 `python3 -V`  (Python version should be <t>&ge;</t> 3.7)  
 `tarquin` (TARQUIN version should be <t>&ge;</t> 4.3.10)
@@ -43,11 +38,11 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
   `source enc/bin/activate`
 
 * Install python requirements:  
-  `pip install --upgrade pip`  
-  `pip install -r requirements.txt`
+  `pip3 install --upgrade pip`  
+  `pip3 install -r requirements.txt`
 
 
-## How to use it:
+# How to use it:
 1) Run **MRS_Convert.py** script:
    - In a terminal open the folder with the NeonateMRS_UCLH_Python3 scripts and type: 
       >```python3 MRS_Convert.py```
@@ -83,7 +78,7 @@ Check that the **peaks are well fitted**, the **echo time is 288 ms** and that t
 
  
 
-## Documentation:
+# Documentation:
 A description of the Class definitions and Methods used in this code is available in the [Documentation.md](Doc/Documentation.md) file inside the ```/Doc``` folder of this repository.
 
 
