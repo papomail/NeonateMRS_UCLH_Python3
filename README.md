@@ -31,30 +31,40 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
 `cd ~/projets`  
 `git clone https://github.com/papomail/NeonateMRS_UCLH_Python3.git`  
 
-* Create and activate a virtual environment inside the new repository NeonateMRS_UCLH_Python3 (recommended):  
-  `cd NeonateMRS_UCLH_Python3`  
-  `python3 -m venv env`  
-  `source enc/bin/activate`
+* Create and activate a virtual environment inside the new repository folder NeonateMRS_UCLH_Python3 (recommended):  
+  *On Linux or macOS:*   
+  `cd NeonateMRS_UCLH_Python3`   
+  `python3 -m venv env`   
+  `source enc/bin/activate`    
+  *On Windows:*   
+  `cd NeonateMRS_UCLH_Python3`   
+  `py -m venv env`   
+   `.\env\Scripts\activate`   
+
 
 * Install python requirements:  
+  *On Linux or macOS:*   
   `pip3 install --upgrade pip`  
-  `pip3 install -r requirements.txt`
+  `pip3 install -r requirements.txt`   
+  *On Windows:*   
+  `py -m pip install --upgrade pip`   
+  `py -m pip install -r requirements.txt`   
 
 
 # How to use it:
-0) Activate the virtual environment where the required modules have been installed (if needed):
-    - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
-      *In Linux or macOS:*   
-      > ```source env/bin/activate```   
-      *In Windows:*   
-      > ```.\env\Scripts\activate```   
+0) Activate the virtual environment where the required modules have been installed (*if needed*):
+- In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
+    *On Linux or macOS:*   
+    `source env/bin/activate`   
+    *On Windows:*   
+    `.\env\Scripts\activate`   
 
 1) Run **MRS_Convert.py** script:
-      - Execute the main script by typing:   
-      *In Linux or macOS:*   
-      >```python3 MRS_Convert.py```   
-      *In Windows:*   
-      > ```python3 MRS_Convert.py```  
+- Execute the main script by typing:   
+    *On Linux or macOS:*    
+    `python3 MRS_Convert.py`   
+    *On Windows:*   
+    `python3 MRS_Convert.py`   
      
      
 2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
