@@ -15,7 +15,7 @@ This software is meant to be used by MRI Clinical Scientists. Its purpose is to 
 
 
 # Installation
-#### 1) Prerequisites
+#### 1) Prerequisites:
 NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and [TARQUIN](http://tarquin.sourceforge.net/index.php) software to work.  
 * To check if you have the required versions of Python and TARQUIN installed, in a terminal run:    
 `python3 -V`  (Python version should be <t>&ge;</t> 3.7)  
