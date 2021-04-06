@@ -5,25 +5,52 @@ This repository contains the scripts used to process and produce automated repor
 ***Reports must be approved by a MRI Clinical Scientist @UCLH before being forwarded to the Neonatal Care Unit @UCLH***
 
 
-### Requirements:
-* Python =>3.7 (with sys, os, csv, numpy, PyPDF2, PathLib, FPDF & PyQt5 depencencies)
-* Tarquin 4.x 
-* 3_0T_basis_threonine_no_MM as *prior knowledge* for Tarquin
-* MRS_Convert.py
-* Spec_Module.py
 
 
-## Who is it for:
+
+
+
+
+## Who is it for
 This script is meant to be used by MRI Clinical Scientists.  
 Its purpose is to assist in the processing of MRS data acquired @UCLH and to generate reports for the clinical team in a quick and robust manner. However, it does not exclude the need of MR expertise and knowledge of neonate MR spectroscopy for its correct use.  
 
 ***This script is NOT intended as an unsupervised data processing solution.***
 
 
+
+
+# Installation
+#### 1) Prerequisites
+The script needs [Python 3](https://www.python.org/downloads/) and [TARQUIN](http://tarquin.sourceforge.net/index.php) software to work.  
+* To check if you have the required versions of Python and TARQUIN installed, in a terminal run:    
+`python3 -V`  (Python version should be <t>&ge;</t> 3.7)  
+`tarquin` (TARQUIN version should be <t>&ge;</t> 4.3.10)
+
+* If you need to install Python 3 or TARQUIN follow the links below:   
+Download Python 3 from [here](https://www.python.org/downloads/) and follow the installation instructions.    
+Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/).    
+
+#### 2) Installing NeonateMRS_UCLH_Python3:
+* Clone or download this repository into a folder of your choosing, e.g. '~/projects':  
+`mkdir ~/projets`  
+`cd ~/projets`  
+`git clone https://github.com/papomail/Daily_QA_UCLH.git`  
+
+* Create and activate a virtual environment inside the new repository NeonateMRS_UCLH_Python3 (recommended):  
+  `cd NeonateMRS_UCLH_Python3`  
+  `python3 -m venv env`  
+  `source enc/bin/activate`
+
+* Install python requirements:  
+  `pip install --upgrade pip`  
+  `pip install -r requirements.txt`
+
+
 ## How to use it:
 1) Run **MRS_Convert.py** script:
-   - In a terminal open the folder contains the Neonate MRS scripts and type: 
-      >```python MRS_Convert.py```
+   - In a terminal open the folder with the NeonateMRS_UCLH_Python3 scripts and type: 
+      >```python3 MRS_Convert.py```
 2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):
      - From the menubar click on *File > Open Dir* to select folder with the DICOM files to analyse.  
     - From the menubar select also a folder where output of the code will be saved:   
