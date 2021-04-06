@@ -55,14 +55,14 @@ Download the latest binaries of TARQUIN from [here](https://sourceforge.net/proj
 
 # How to use it:
 0) Activate the virtual environment where the required modules have been installed (*if needed*):
-- In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
+   - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
     *On Linux or macOS:*   
     `source env/bin/activate`   
     *On Windows:*   
     `.\env\Scripts\activate`   
 
 1) Run **MRS_Convert.py** script:
-- Execute the main script by typing:   
+   - Execute the main script by typing:   
     *On Linux or macOS:*    
     `python3 MRS_Convert.py`   
     *On Windows:*   
