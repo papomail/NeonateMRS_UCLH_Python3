@@ -38,7 +38,7 @@ from pathlib import Path
 # Main function to run script is at the end of the file
 
 # BASE_DIR = Path(__file__).resolve().parent.parent.parent
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent
 
 ICONS_DIR = BASE_DIR / "Icons"
 
