@@ -31,6 +31,7 @@ setup(
     ],
     setup_requires=['pytest-runner', 'flake8'],
     tests_require=['pytest'],
+    package_dir={'mrs':'mrs'},
     package_data={
         'mrs.3_0T_basis_threonine_no_MM':['*.csv'],
         'mrs.Icons': ['*.png'],
