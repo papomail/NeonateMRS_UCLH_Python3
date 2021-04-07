@@ -24,7 +24,7 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 * If you need to install Python 3 or TARQUIN follow the links below:   
    - Download Python 3 from [here](https://www.python.org/downloads/) and follow the installation instructions.    
    - Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/).  
-   *Alternatively, you can download TARQUIN from this repository by cloning one of the 'tarquin' branches.* 
+   ***Alternatively, you can download TARQUIN from one of the 'tarquin' branches of this repository, as shown below.*** 
 
 #### 2) Installing NeonateMRS_UCLH_Python3:
 * Clone or download this repository into a folder of your choosing, e.g. '~/projects':  
@@ -34,14 +34,14 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
     - To download TARQUIN together with NeonateMRS_UCLH_Python3, clone the 'tarquin_mac', 'tarquin_win' or 'tarquin_linux' branch instead. E.g. for Windows users type:   
 `git clone -b tarquin_win https://github.com/papomail/NeonateMRS_UCLH_Python3.git`    
 
-* Create and activate a virtual environment inside the new repository folder NeonateMRS_UCLH_Python3 (recommended):  
+* Create and activate a virtual environment inside NeonateMRS_UCLH_Python3's 'scripts' folder (recommended):  
   *On Linux or macOS:*   
-  `cd NeonateMRS_UCLH_Python3`   
+  `cd NeonateMRS_UCLH_Python3/scripts`   
   `python3 -m venv env`   
   `source enc/bin/activate`    
   
   *On Windows:*   
-  `cd NeonateMRS_UCLH_Python3`   
+  `cd NeonateMRS_UCLH_Python3\scripts`   
   `py -m venv env`   
    `.\env\Scripts\activate`   
 
