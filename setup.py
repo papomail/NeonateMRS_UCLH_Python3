@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='MRS_convert',
     version='1.4.0',
-    description='Setting up a python package',
+    description='Software to process and produce PDF reports from NMR spectra acquired at 3T MRI scanners at University College London Hospital',
     author='Patxi Torrealdea and Alan Bainbridge',
     author_email='francisco.torrealdea@nhs.net',
     url='https://github.com/papomail/NeonateMRS_UCLH_Python3',
