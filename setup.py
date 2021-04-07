@@ -32,4 +32,14 @@ setup(
     setup_requires=['pytest-runner', 'flake8'],
     tests_require=['pytest'],
 
+    package_data={
+        '': ['Icons/*.png'],
+        '': ['3_0T_basis_threonine_no_MM/*.*']
+    },
+    entry_points={
+        'console_scripts': ['MRS=mrs.MRS_convert:main']
+    }    
+
+)
+
 )
