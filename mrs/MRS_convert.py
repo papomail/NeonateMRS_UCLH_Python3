@@ -30,7 +30,7 @@ import os
 import numpy as np
 from PyQt5 import QtGui, QtCore, QtWidgets
 import pyqtgraph as pg
-import Spec_Module as sp
+from mrs import Spec_Module as sp
 import csv
 from pathlib import Path
 
