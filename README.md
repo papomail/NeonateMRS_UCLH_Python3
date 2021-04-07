@@ -22,8 +22,9 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 `tarquin` (TARQUIN version should be <t>&ge;</t> 4.3.10)
 
 * If you need to install Python 3 or TARQUIN follow the links below:   
-Download Python 3 from [here](https://www.python.org/downloads/) and follow the installation instructions.    
-Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/).    
+   - Download Python 3 from [here](https://www.python.org/downloads/) and follow the installation instructions.    
+   - Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/).  
+   *Alternatively, you can download TARQUIN from this repository by cloning one of the 'tarquin' branches.* 
 
 #### 2) Installing NeonateMRS_UCLH_Python3:
 * Clone or download this repository into a folder of your choosing, e.g. '~/projects':  
