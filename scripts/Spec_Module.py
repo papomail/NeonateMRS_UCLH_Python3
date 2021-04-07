@@ -557,9 +557,11 @@ class SpecObject():
         print(f'basis: {basis}')
         
         if sys.platform == "darwin":
-            tarquin_path=Path(BASE_DIR ,'TARQUIN/tarquingui.app/Contents/MacOS/tarquin')
+            tarquin_path=Path(BASE_DIR ,'TARQUIN/mac/tarquingui.app/Contents/MacOS/tarquin')
         elif sys.platform == "win32":   
-            tarquin_path=Path(BASE_DIR ,'TARQUIN/TARQUIN_Windows_4.3.10/tarquin/tarquin.exe')
+            tarquin_path=Path(BASE_DIR ,'TARQUIN/win/TARQUIN_Windows_4.3.10/tarquin/tarquin.exe')
+        elif sys.platform == "linux":   
+            tarquin_path=Path(BASE_DIR ,'TARQUIN/linux/tarquin')
 
         
         if tarquin_path.exists():
