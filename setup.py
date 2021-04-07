@@ -9,7 +9,7 @@ setup(
     url='https://github.com/papomail/NeonateMRS_UCLH_Python3',
     # packages=find_packages(include=['MRS_convert']),
     # packages=find_packages(),
-    packages=['mrs','Icons','3_0T_basis_threonine_no_MM'],
+    packages=['mrs','mrs.Icons','mrs.3_0T_basis_threonine_no_MM','mrs.UnittestFiles'],
 
     install_requires=[
         'cycler>=0.10.0',
@@ -33,8 +33,9 @@ setup(
     tests_require=['pytest'],
 
     package_data={
-        '3_0T_basis_threonine_no_MM':['*'],
-        'Icons': ['*.png'],
+        'mrs.3_0T_basis_threonine_no_MM':['*.csv'],
+        'mrs.Icons': ['*.png'],
+         
 
     },
 
