@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, #find_packages
 
 setup(
     name='mrs',
@@ -8,8 +8,8 @@ setup(
     author_email='francisco.torrealdea@nhs.net',
     url='https://github.com/papomail/NeonateMRS_UCLH_Python3',
     # packages=find_packages(include=['MRS_convert']),
-    packages=find_packages(),
-    # packages=['mrs','mrs.MRS_convert', 'mrs.Spec_Module', 'test_mrs.Spec_Module'],
+    # packages=find_packages(),
+    packages=['mrs','Icons','3_0T_basis_threonine_no_MM'],
 
     install_requires=[
         'cycler>=0.10.0',
@@ -32,12 +32,13 @@ setup(
     setup_requires=['pytest-runner', 'flake8'],
     tests_require=['pytest'],
 
-    # package_data={
-    #     '': ['/Icons/*.png'],
-    #     '': ['/3_0T_basis_threonine_no_MM']
-    # },
+    package_data={
+        '3_0T_basis_threonine_no_MM':['*'],
+        'Icons': ['*.png'],
 
-    include_package_data=True,
+    },
+
+    # include_package_data=True,
 
     entry_points={
         'console_scripts': ['mrs=mrs.MRS_convert:main']
