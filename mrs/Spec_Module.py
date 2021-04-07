@@ -36,8 +36,8 @@ import shutil
 import sys
 
 #BASE_DIR = Path(__file__).parent.parent.parent
-# BASE_DIR = Path(__file__).parent.parent
-BASE_DIR = Path.cwd()
+BASE_DIR = Path(__file__).parent.parent
+# BASE_DIR = Path.cwd()
 
 # print(BASE_DIR)
 
