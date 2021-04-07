@@ -7,7 +7,7 @@ setup(
     author='Patxi Torrealdea and Alan Bainbridge',
     author_email='francisco.torrealdea@nhs.net',
     url='https://github.com/papomail/NeonateMRS_UCLH_Python3',
-    packages=find_packages(include=['/scripts/MRS_convert']),
+    packages=find_packages(include=['MRS_convert']),
     install_requires=[
         'cycler==0.10.0',
         'fpdf==1.7.2',
