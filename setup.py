@@ -31,16 +31,11 @@ setup(
     ],
     setup_requires=['pytest-runner', 'flake8'],
     tests_require=['pytest'],
-
     package_data={
         'mrs.3_0T_basis_threonine_no_MM':['*.csv'],
         'mrs.Icons': ['*.png'],
-         
-
     },
-
-    # include_package_data=True,
-
+    include_package_data=True,
     entry_points={
         'console_scripts': ['mrs=mrs.MRS_convert:main']
     }    
