@@ -8,8 +8,8 @@ setup(
     author_email='francisco.torrealdea@nhs.net',
     url='https://github.com/papomail/NeonateMRS_UCLH_Python3',
     # packages=find_packages(include=['MRS_convert']),
-    # packages=find_packages(),
-    packages=['mrs','mrs.Icons','mrs.3_0T_basis_threonine_no_MM','mrs.UnittestFiles'],
+    packages=find_packages(),
+    # packages=['mrs','mrs.Icons','mrs.3_0T_basis_threonine_no_MM','mrs.UnittestFiles'],
 
     install_requires=[
         'cycler>=0.10.0',
