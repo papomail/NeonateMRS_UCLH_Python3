@@ -47,9 +47,9 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 
 * Upgrade *pip* and *setuptools* (recomended):   
   *On Linux or macOS:*     
-  `python -m pip upgrade pip setuptools`  
+  `python -m pip install --upgrade pip setuptools`  
   *On Linux or macOS:*   
-  `py -m pip upgrade pip setuptools`      
+  `py -m pip install --upgrade pip setuptools`      
   
 * Install NeonateMRS_UCLH_Python3 module and requirements:  
   *On Linux or macOS:*     
@@ -59,14 +59,14 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 
 
 # How to use it:
-0) Activate the virtual environment where the required modules have been installed (*if needed*):
+1) If NeonateMRS_UCLH_Python3 was installed in a virtual environment, remember to activate it:
    - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
     *On Linux or macOS:*   
     `source venv/bin/activate`   
     *On Windows:*   
     `.\venv\Scripts\activate`   
 
-1) Run **MRS_Convert.py** script:
+2) Run **MRS_Convert.py** script:
    - Execute the main script by typing:   
     *On Linux or macOS:*    
     `python3 MRS_Convert.py`   
@@ -74,7 +74,7 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
     `py MRS_Convert.py`   
      
      
-2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
+3) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
     - From the menubar click on *File > Open Dir* to select folder with the DICOM files to analyse.  
     - From the menubar select also a folder where output of the code will be saved:   
 File > Save Dir  
