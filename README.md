@@ -15,37 +15,31 @@ This software is meant to be used by MRI Clinical Scientists. Its purpose is to 
 
 
 # Installation
-#### 1) Prerequisites:
-NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and [TARQUIN](http://tarquin.sourceforge.net/index.php) software to work.  
+#### 1) Pre-requisites:
+Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https://www.python.org), [TARQUIN](http://tarquin.sourceforge.net/index.php) and [Git](https://git-scm.com/).  
 * To check if you have the required versions of Python and TARQUIN installed, in a terminal run:    
 `python3 -V`  (Python version should be <t>&ge;</t> 3.7)  
 `tarquin` (TARQUIN version should be <t>&ge;</t> 4.3.10)
-
-* If you need to install Python 3 or TARQUIN follow the links below:   
+* If you need to install Python 3, TARQUIN or Git follow the links below:   
    - Download Python 3 from [here](https://www.python.org/downloads/) and follow the installation instructions.    
-   - Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/).  
-   ***Alternatively, you can download TARQUIN from one of the 'tarquin' branches of this repository, as shown below.*** 
+   - Download the latest binaries of TARQUIN from [here](https://sourceforge.net/projects/tarquin/files/) and add it to your PATH.   
+   - Intall the latest version of Git from [here](https://git-scm.com/downloads).
+    
 
-#### 2) Installing NeonateMRS_UCLH_Python3:
-* Clone or download this repository into a folder of your choosing, e.g. '~/projects':  
-`mkdir ~/projets`  
-`cd ~/projets`  
-`git clone https://github.com/papomail/NeonateMRS_UCLH_Python3.git`    
-    - To download TARQUIN together with NeonateMRS_UCLH_Python3, clone the 'tarquin_mac', 'tarquin_win' or 'tarquin_linux' branch instead. E.g. for Windows users type:   
-`git clone -b tarquin_win https://github.com/papomail/NeonateMRS_UCLH_Python3.git`    
+#### 2) Installing NeonateMRS_UCLH_Python3 package:
+   
 
-* Create and activate a virtual environment inside the newly cloned NeonateMRS_UCLH_Python3 folder (recommended):  
+* Create and activate a virtual environment (venv) where all the NeonateMRS_UCLH_Python3 dependencies will be installed (recommended).   Here, we have chosen to create a venv called '*mrs*' and to place it inside a '*venvs*' folder in our `/home` directory:  
+
   *On Linux or macOS:*   
-  `cd NeonateMRS_UCLH_Python3`   
-  `python3 -m venv venv`   
-  `source venv/bin/activate`    
+  `python3 -m venv ~/venvs/mrs`   
+  `source ~/venvs/mrs/bin/activate`    
   
   *On Windows:*   
-  `cd NeonateMRS_UCLH_Python3`   
-  `py -m venv venv`   
-   `.\venv\Scripts\activate`   
+  `py -m venv ~/venvs/mrs`   
+   `.\venv\mrs\Scripts\activate`   
 
-* Upgrade *pip* and *setuptools* (recomended):   
+* Upgrade *pip* and *setuptools* (recommended):   
   *On Linux or macOS:*     
   `python -m pip install --upgrade pip setuptools`  
   *On Linux or macOS:*   
@@ -53,28 +47,27 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
   
 * Install NeonateMRS_UCLH_Python3 module and requirements:  
   *On Linux or macOS:*     
-  `python -m pip install -e . `   
+  `python -m pip install git+https://github.com/papomail/NeonateMRS_UCLH_Python3.git  `   
   *On Windows:*   
-  `python -m pip install -e . `     
+  `py -m pip install git+https://github.com/papomail/NeonateMRS_UCLH_Python3.git`
+
+* NeonateMRS_UCLH_Python3 is now installed! To run it, just type:   
+  `mrs` 
 
 
 # How to use it:
-1) If NeonateMRS_UCLH_Python3 was installed in a virtual environment, remember to activate it:
-   - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
+1) Launch NeonateMRS_UCLH_Python3. Remember that the environment in which it was installed needs to be activated. In our case we would type:    
+   
     *On Linux or macOS:*   
-    `source venv/bin/activate`   
+    `source ~/venvs/mrs/bin/activate`   
+    `mrs`   
     *On Windows:*   
-    `.\venv\Scripts\activate`   
+    `.\venv\mrs\Scripts\activate`   
+    `mrs`
 
-2) Run **MRS_Convert.py** script:
-   - Execute the main script by typing:   
-    *On Linux or macOS:*    
-    `python3 MRS_Convert.py`   
-    *On Windows:*   
-    `py MRS_Convert.py`   
      
      
-3) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
+2) Select *input folder* (with DICOM data) and the *output folder* (where proccesd data will be saved):    
     - From the menubar click on *File > Open Dir* to select folder with the DICOM files to analyse.  
     - From the menubar select also a folder where output of the code will be saved:   
 File > Save Dir  
