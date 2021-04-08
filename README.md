@@ -37,12 +37,12 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 * Create and activate a virtual environment inside the newly cloned NeonateMRS_UCLH_Python3 folder (recommended):  
   *On Linux or macOS:*   
   `cd NeonateMRS_UCLH_Python3`   
-  `python3 -m venv env`   
+  `python3 -m venv venv`   
   `source enc/bin/activate`    
   
   *On Windows:*   
   `cd NeonateMRS_UCLH_Python3`   
-  `py -m venv env`   
+  `py -m venv venv`   
    `.\env\Scripts\activate`   
 
 
@@ -60,9 +60,9 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 0) Activate the virtual environment where the required modules have been installed (*if needed*):
    - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
     *On Linux or macOS:*   
-    `source env/bin/activate`   
+    `source venv/bin/activate`   
     *On Windows:*   
-    `.\env\Scripts\activate`   
+    `.\venv\Scripts\activate`   
 
 1) Run **MRS_Convert.py** script:
    - Execute the main script by typing:   
