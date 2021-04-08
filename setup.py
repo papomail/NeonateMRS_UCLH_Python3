@@ -28,7 +28,7 @@ setup(
         'PyQt5-sip==12.8.1',
         'pyqtgraph==0.12.0',
         'python-dateutil==2.8.1',
-        'six=1.15.0',
+        'six==1.15.0',
     ],
     setup_requires=['pytest-runner', 'flake8'],
     tests_require=['pytest'],
