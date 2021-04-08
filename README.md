@@ -34,16 +34,16 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
     - To download TARQUIN together with NeonateMRS_UCLH_Python3, clone the 'tarquin_mac', 'tarquin_win' or 'tarquin_linux' branch instead. E.g. for Windows users type:   
 `git clone -b tarquin_win https://github.com/papomail/NeonateMRS_UCLH_Python3.git`    
 
-* Create and activate a virtual environment inside NeonateMRS_UCLH_Python3's 'scripts' folder (recommended):  
+* Create and activate a virtual environment inside the newly cloned NeonateMRS_UCLH_Python3 folder (recommended):  
   *On Linux or macOS:*   
-  `cd NeonateMRS_UCLH_Python3/scripts`   
-  `python3 -m venv env`   
-  `source enc/bin/activate`    
+  `cd NeonateMRS_UCLH_Python3`   
+  `python3 -m venv venv`   
+  `source venv/bin/activate`    
   
   *On Windows:*   
-  `cd NeonateMRS_UCLH_Python3\scripts`   
-  `py -m venv env`   
-   `.\env\Scripts\activate`   
+  `cd NeonateMRS_UCLH_Python3`   
+  `py -m venv venv`   
+   `.\venv\Scripts\activate`   
 
 
 * Install python requirements:  
@@ -60,9 +60,9 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
 0) Activate the virtual environment where the required modules have been installed (*if needed*):
    - In a terminal from the folder with the NeonateMRS_UCLH_Python3 script type:      
     *On Linux or macOS:*   
-    `source env/bin/activate`   
+    `source venv/bin/activate`   
     *On Windows:*   
-    `.\env\Scripts\activate`   
+    `.\venv\Scripts\activate`   
 
 1) Run **MRS_Convert.py** script:
    - Execute the main script by typing:   
