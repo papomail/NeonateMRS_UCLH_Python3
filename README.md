@@ -38,12 +38,12 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
   *On Linux or macOS:*   
   `cd NeonateMRS_UCLH_Python3`   
   `python3 -m venv venv`   
-  `source enc/bin/activate`    
+  `source venv/bin/activate`    
   
   *On Windows:*   
   `cd NeonateMRS_UCLH_Python3`   
   `py -m venv venv`   
-   `.\env\Scripts\activate`   
+   `.\venv\Scripts\activate`   
 
 
 * Install python requirements:  
