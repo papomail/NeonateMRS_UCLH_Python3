@@ -34,14 +34,14 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
     - To download TARQUIN together with NeonateMRS_UCLH_Python3, clone the 'tarquin_mac', 'tarquin_win' or 'tarquin_linux' branch instead. E.g. for Windows users type:   
 `git clone -b tarquin_win https://github.com/papomail/NeonateMRS_UCLH_Python3.git`    
 
-* Create and activate a virtual environment inside NeonateMRS_UCLH_Python3's 'scripts' folder (recommended):  
+* Create and activate a virtual environment inside the newly cloned NeonateMRS_UCLH_Python3 folder (recommended):  
   *On Linux or macOS:*   
-  `cd NeonateMRS_UCLH_Python3/scripts`   
+  `cd NeonateMRS_UCLH_Python3`   
   `python3 -m venv env`   
   `source enc/bin/activate`    
   
   *On Windows:*   
-  `cd NeonateMRS_UCLH_Python3\scripts`   
+  `cd NeonateMRS_UCLH_Python3`   
   `py -m venv env`   
    `.\env\Scripts\activate`   
 
