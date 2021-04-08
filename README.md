@@ -45,15 +45,17 @@ NeonateMRS_UCLH_Python3 needs [Python 3](https://www.python.org/downloads/) and 
   `py -m venv venv`   
    `.\venv\Scripts\activate`   
 
-
-* Install python requirements:  
+* Upgrade *pip* and *setuptools* (recomended):   
+  *On Linux or macOS:*     
+  `python -m pip upgrade pip setuptools`  
   *On Linux or macOS:*   
-  `pip3 -m install --upgrade pip`   
-  `pip3 -m install -r requirements.txt`    
+  `py -m pip upgrade pip setuptools`      
   
+* Install NeonateMRS_UCLH_Python3 module and requirements:  
+  *On Linux or macOS:*     
+  `python -m pip install -e . `   
   *On Windows:*   
-  `py -m pip install --upgrade pip`   
-  `py -m pip install -r requirements.txt`   
+  `python -m pip install -e . `     
 
 
 # How to use it:
