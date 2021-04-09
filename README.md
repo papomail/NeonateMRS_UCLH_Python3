@@ -37,7 +37,9 @@ Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https
   
   *On Windows:*   
   `py -m venv ~/venvs/mrs`   
-   `.\venv\mrs\Scripts\activate`   
+   `.\venv\mrs\Scripts\activate`  
+
+   (On Windows, if you get the error message “Running Scripts Is Disabled On This System” when trying to activate the venv, [here](https://www.stanleyulili.com/powershell/solution-to-running-scripts-is-disabled-on-this-system-error-on-powershell/) is an easy solution).
 
 * Upgrade *pip* and *setuptools* (recommended):   
   *On Linux or macOS:*     
