@@ -534,7 +534,7 @@ class SpecObject():
         #     os.chdir(Tarquindir)
         #     os.mkdir('Tarquin_fit')
         #    
-        Tarquinfitdir.mkdir(parents=True, exist_ok=True)
+        Tarquinfitdir.resolve().mkdir(parents=True, exist_ok=True)
 
 
             
