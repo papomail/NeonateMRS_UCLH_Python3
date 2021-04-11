@@ -414,9 +414,11 @@ class SpecObject():
         outpath=Path(outpath)
         Tarquindir = outpath / 'Tarquin_files'
 
-        if os.path.isdir(Tarquindir) == False:
-            os.chdir(outpath)
-            os.mkdir('Tarquin_files')
+        # if os.path.isdir(Tarquindir) == False:
+        #     os.chdir(outpath)
+        #     os.mkdir('Tarquin_files')
+        Tarquindir.resolve().mkdir(parents=True, exist_ok=True)
+
 
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
         #file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'proc_Tarquin'
@@ -476,9 +478,10 @@ class SpecObject():
         #Logdir = outpath + '\\' + 'Log_files'
         Logdir = outpath / 'Log_files'
 
-        if os.path.isdir(Logdir) == False:
-            os.chdir(outpath)
-            os.mkdir('Log_files')
+        # if os.path.isdir(Logdir) == False:
+        #     os.chdir(outpath)
+        #     os.mkdir('Log_files')
+        Logdir.resolve().mkdir(parents=True, exist_ok=True)
 
         if self.Frames == 1:
             frames = 1
