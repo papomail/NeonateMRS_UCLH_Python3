@@ -884,7 +884,7 @@ class SpecObject():
         print(f'\n\nMRS Report saved in {reportout}')
         self.report_completed(reportout)
         try:
-            os.startfile
+            os.startfile(reportout)
         except:     
             os.system(f'open {reportout}')
 
