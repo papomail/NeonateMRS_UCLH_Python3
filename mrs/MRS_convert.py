@@ -30,10 +30,12 @@ import os
 import numpy as np
 from PyQt5 import QtGui, QtCore, QtWidgets
 import pyqtgraph as pg
-from mrs import Spec_Module as sp
+try:
+    import Spec_Module as sp
+except:
+    from mrs import Spec_Module as sp
 import csv
 from pathlib import Path
-
 
 # Main function to run script is at the end of the file
 
@@ -55,9 +57,13 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI()
-        self.version = "1.4.0"
+        self.version = "1.4.1"
+        self.resized.connect(self.resizeFunction)
 
     def initUI(self):
+        
+        
+        
         # ---------Add menubar--------------------------------------------------
         menubar = self.menuBar()
 
@@ -134,102 +140,131 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(about)
         helpMenu.addAction(dcmmssg)
 
+
+        self.initial_width = 1060
+        self.initial_height = 580
+        self.wf = 1
+        self.hf = 1
+# ------Main Window Geometry-----------
+        # This should come at the end once all GUI item are created
+        self.setGeometry(300, 300, self.initial_width, self.initial_height)
+
+        self.setWindowTitle("Tarquin Conversion Tool")
+        self.setWindowIcon(QtGui.QIcon(tarqIcon))
+
+        # self.setStyleSheet("QMainWindow {background: 'white';}");
+        # self.setStyleSheet("color: blue;"
+        #                 "background-color: white;"
+        #                 "selection-color: blue;"
+        #                 "selection-background-color: white;")
+
+
+
+
         # --------Add buttons---------------------------------------------------
-        btnup = QtGui.QPushButton("Spec up", self)
-        btndown = QtGui.QPushButton("Spec Down", self)
-        btnfup = QtGui.QPushButton("F_up", self)
-        btnfdown = QtGui.QPushButton("F_down", self)
-        btninc = QtGui.QPushButton("Include", self)
-        btnexc = QtGui.QPushButton("Exclude", self)
-        btnorig = QtGui.QPushButton("Original", self)
-        btnproc = QtGui.QPushButton("Processed", self)
-        btnChoup = QtGui.QPushButton("Peak1 +", self)
-        btnChodn = QtGui.QPushButton("Peak1 -", self)
-        btnPhup = QtGui.QPushButton("Phase +", self)
-        btnPhdn = QtGui.QPushButton("Phase -", self)
-        btnCrup = QtGui.QPushButton("Peak2 +", self)
-        btnCrdn = QtGui.QPushButton("Peak2 -", self)
-        btnnophase = QtGui.QPushButton("undo phase", self)
-        btnnoshift = QtGui.QPushButton("undo shift", self)
-        btnfit = QtGui.QPushButton("Show Fit", self)
+        self.btnup = QtGui.QPushButton("Spec up", self)
+        self.btndown = QtGui.QPushButton("Spec Down", self)
+        self.btnfup = QtGui.QPushButton("F_up", self)
+        self.btnfdown = QtGui.QPushButton("F_down", self)
+        self.btninc = QtGui.QPushButton("Include", self)
+        self.btnexc = QtGui.QPushButton("Exclude", self)
+        self.btnorig = QtGui.QPushButton("Original", self)
+        self.btnproc = QtGui.QPushButton("Processed", self)
+        self.btnChoup = QtGui.QPushButton("Peak1 +", self)
+        self.btnChodn = QtGui.QPushButton("Peak1 -", self)
+        self.btnPhup = QtGui.QPushButton("Phase +", self)
+        self.btnPhdn = QtGui.QPushButton("Phase -", self)
+        self.btnCrup = QtGui.QPushButton("Peak2 +", self)
+        self.btnCrdn = QtGui.QPushButton("Peak2 -", self)
+        self.btnnophase = QtGui.QPushButton("undo phase", self)
+        self.btnnoshift = QtGui.QPushButton("undo shift", self)
+        self.btnfit = QtGui.QPushButton("Show Fit", self)
 
-        self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data", self)
 
+        self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
+        self.btnreport.move(600, 4)
+        self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold 14px;min-width: 10em;padding: 6px;}")
+        self.btnreport.adjustSize()  
+        self.btnreport.clicked.connect(self.convert_to_all)
+        self.btnreport.hide()
+
+        self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
-        self.btnopen.resize(250, 30)
-        self.btnopen.move(10, 2)
+        # self.btnopen.resize(250, 30)
+        self.btnopen.move(10, 3)
+        self.btnopen.adjustSize()  
+
         self.btnopen.clicked.connect(self.btnopen_clicked)
 
-        btnup.resize(btnup.sizeHint())
-        btnup.move(20, 510)
-        btnup.clicked.connect(self.specup)
 
-        btndown.resize(btndown.sizeHint())
-        btndown.move(20, 540)
-        btndown.clicked.connect(self.specdown)
+        self.btnup.resize(self.btnup.sizeHint())
+        self.btnup.move(20, 510)
+        self.btnup.clicked.connect(self.specup)
 
-        btnfup.resize(btnfup.sizeHint())
-        btnfup.move(560, 510)
-        btnfup.clicked.connect(self.frameup)
+        self.btndown.resize(self.btndown.sizeHint())
+        self.btndown.move(20, 540)
+        self.btndown.clicked.connect(self.specdown)
+
+        self.btnfup.resize(self.btnfup.sizeHint())
+        self.btnfup.move(560, 510)
+        self.btnfup.clicked.connect(self.frameup)
         # print(btnfup.size())
 
-        btnfdown.resize(
-            btnfup.size()
-        )  ## Modified to take the same size as F_up button. (Patxi)
-        btnfdown.move(560, 540)
-        btnfdown.clicked.connect(self.framedown)
+        self.btnfdown.resize(self.btnfup.size())
+        self.btnfdown.move(560, 540)
+        self.btnfdown.clicked.connect(self.framedown)
 
-        btninc.resize(btninc.sizeHint())
-        btninc.move(940, 510)
-        btninc.clicked.connect(self.IncFrame)
+        self.btninc.resize(self.btninc.sizeHint())
+        self.btninc.move(940, 510)
+        self.btninc.clicked.connect(self.IncFrame)
 
-        btnexc.resize(btnexc.sizeHint())
-        btnexc.move(940, 540)
-        btnexc.clicked.connect(self.ExcFrame)
+        self.btnexc.resize(self.btnexc.sizeHint())
+        self.btnexc.move(940, 540)
+        self.btnexc.clicked.connect(self.ExcFrame)
 
-        btnorig.resize(btnorig.sizeHint())
-        btnorig.move(120, 510)
-        btnorig.clicked.connect(self.plotorigspec)
+        self.btnorig.resize(self.btnorig.sizeHint())
+        self.btnorig.move(120, 510)
+        self.btnorig.clicked.connect(self.plotorigspec)
 
-        btnnophase.resize(btnnophase.sizeHint())
-        btnnophase.move(300, 510)
-        btnnophase.clicked.connect(self.undophase)
+        self.btnnophase.resize(self.btnnophase.sizeHint())
+        self.btnnophase.move(300, 510)
+        self.btnnophase.clicked.connect(self.undophase)
 
-        btnnoshift.resize(btnnoshift.sizeHint())
-        btnnoshift.move(300, 540)
-        btnnoshift.clicked.connect(self.undoshift)
+        self.btnnoshift.resize(self.btnnoshift.sizeHint())
+        self.btnnoshift.move(300, 540)
+        self.btnnoshift.clicked.connect(self.undoshift)
 
-        btnproc.resize(btnproc.sizeHint())
-        btnproc.move(120, 540)
-        btnproc.clicked.connect(self.plotprocspec)
+        self.btnproc.resize(self.btnproc.sizeHint())
+        self.btnproc.move(120, 540)
+        self.btnproc.clicked.connect(self.plotprocspec)
 
-        btnChoup.resize(btnChoup.sizeHint())
-        btnChoup.move(720, 510)
-        btnChoup.clicked.connect(self.Cho_up)
+        self.btnChoup.resize(self.btnChoup.sizeHint())
+        self.btnChoup.move(720, 510)
+        self.btnChoup.clicked.connect(self.Cho_up)
 
-        btnChodn.resize(btnChodn.sizeHint())
-        btnChodn.move(720, 540)
-        btnChodn.clicked.connect(self.Cho_dn)
+        self.btnChodn.resize(self.btnChodn.sizeHint())
+        self.btnChodn.move(720, 540)
+        self.btnChodn.clicked.connect(self.Cho_dn)
 
-        btnPhup.resize(btnPhup.sizeHint())
-        btnPhup.move(640, 510)
-        btnPhup.clicked.connect(self.Phase_up)
+        self.btnPhup.resize(self.btnPhup.sizeHint())
+        self.btnPhup.move(640, 510)
+        self.btnPhup.clicked.connect(self.Phase_up)
 
-        btnPhdn.resize(btnPhdn.sizeHint())
-        btnPhdn.move(640, 540)
-        btnPhdn.clicked.connect(self.Phase_dn)
+        self.btnPhdn.resize(self.btnPhdn.sizeHint())
+        self.btnPhdn.move(640, 540)
+        self.btnPhdn.clicked.connect(self.Phase_dn)
 
-        btnCrup.resize(btnCrup.sizeHint())
-        btnCrup.move(800, 510)
-        btnCrup.clicked.connect(self.Cr_up)
+        self.btnCrup.resize(self.btnCrup.sizeHint())
+        self.btnCrup.move(800, 510)
+        self.btnCrup.clicked.connect(self.Cr_up)
 
-        btnCrdn.resize(btnCrdn.sizeHint())
-        btnCrdn.move(800, 540)
-        btnCrdn.clicked.connect(self.Cr_dn)
+        self.btnCrdn.resize(self.btnCrdn.sizeHint())
+        self.btnCrdn.move(800, 540)
+        self.btnCrdn.clicked.connect(self.Cr_dn)
 
-        btnfit.resize(btnfit.sizeHint())
-        btnfit.move(400, 510)
-        btnfit.clicked.connect(self.plotfit)
+        self.btnfit.resize(self.btnfit.sizeHint())
+        self.btnfit.move(400, 510)
+        self.btnfit.clicked.connect(self.plotfit)
 
         # -------Add text-------------------------------------------------------
         self.lbl = QtGui.QLabel(self)
@@ -263,8 +298,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption("foreground", "k")
 
         self.pw1 = pg.PlotWidget(self)
-        self.pw1.setGeometry(QtCore.QRect(10, 100, 500, 400))
-
+        self.pw1.setGeometry(QtCore.QRect(10, 100, int(500*self.width()/self.initial_width), int(400*self.height()/self.initial_height)))
         self.pw1.show()
         self.p1 = self.pw1.plot(pen={"color": "b", "width": 2})
         self.p2 = self.pw1.plot(pen={"color": "r", "width": 2})
@@ -284,7 +318,7 @@ class Maingui(QtGui.QMainWindow):
         self.mssg.setGeometry(310, 240, 280, 280)
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
-            "Version 1.4.0 \n\n"
+            "Version 1.4.1 \n\n"
             + "Convert spectroscopy data to Tarquin and Jmrui format.\n\n"
             + "Please send any errors to balangb@gmail.com or papomail@gmail.com"
         )
@@ -294,17 +328,9 @@ class Maingui(QtGui.QMainWindow):
         self.dcmfmt.setWindowTitle("DICOM formats")
         self.dcmfmt.setText("Only Dicom4 data can be processed\n\n")
 
-        # ------Main Window Geometry-----------
-        # This should come at the end once all GUI item are created
-        self.setGeometry(300, 300, 1060, 580)
-        self.setWindowTitle("Tarquin Conversion Tool")
-        self.setWindowIcon(QtGui.QIcon(tarqIcon))
-
-        # self.setStyleSheet("QMainWindow {background: 'white';}");
-        # self.setStyleSheet("color: blue;"
-        #                 "background-color: white;"
-        #                 "selection-color: blue;"
-        #                 "selection-background-color: white;")
+        
+        
+        
         self.show()
 
         # ## Handle view resizing
@@ -318,38 +344,114 @@ class Maingui(QtGui.QMainWindow):
 
     # --------Class Methods-----------------------------------
 
+    
+    resized = QtCore.pyqtSignal()
+    # def  __init__(self, parent=None):
+    #     super(Window, self).__init__(parent=parent)
+    #     ui = Ui_MainWindow()
+    #     ui.setupUi(self)
+    #     self.resized.connect(self.someFunction)
+
+    def resizeEvent(self, event):
+        self.resized.emit()
+        return super(Maingui, self).resizeEvent(event)
+
+    def resizeFunction(self):
+        w = self.width()
+        h = self.height()
+        self.wf = w/self.initial_width
+        self.hf = h/self.initial_height
+
+        print(f'App size {w}x{h} px')
+
+        self.btnreport.move(int(600*self.wf), int(4*self.hf))
+
+        if "2) " in self.btnopen.text():
+             self.btnopen.move(int(200*self.wf), int(3*self.hf))
+   
+        self.btnup.move(int(20*self.wf), int(510*self.hf))
+        
+        self.btndown.move(int(20*self.wf), int(540*self.hf))
+        
+        self.btnfup.move(int(560*self.wf), int(510*self.hf))
+        
+        self.btnfdown.move(int(560*self.wf), int(540*self.hf))
+        
+        self.btninc.move(int(940*self.wf), int(510*self.hf))
+        
+        self.btnexc.move(int(940*self.wf), int(540*self.hf))
+        
+        self.btnorig.move(int(120*self.wf), int(510*self.hf))
+        
+        self.btnnophase.move(int(300*self.wf), int(self.hf*510))
+        
+        self.btnnoshift.move(int(300*self.wf), int(self.hf*540))
+        
+        self.btnproc.move(int(120*self.wf), int(self.hf*540))
+        
+        self.btnChoup.move(int(720*self.wf), int(self.hf*510))
+       
+        self.btnChodn.move(int(720*self.wf), int(self.hf*540))
+        
+        self.btnPhup.move(int(640*self.wf), int(self.hf*510))
+        
+        self.btnPhdn.move(int(640*self.wf), int(self.hf*540))
+        
+        self.btnCrup.move(int(800*self.wf), int(self.hf*510))
+        
+        self.btnCrdn.move(int(800*self.wf), int(self.hf*540))
+        
+        self.btnfit.move(int(400*self.wf), int(self.hf*510))
+        
+        self.lbl.move(int(10*self.wf), int(self.hf*35))
+        
+        self.lbl2.move(int(10*self.wf), int(self.hf*50))
+        
+        self.lbl3.move(int(10*self.wf), int(self.hf*80))
+        
+        self.lbl4.move(int(300*self.wf), int(self.hf*80))
+        
+        self.lbl5.move(int(540*self.wf), int(self.hf*80))
+
+        self.pw1.move(int(10*self.wf), int(100*self.hf))
+        self.pw1.resize(int(500*self.wf), int(400*self.hf))
+
+        self.pw2.move(int(540*self.wf), int(100*self.hf))
+        self.pw2.resize(int(500*self.wf), int(400*self.hf))
+
+
     def btnopen_clicked(self):
-
-        if "1)" in self.btnopen.text():
+        
+        if "1) " in self.btnopen.text():
+            
             self.getdir()
-            self.btnopen.move(200, 2)
-            framenum = str(self.specoblist[self.curobject].curframe + 1)
-            self.btnopen.setText(
-                f"2) Check and adjust spectra if needed: {framenum}/16"
-            )
+            framenum = self.specoblist[self.curobject].curframe + 1
+            totalframes = int(self.specoblist[self.curobject].Frames / 2)  
+            self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
             self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
+            self.btnopen.move(int(200*self.wf), int(3*self.hf))
             self.btnopen.adjustSize()
 
-        elif (
-            "2)" in self.btnopen.text()
-            and self.specoblist[self.curobject].curframe == 15
-        ):
-            self.btnopen.move(600, 2)
-            self.btnopen.setText("3) Generate report")
-            self.btnopen.adjustSize()
-            self.btnopen.setStyleSheet("QPushButton {background-color: green;}")
-            # self.btnopen.setStyleSheet('QPushButton {background-color: #A3C1DA; color: red;}')
-
-        elif "2)" in self.btnopen.text():
+        elif "2) " in self.btnopen.text():
             self.frameup()
-            framenum = str(self.specoblist[self.curobject].curframe + 1)
-            self.btnopen.setText(
-                f"2) Check and adjust spectra if needed: {framenum}/16"
-            )
-            self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
+            
 
-        elif "3)" in self.btnopen.text():
-            self.convert_to_all()
+
+    def check_btnopen(self):
+        
+        if "2) " in self.btnopen.text():
+            self.btnopen.move(int(200*self.wf), int(3*self.hf))
+            framenum = self.specoblist[self.curobject].curframe + 1
+            totalframes = int(self.specoblist[self.curobject].Frames / 2)    
+            self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
+            self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}") 
+
+        if int(self.specoblist[self.curobject].curframe + 1) == int(self.specoblist[self.curobject].Frames / 2):
+                self.btnreport.show()
+
+
+
+
 
     def about(self):
         """Message box to display script information
@@ -521,22 +623,17 @@ class Maingui(QtGui.QMainWindow):
         proposed_savedir = Path(self.dirname).parent
         proposed_savedir = proposed_savedir / "resultsMRS"
         if proposed_savedir.exists():
-            self.savedirname = str(
-                QtGui.QFileDialog.getExistingDirectory(
+            self.savedirname = QtGui.QFileDialog.getExistingDirectory(
                     self,
                     'Save Directory (WARNING: saving in "resultMRS" will overwrite previous results)',
-                    str(Path(self.dirname).parent.resolve()),
-                )
-            )
+                    str(Path(self.dirname).parent.resolve()),)
+        
         else:
             proposed_savedir.mkdir(parents=True, exist_ok=True)
-            self.savedirname = str(
-                QtGui.QFileDialog.getExistingDirectory(
-                    self,
+            self.savedirname = QtGui.QFileDialog.getExistingDirectory(self,
                     'Save Directory (default: "resultMRS" inside patient folder)',
-                    str(proposed_savedir.resolve()),
-                )
-            )
+                    str(proposed_savedir.resolve()),)
+
             if self.savedirname != str(proposed_savedir.resolve()):
                 proposed_savedir.rmdir()
 
@@ -582,10 +679,12 @@ class Maingui(QtGui.QMainWindow):
 
     def frameup(self):
         self.specoblist[self.curobject].frameup()
+        self.check_btnopen()
         self.plotframe()
 
     def framedown(self):
         self.specoblist[self.curobject].framedown()
+        self.check_btnopen()
         self.plotframe()
 
     def plotframe(self):
