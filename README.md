@@ -29,14 +29,15 @@ Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https
 #### 2) Installing NeonateMRS_UCLH_Python3 package:
    
 
-* Create and activate a virtual environment (venv) where all the NeonateMRS_UCLH_Python3 dependencies will be installed (recommended).   Here, we have chosen to create a venv called '*mrs*' and to place it inside a '*venvs*' folder in our `/home` directory:  
+* We will create and activate a virtual environment (venv) where all the NeonateMRS_UCLH_Python3 dependencies will be installed (recommended).   Here, we have chosen to create a venv called '*mrs*' and to place it inside a '*venvs*' folder in our `/home` directory:   
 
- `python3 -m venv ~/venvs/mrs`
+   *Create the venv:*   
+   `python3 -m venv ~/venvs/mrs`
  
-  *To activate the venv on Linux or macOS:*   
-  `source ~/venvs/mrs/bin/activate`    
-  *To activate the venv on Windows, using PowerShell type:*   
-  `/venvs/mrs/Scripts/activate.ps1`  
+   *To activate the venv on Linux or macOS:*    
+   `source ~/venvs/mrs/bin/activate`    
+   *To activate the venv on Windows, using PowerShell type:*    
+   `/venvs/mrs/Scripts/activate.ps1`  
 
    (On Windows, if you get the error message “Running Scripts Is Disabled On This System” when trying to activate the venv, [here](https://www.stanleyulili.com/powershell/solution-to-running-scripts-is-disabled-on-this-system-error-on-powershell/) is an easy solution).
 
