@@ -362,7 +362,7 @@ class Maingui(QtGui.QMainWindow):
         self.wf = w/self.initial_width
         self.hf = h/self.initial_height
 
-        print(f'App size {w}x{h} px')
+#        print(f'App size {w}x{h} px')
 
         self.btnreport.move(int(600*self.wf), int(4*self.hf))
 
