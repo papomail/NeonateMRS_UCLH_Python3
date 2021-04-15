@@ -31,27 +31,20 @@ Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https
 
 * Create and activate a virtual environment (venv) where all the NeonateMRS_UCLH_Python3 dependencies will be installed (recommended).   Here, we have chosen to create a venv called '*mrs*' and to place it inside a '*venvs*' folder in our `/home` directory:  
 
-  *On Linux or macOS:*   
-  `python3 -m venv ~/venvs/mrs`   
+ `python3 -m venv ~/venvs/mrs`
+ 
+  *To activate the venv on Linux or macOS:*   
   `source ~/venvs/mrs/bin/activate`    
-  
-  *On Windows:*   
-  `py -m venv ~/venvs/mrs`   
-   `.\venv\mrs\Scripts\activate`  
+  *To activate the venv on Windows, using PowerShell type:*   
+  `/venvs/mrs/Scripts/activate.ps1`  
 
    (On Windows, if you get the error message “Running Scripts Is Disabled On This System” when trying to activate the venv, [here](https://www.stanleyulili.com/powershell/solution-to-running-scripts-is-disabled-on-this-system-error-on-powershell/) is an easy solution).
 
 * Upgrade *pip* and *setuptools* (recommended):   
-  *On Linux or macOS:*     
-  `python -m pip install --upgrade pip setuptools`  
-  *On Linux or macOS:*   
-  `py -m pip install --upgrade pip setuptools`      
+  `python -m pip install --upgrade pip setuptools`   
   
-* Install NeonateMRS_UCLH_Python3 module and requirements:  
-  *On Linux or macOS:*     
+* Install NeonateMRS_UCLH_Python3 module and requirements:     
   `python -m pip install git+https://github.com/papomail/NeonateMRS_UCLH_Python3.git  `   
-  *On Windows:*   
-  `py -m pip install git+https://github.com/papomail/NeonateMRS_UCLH_Python3.git`
 
 * NeonateMRS_UCLH_Python3 is now installed! To run it, just type:   
   `mrs` 
@@ -64,7 +57,7 @@ Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https
     `source ~/venvs/mrs/bin/activate`   
     `mrs`   
     *On Windows:*   
-    `.\venv\mrs\Scripts\activate`   
+    `/venvs/mrs/Scripts/activate.ps1`  
     `mrs`
 
      
