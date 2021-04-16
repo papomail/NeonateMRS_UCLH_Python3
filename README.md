@@ -55,11 +55,12 @@ Before installing NeonateMRS_UCLH_Python3 package you will need [Python 3](https
 1) Launch NeonateMRS_UCLH_Python3. Remember that the environment in which it was installed needs to be activated. In our case we would type:    
    
     *On Linux or macOS:*   
-    `source ~/venvs/mrs/bin/activate`   
-    `mrs`   
+    `source ~/venvs/mrs/bin/activate`     
     *On Windows:*   
-    `/venvs/mrs/Scripts/activate.ps1`  
-    `mrs`
+    `/venvs/mrs/Scripts/activate.ps1`    
+    
+    With our venv active (the terminal shows the *mrs* prompt), type:   
+    `mrs` 
 
      
      
