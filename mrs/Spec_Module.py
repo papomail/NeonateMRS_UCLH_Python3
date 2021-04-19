@@ -98,7 +98,12 @@ class SpecObject():
             self.Frames = self.ds.NumberOfFrames
             self.displayTE = self.ds[0x2001, 0x1025].value
             self.curframe = 0
-                      
+            # self.fake_ppms = np.linspace(-10.9754, 20.33273,int(self.Datapoints))
+            self.fake_ppms = np.linspace(20.33273, -10.9754,int(self.Datapoints))
+            # print(f'self.SpectralWidth = {self.SpectralWidth}')
+            # print(f'self.Datapoints = {self.Datapoints}')
+            # print(f'self.TransmitterFrequency = {self.TransmitterFrequency}')
+            
         else:
             self.isspec = 0
             self.SpecData = []
@@ -110,6 +115,7 @@ class SpecObject():
 
     #Form complex k-space data and FFT to complex spectra.  Apodise also.      
     def complex_data(self):
+
         #Set up arrays to store data and flags for each dynamic acquisition
         #Number of dynamic acquisitions = self.Frames
         self.Kspace = []        #To store raw K-space
@@ -423,7 +429,6 @@ class SpecObject():
         name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
         #file_path = Tarquindir + '\\' + self.dirpass + '__' + name + 'proc_Tarquin'
         file_path = Path(Tarquindir , name + 'proc_Tarquin')
-        print(file_path)
         
         Spec_temp = self.SpecData
         counter = 0

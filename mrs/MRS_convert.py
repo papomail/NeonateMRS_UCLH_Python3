@@ -45,7 +45,7 @@ BASE_DIR = Path(__file__).parent
 ICONS_DIR = BASE_DIR / "Icons"
 
 HOME_DIR = Path.home()
-
+dy = 25
 # Define class for main GUI
 class Maingui(QtGui.QMainWindow):
     # class Maingui(QtWidgets.QWidget):
@@ -141,6 +141,7 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(dcmmssg)
 
 
+
         self.initial_width = 1060
         self.initial_height = 580
         self.wf = 1
@@ -162,27 +163,27 @@ class Maingui(QtGui.QMainWindow):
 
 
         # --------Add buttons---------------------------------------------------
-        self.btnup = QtGui.QPushButton("Spec up", self)
+        self.btnup = QtGui.QPushButton("Spec Up", self)
         self.btndown = QtGui.QPushButton("Spec Down", self)
-        self.btnfup = QtGui.QPushButton("F_up", self)
-        self.btnfdown = QtGui.QPushButton("F_down", self)
-        self.btninc = QtGui.QPushButton("Include", self)
-        self.btnexc = QtGui.QPushButton("Exclude", self)
+        self.btnfup = QtGui.QPushButton("Next Frame", self)
+        self.btnfdown = QtGui.QPushButton("Prev Frame", self)
+        self.btninc = QtGui.QPushButton("Include Frame", self)
+        self.btnexc = QtGui.QPushButton("Exclude Frame", self)
         self.btnorig = QtGui.QPushButton("Original", self)
         self.btnproc = QtGui.QPushButton("Processed", self)
-        self.btnChoup = QtGui.QPushButton("Peak1 +", self)
-        self.btnChodn = QtGui.QPushButton("Peak1 -", self)
-        self.btnPhup = QtGui.QPushButton("Phase +", self)
-        self.btnPhdn = QtGui.QPushButton("Phase -", self)
-        self.btnCrup = QtGui.QPushButton("Peak2 +", self)
-        self.btnCrdn = QtGui.QPushButton("Peak2 -", self)
-        self.btnnophase = QtGui.QPushButton("undo phase", self)
-        self.btnnoshift = QtGui.QPushButton("undo shift", self)
+        self.btnChoup = QtGui.QPushButton("Cho -", self)
+        self.btnChodn = QtGui.QPushButton("Cho +", self)
+        self.btnPhup = QtGui.QPushButton("Phase Inc", self)
+        self.btnPhdn = QtGui.QPushButton("Phase Dec", self)
+        self.btnCrup = QtGui.QPushButton("Cr -", self)
+        self.btnCrdn = QtGui.QPushButton("Cr +", self)
+        self.btnnophase = QtGui.QPushButton("Undo Phase", self)
+        self.btnnoshift = QtGui.QPushButton("Undo Shift", self)
         self.btnfit = QtGui.QPushButton("Show Fit", self)
 
 
         self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
-        self.btnreport.move(600, 4)
+        self.btnreport.move(600, 10+dy)
         self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold 14px;min-width: 10em;padding: 6px;}")
         self.btnreport.adjustSize()  
         self.btnreport.clicked.connect(self.convert_to_all)
@@ -191,106 +192,112 @@ class Maingui(QtGui.QMainWindow):
         self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
         # self.btnopen.resize(250, 30)
-        self.btnopen.move(10, 3)
+        self.btnopen.move(10, 10+dy)
         self.btnopen.adjustSize()  
 
         self.btnopen.clicked.connect(self.btnopen_clicked)
 
 
         self.btnup.resize(self.btnup.sizeHint())
-        self.btnup.move(20, 510)
+        self.btnup.move(20, 530)
         self.btnup.clicked.connect(self.specup)
 
         self.btndown.resize(self.btndown.sizeHint())
-        self.btndown.move(20, 540)
+        self.btndown.move(20, 550)
         self.btndown.clicked.connect(self.specdown)
 
-        self.btnfup.resize(self.btnfup.sizeHint())
-        self.btnfup.move(560, 510)
-        self.btnfup.clicked.connect(self.frameup)
-        # print(btnfup.size())
-
-        self.btnfdown.resize(self.btnfup.size())
-        self.btnfdown.move(560, 540)
+        
+        self.btnfdown.resize(self.btnfdown.minimumSizeHint())
+        self.btnfdown.move(533, 550)
         self.btnfdown.clicked.connect(self.framedown)
 
-        self.btninc.resize(self.btninc.sizeHint())
-        self.btninc.move(940, 510)
-        self.btninc.clicked.connect(self.IncFrame)
+        self.btnfup.resize(self.btnfdown.size())
+        self.btnfup.move(533, 530)
+        self.btnfup.clicked.connect(self.frameup)
 
-        self.btnexc.resize(self.btnexc.sizeHint())
-        self.btnexc.move(940, 540)
+
+        self.btnexc.resize(self.btnexc.minimumSizeHint())
+        self.btnexc.move(930, 550)
         self.btnexc.clicked.connect(self.ExcFrame)
 
-        self.btnorig.resize(self.btnorig.sizeHint())
-        self.btnorig.move(120, 510)
+        self.btninc.resize(self.btnexc.size())
+        self.btninc.move(930, 530)
+        self.btninc.clicked.connect(self.IncFrame)
+
+
+        self.btnorig.resize(self.btnorig.minimumSizeHint())
+        self.btnorig.move(120, 530)
         self.btnorig.clicked.connect(self.plotorigspec)
 
-        self.btnnophase.resize(self.btnnophase.sizeHint())
-        self.btnnophase.move(300, 510)
+        self.btnnophase.resize(self.btnnophase.minimumSizeHint())
+        self.btnnophase.move(280, 550)
         self.btnnophase.clicked.connect(self.undophase)
 
-        self.btnnoshift.resize(self.btnnoshift.sizeHint())
-        self.btnnoshift.move(300, 540)
+        self.btnnoshift.resize(self.btnnoshift.minimumSizeHint())
+        self.btnnoshift.move(280, 530)
         self.btnnoshift.clicked.connect(self.undoshift)
 
-        self.btnproc.resize(self.btnproc.sizeHint())
-        self.btnproc.move(120, 540)
+        self.btnproc.resize(self.btnproc.minimumSizeHint())
+        self.btnproc.move(120, 550)
         self.btnproc.clicked.connect(self.plotprocspec)
 
-        self.btnChoup.resize(self.btnChoup.sizeHint())
-        self.btnChoup.move(720, 510)
+        self.btnChodn.resize(self.btnChodn.minimumSizeHint())
+        self.btnChodn.move(745, 550)
+        self.btnChodn.clicked.connect(self.Cho_dn)
+        
+        self.btnChoup.resize(self.btnChodn.size())
+        self.btnChoup.move(745, 530)
         self.btnChoup.clicked.connect(self.Cho_up)
 
-        self.btnChodn.resize(self.btnChodn.sizeHint())
-        self.btnChodn.move(720, 540)
-        self.btnChodn.clicked.connect(self.Cho_dn)
-
-        self.btnPhup.resize(self.btnPhup.sizeHint())
-        self.btnPhup.move(640, 510)
-        self.btnPhup.clicked.connect(self.Phase_up)
-
-        self.btnPhdn.resize(self.btnPhdn.sizeHint())
-        self.btnPhdn.move(640, 540)
+        
+        self.btnPhdn.resize(self.btnPhdn.minimumSizeHint())
+        self.btnPhdn.move(640, 550)
         self.btnPhdn.clicked.connect(self.Phase_dn)
 
-        self.btnCrup.resize(self.btnCrup.sizeHint())
-        self.btnCrup.move(800, 510)
+        self.btnPhup.resize(self.btnPhdn.size())
+        self.btnPhup.move(640, 530)
+        self.btnPhup.clicked.connect(self.Phase_up)
+
+
+        self.btnCrup.resize(self.btnCrup.minimumSizeHint())
+        self.btnCrup.move(810, 530)
         self.btnCrup.clicked.connect(self.Cr_up)
 
-        self.btnCrdn.resize(self.btnCrdn.sizeHint())
-        self.btnCrdn.move(800, 540)
+        self.btnCrdn.resize(self.btnCrup.size())
+        self.btnCrdn.move(810, 550)
         self.btnCrdn.clicked.connect(self.Cr_dn)
 
-        self.btnfit.resize(self.btnfit.sizeHint())
-        self.btnfit.move(400, 510)
+        self.btnfit.resize(self.btnfit.minimumSizeHint())
+        self.btnfit.move(400, 530)
         self.btnfit.clicked.connect(self.plotfit)
 
         # -------Add text-------------------------------------------------------
         self.lbl = QtGui.QLabel(self)
-        self.lbl.move(10, 35)
+        self.lbl.move(10, 40+dy)
         self.lbl.setText("Open directory name:")
         self.lbl.adjustSize()
 
         self.lbl2 = QtGui.QLabel(self)
-        self.lbl2.move(10, 50)
+        self.lbl2.move(10, 55+dy)
         self.lbl2.setText("Save directory name:")
         self.lbl2.adjustSize()
 
         self.lbl3 = QtGui.QLabel(self)
-        self.lbl3.move(10, 80)
+        self.lbl3.move(10, 80+dy)
         self.lbl3.setText("Current Spectrum: ")
         self.lbl3.adjustSize()
 
         self.lbl4 = QtGui.QLabel(self)
-        self.lbl4.move(300, 80)
+        self.lbl4.move(300, 80+dy)
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
         self.lbl5 = QtGui.QLabel(self)
-        self.lbl5.move(540, 80)
+        self.lbl5.move(540, 80+dy)
         self.lbl5.setText("Current Frame: ")
         self.lbl5.adjustSize()
+        self.def_col = self.lbl5.palette().button().color();
+
 
         # ------- Add pyqtgraph objects ---------------------
         ## Switch to using white background and black foreground
@@ -298,14 +305,21 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption("foreground", "k")
 
         self.pw1 = pg.PlotWidget(self)
-        self.pw1.setGeometry(QtCore.QRect(10, 100, int(500*self.width()/self.initial_width), int(400*self.height()/self.initial_height)))
+        self.pw1.setGeometry(QtCore.QRect(10, 100+dy, int(500*self.width()/self.initial_width), int(400*self.height()/self.initial_height)))
         self.pw1.show()
+        self.pw1.getViewBox().invertX(True)
+        self.pw1.setXRange(0.4, 4.8, padding=0)
+        self.pw1.setYRange(-0.2, 0.9, padding=0)
+
         self.p1 = self.pw1.plot(pen={"color": "b", "width": 2})
         self.p2 = self.pw1.plot(pen={"color": "r", "width": 2})
         self.p3 = self.pw1.plot(pen={"color": "r", "width": 2})
 
         self.pw2 = pg.PlotWidget(self)
-        self.pw2.setGeometry(QtCore.QRect(540, 100, 500, 400))
+        self.pw2.setGeometry(QtCore.QRect(540, 100+dy, 500, 400))
+        self.pw2.getViewBox().invertX(True)
+        self.pw2.setXRange(0.4, 4.8, padding=0)
+        self.pw2.setYRange(-0.02, 0.08, padding=0)
 
         self.pw2.show()
         self.p21 = self.pw2.plot(pen={"color": "b", "width": 2})
@@ -364,60 +378,60 @@ class Maingui(QtGui.QMainWindow):
 
 #        print(f'App size {w}x{h} px')
 
-        self.btnreport.move(int(600*self.wf), int(4*self.hf))
+        self.btnreport.move(int(600*self.wf), int((10+dy)*self.hf))
 
         if "2) " in self.btnopen.text():
-             self.btnopen.move(int(200*self.wf), int(3*self.hf))
+             self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf))
    
-        self.btnup.move(int(20*self.wf), int(510*self.hf))
+        self.btnup.move(int(20*self.wf), int(530*self.hf))
         
-        self.btndown.move(int(20*self.wf), int(540*self.hf))
+        self.btndown.move(int(20*self.wf), int(550*self.hf))
         
-        self.btnfup.move(int(560*self.wf), int(510*self.hf))
+        self.btnfup.move(int(533*self.wf), int(530*self.hf))
         
-        self.btnfdown.move(int(560*self.wf), int(540*self.hf))
+        self.btnfdown.move(int(533*self.wf), int(550*self.hf))
         
-        self.btninc.move(int(940*self.wf), int(510*self.hf))
+        self.btninc.move(int(930*self.wf), int(530*self.hf))
         
-        self.btnexc.move(int(940*self.wf), int(540*self.hf))
+        self.btnexc.move(int(930*self.wf), int(550*self.hf))
         
-        self.btnorig.move(int(120*self.wf), int(510*self.hf))
+        self.btnorig.move(int(120*self.wf), int(530*self.hf))
         
-        self.btnnophase.move(int(300*self.wf), int(self.hf*510))
+        self.btnnophase.move(int(280*self.wf), int(self.hf*550))
         
-        self.btnnoshift.move(int(300*self.wf), int(self.hf*540))
+        self.btnnoshift.move(int(280*self.wf), int(self.hf*530))
         
-        self.btnproc.move(int(120*self.wf), int(self.hf*540))
+        self.btnproc.move(int(120*self.wf), int(self.hf*550))
         
-        self.btnChoup.move(int(720*self.wf), int(self.hf*510))
+        self.btnChoup.move(int(745*self.wf), int(self.hf*530))
        
-        self.btnChodn.move(int(720*self.wf), int(self.hf*540))
+        self.btnChodn.move(int(745*self.wf), int(self.hf*550))
         
-        self.btnPhup.move(int(640*self.wf), int(self.hf*510))
+        self.btnPhup.move(int(640*self.wf), int(self.hf*530))
         
-        self.btnPhdn.move(int(640*self.wf), int(self.hf*540))
+        self.btnPhdn.move(int(640*self.wf), int(self.hf*550))
         
-        self.btnCrup.move(int(800*self.wf), int(self.hf*510))
+        self.btnCrup.move(int(810*self.wf), int(self.hf*530))
         
-        self.btnCrdn.move(int(800*self.wf), int(self.hf*540))
+        self.btnCrdn.move(int(810*self.wf), int(self.hf*550))
         
-        self.btnfit.move(int(400*self.wf), int(self.hf*510))
+        self.btnfit.move(int(400*self.wf), int(self.hf*530))
         
-        self.lbl.move(int(10*self.wf), int(self.hf*35))
+        self.lbl.move(int(10*self.wf), int(self.hf*(40+dy)))
         
-        self.lbl2.move(int(10*self.wf), int(self.hf*50))
+        self.lbl2.move(int(10*self.wf), int(self.hf*(55+dy)))
         
-        self.lbl3.move(int(10*self.wf), int(self.hf*80))
+        self.lbl3.move(int(10*self.wf), int(self.hf*(80+dy)))
         
-        self.lbl4.move(int(300*self.wf), int(self.hf*80))
+        self.lbl4.move(int(300*self.wf), int(self.hf*(80+dy)))
         
-        self.lbl5.move(int(540*self.wf), int(self.hf*80))
+        self.lbl5.move(int(540*self.wf), int(self.hf*(80+dy)))
 
-        self.pw1.move(int(10*self.wf), int(100*self.hf))
-        self.pw1.resize(int(500*self.wf), int(400*self.hf))
+        self.pw1.move(int(10*self.wf), int((100+dy)*self.hf))
+        self.pw1.resize(int(500*self.wf), int((400)*self.hf))
 
-        self.pw2.move(int(540*self.wf), int(100*self.hf))
-        self.pw2.resize(int(500*self.wf), int(400*self.hf))
+        self.pw2.move(int(540*self.wf), int((100+dy)*self.hf))
+        self.pw2.resize(int(500*self.wf), int((400)*self.hf))
 
 
     def btnopen_clicked(self):
@@ -429,7 +443,7 @@ class Maingui(QtGui.QMainWindow):
             totalframes = int(self.specoblist[self.curobject].Frames / 2)  
             self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
             self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
-            self.btnopen.move(int(200*self.wf), int(3*self.hf))
+            self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf))
             self.btnopen.adjustSize()
 
         elif "2) " in self.btnopen.text():
@@ -440,7 +454,7 @@ class Maingui(QtGui.QMainWindow):
     def check_btnopen(self):
         
         if "2) " in self.btnopen.text():
-            self.btnopen.move(int(200*self.wf), int(3*self.hf))
+            self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf))
             framenum = self.specoblist[self.curobject].curframe + 1
             totalframes = int(self.specoblist[self.curobject].Frames / 2)    
             self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
@@ -540,7 +554,9 @@ class Maingui(QtGui.QMainWindow):
         self.p2.clear()
         self.p3.clear()
         # set data for pen p1 as original summed spectrum with no processing
-        self.p1.setData(y=np.real(self.specoblist[self.curobject].OriginalSpectrum))
+        self.p1.setData(y=np.real(self.specoblist[self.curobject].OriginalSpectrum), x=self.specoblist[self.curobject].fake_ppms )
+        
+
         # Markers will show bounds of phasing area
         x1_marker = np.ones(2)
         x2_marker = np.ones(2)
@@ -549,10 +565,10 @@ class Maingui(QtGui.QMainWindow):
         y_marker[0] = min(np.real(self.specoblist[self.curobject].OriginalSpectrum))
         y_marker[1] = max(np.real(self.specoblist[self.curobject].OriginalSpectrum))
         # Get phase limits for x marker
-        x1_marker[0] = self.specoblist[self.curobject].plim_l
-        x1_marker[1] = self.specoblist[self.curobject].plim_l
-        x2_marker[0] = self.specoblist[self.curobject].plim_r
-        x2_marker[1] = self.specoblist[self.curobject].plim_r
+        x1_marker[0] = self.specoblist[self.curobject].plim_l*(-0.01529464093)+20.33273
+        x1_marker[1] = x1_marker[0]
+        x2_marker[0] = self.specoblist[self.curobject].plim_r*(-0.01529464093)+20.33273
+        x2_marker[1] = x2_marker[0]
         # Set pens p2 and p3 as the phase area limits
         self.p2.setData(x1_marker, y_marker)
         self.p3.setData(x2_marker, y_marker)
@@ -567,7 +583,9 @@ class Maingui(QtGui.QMainWindow):
         self.p2.clear()
         self.p3.clear()
         # set data for pen p1 as processed summed spectrum with no processing
-        self.p1.setData(y=np.real(self.specoblist[self.curobject].FinalSpectrumauto))
+        self.p1.setData(y=np.real(self.specoblist[self.curobject].FinalSpectrumauto), x=self.specoblist[self.curobject].fake_ppms)
+        # self.p1.getViewBox().invertX(True)
+
         # Markers will show bounds of phasing area
         x1_marker = np.ones(2)
         x2_marker = np.ones(2)
@@ -576,10 +594,10 @@ class Maingui(QtGui.QMainWindow):
         y_marker[0] = min(np.real(self.specoblist[self.curobject].FinalSpectrumauto))
         y_marker[1] = max(np.real(self.specoblist[self.curobject].FinalSpectrumauto))
         # Get phase limits for x marker
-        x1_marker[0] = self.specoblist[self.curobject].plim_l
-        x1_marker[1] = self.specoblist[self.curobject].plim_l
-        x2_marker[0] = self.specoblist[self.curobject].plim_r
-        x2_marker[1] = self.specoblist[self.curobject].plim_r
+        x1_marker[0] = self.specoblist[self.curobject].plim_l*(-0.01529464093)+20.33273
+        x1_marker[1] = x1_marker[0]
+        x2_marker[0] = self.specoblist[self.curobject].plim_r*(-0.01529464093)+20.33273
+        x2_marker[1] = x2_marker[0]
         self.p2.setData(x1_marker, y_marker)
         self.p3.setData(x2_marker, y_marker)
         self.PlotType = 1
@@ -682,13 +700,16 @@ class Maingui(QtGui.QMainWindow):
         self.check_btnopen()
         self.plotframe()
 
+
     def framedown(self):
         self.specoblist[self.curobject].framedown()
         self.check_btnopen()
         self.plotframe()
 
+
     def plotframe(self):
-        self.p21.setData(y=np.real(self.specoblist[self.curobject].current_frame))
+        self.p21.setData(y=np.real(self.specoblist[self.curobject].current_frame), x=self.specoblist[self.curobject].fake_ppms)
+        # self.p21.getViewBox().invertX(True)
         cur_frame = self.specoblist[self.curobject].curframe
 
         x1_marker = np.ones(2)
@@ -696,12 +717,14 @@ class Maingui(QtGui.QMainWindow):
         y_marker = np.ones(2)
         y_marker[0] = min(np.real(self.specoblist[self.curobject].current_frame))
         y_marker[1] = max(np.real(self.specoblist[self.curobject].current_frame))
-        x1_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][0]
-        x1_marker[1] = self.specoblist[self.curobject].peakposarr[cur_frame][0]
-        x2_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][1]
-        x2_marker[1] = self.specoblist[self.curobject].peakposarr[cur_frame][1]
+        x1_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][0]*(-0.01529464093)+20.33273
+        x1_marker[1] = x1_marker[0]
+        x2_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][1]*(-0.01529464093)+20.33273
+        x2_marker[1] = x2_marker[0]
         self.p22.setData(x1_marker, y_marker)
+        # self.p22.getViewBox().invertX(True)
         self.p23.setData(x2_marker, y_marker)
+        # self.p23.getViewBox().invertX(True)
 
         if cur_frame + 1 == 1:
             ordinal_sufix = "st"
@@ -716,23 +739,18 @@ class Maingui(QtGui.QMainWindow):
             ordinal_sufix = "th"
 
         if self.specoblist[self.curobject].IncludeFrame[cur_frame] == 1:
-            textout = (
-                "Include Frame: "
-                + str(cur_frame + 1)
-                + ordinal_sufix
-                + "  :"
-                + str(self.specoblist[self.curobject].PatName)
-            )
+            textout = f'Include Frame: {(cur_frame + 1)}{ordinal_sufix} : {self.specoblist[self.curobject].PatName}'
+            
         else:
-            textout = (
-                "Exclude Frame: "
-                + str(cur_frame + 1)
-                + ordinal_sufix
-                + "  :"
-                + str(self.specoblist[self.curobject].PatName)
-            )
+            textout = f'Exclude Frame: {(cur_frame + 1)}{ordinal_sufix} : {self.specoblist[self.curobject].PatName}'
+
+            
         self.lbl5.setText(textout)
         self.lbl5.adjustSize()
+        if 'Exclude' in textout:
+            self.lbl5.setStyleSheet("QLabel {color: red;}")
+        else:
+            self.lbl5.setStyleSheet("QLabel {color: self.def_col;}")
 
     def undophase(self):
         self.specoblist[self.curobject].undophase()
@@ -748,28 +766,28 @@ class Maingui(QtGui.QMainWindow):
         cur_frame = self.specoblist[self.curobject].curframe
         self.specoblist[self.curobject].IncludeFrame[cur_frame] = 1
 
-        textout = (
-            "Include Frame: "
-            + str(cur_frame)
-            + " :"
-            + str(self.specoblist[self.curobject].PatName)
-        )
-        self.lbl5.setText(textout)
-        self.lbl5.adjustSize()
+        # textout = f'Include Frame: {(cur_frame + 1)} : {self.specoblist[self.curobject].PatName}'
+
+        # self.lbl5.setText(textout)
+        # self.lbl5.adjustSize()
+
         self.specoblist[self.curobject].addframes()
+        self.plotframe()
+        self.plotprocspec()
 
     def ExcFrame(self):
         cur_frame = self.specoblist[self.curobject].curframe
         self.specoblist[self.curobject].IncludeFrame[cur_frame] = 0
-        textout = (
-            "Exclude Frame: "
-            + str(cur_frame)
-            + " :"
-            + str(self.specoblist[self.curobject].PatName)
-        )
-        self.lbl5.setText(textout)
-        self.lbl5.adjustSize()
+        # textout = f'Exclude Frame: {(cur_frame + 1)} : {self.specoblist[self.curobject].PatName}'
+
+        # self.lbl5.setText(textout)
+        # self.lbl5.adjustSize()
+        
+
+
         self.specoblist[self.curobject].addframes()
+        self.plotframe()
+        self.plotprocspec()
 
     def Phase_up(self):
         increment = 5
@@ -826,11 +844,17 @@ class Maingui(QtGui.QMainWindow):
 
             Data_arr = np.array(Data, float)
             Fit_arr = np.array(Fit, float)
+            PPM_arr = np.array(PPM, float)
+
             self.p1.clear()
-            self.p2.clear()
+            self.p2.clear()        
             self.p3.clear()
-            self.p1.setData(Data_arr)
-            self.p2.setData(Fit_arr)
+
+            self.p1.setData(y=Data_arr, x=PPM_arr)
+            self.p2.setData(y=Fit_arr, x=PPM_arr)
+            self.pw1.setXRange(0.4, 4.8, padding=0)
+            self.pw1.setYRange(-0.02, 0.08, padding=0)
+
         except:
             dummy = 1
 
