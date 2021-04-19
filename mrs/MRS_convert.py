@@ -141,14 +141,14 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(dcmmssg)
 
 
-        scale = 1.6
-        self.initial_width = int(1060*scale)
-        self.initial_height = int(580*scale)
+        self.self.scale = 1.6
+        self.initial_width = int(1060*self.self.scale)
+        self.initial_height = int(580*self.self.scale)
         self.wf = 1
         self.hf = 1
 # ------Main Window Geometry-----------
         # This should come at the end once all GUI item are created
-        self.setGeometry(300*scale, 300*scale, self.initial_width, self.initial_height)
+        self.setGeometry(300*self.self.scale, 300*self.self.scale, self.initial_width, self.initial_height)
 
         self.setWindowTitle("Tarquin Conversion Tool")
         self.setWindowIcon(QtGui.QIcon(tarqIcon))
@@ -183,117 +183,119 @@ class Maingui(QtGui.QMainWindow):
 
 
         self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
-        self.btnreport.move(600*scale, (10+dy)*scale)
-        self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold 14px;min-width: 10em;padding: 6px;}")
-        self.btnreport.adjustSize()  
+        self.btnreport.move(600*self.self.scale, (10+dy)*self.self.scale)
+        self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold ;min-width: 10em;padding: 6px;}")
+        self.btnreport.adjustSize() 
+        self.btnreport.resize(self.btnreport.sizeHint())
+ 
         self.btnreport.clicked.connect(self.convert_to_all)
         self.btnreport.hide()
 
         self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
         # self.btnopen.resize(250, 30)
-        self.btnopen.move(10*scale, (10+dy)*scale)
+        self.btnopen.move(10*self.self.scale, (10+dy)*self.self.scale)
         self.btnopen.adjustSize()  
 
         self.btnopen.clicked.connect(self.btnopen_clicked)
 
 
         self.btnup.resize(self.btnup.sizeHint())
-        self.btnup.move(20*scale, 530*scale)
+        self.btnup.move(20*self.scale, 530*self.scale)
         self.btnup.clicked.connect(self.specup)
 
         self.btndown.resize(self.btndown.sizeHint())
-        self.btndown.move(20*scale, 550*scale)
+        self.btndown.move(20*self.scale, 550*self.scale)
         self.btndown.clicked.connect(self.specdown)
 
         
         self.btnfdown.resize(self.btnfdown.minimumSizeHint())
-        self.btnfdown.move(533*scale, 550*scale)
+        self.btnfdown.move(533*self.scale, 550*self.scale)
         self.btnfdown.clicked.connect(self.framedown)
 
         self.btnfup.resize(self.btnfdown.size())
-        self.btnfup.move(533*scale, 530*scale)
+        self.btnfup.move(533*self.scale, 530*self.scale)
         self.btnfup.clicked.connect(self.frameup)
 
 
         self.btnexc.resize(self.btnexc.minimumSizeHint())
-        self.btnexc.move(930*scale, 550*scale)
+        self.btnexc.move(930*self.scale, 550*self.scale)
         self.btnexc.clicked.connect(self.ExcFrame)
 
         self.btninc.resize(self.btnexc.size())
-        self.btninc.move(930*scale, 530*scale)
+        self.btninc.move(930*self.scale, 530*self.scale)
         self.btninc.clicked.connect(self.IncFrame)
 
 
         self.btnorig.resize(self.btnorig.minimumSizeHint())
-        self.btnorig.move(120*scale, 530*scale)
+        self.btnorig.move(120*self.scale, 530*self.scale)
         self.btnorig.clicked.connect(self.plotorigspec)
 
         self.btnnophase.resize(self.btnnophase.minimumSizeHint())
-        self.btnnophase.move(280*scale, 550*scale)
+        self.btnnophase.move(280*self.scale, 550*self.scale)
         self.btnnophase.clicked.connect(self.undophase)
 
         self.btnnoshift.resize(self.btnnoshift.minimumSizeHint())
-        self.btnnoshift.move(280*scale, 530*scale)
+        self.btnnoshift.move(280*self.scale, 530*self.scale)
         self.btnnoshift.clicked.connect(self.undoshift)
 
         self.btnproc.resize(self.btnproc.minimumSizeHint())
-        self.btnproc.move(120*scale, 550*scale)
+        self.btnproc.move(120*self.scale, 550*self.scale)
         self.btnproc.clicked.connect(self.plotprocspec)
 
         self.btnChodn.resize(self.btnChodn.minimumSizeHint())
-        self.btnChodn.move(745*scale, 550*scale)
+        self.btnChodn.move(745*self.scale, 550*self.scale)
         self.btnChodn.clicked.connect(self.Cho_dn)
         
         self.btnChoup.resize(self.btnChodn.size())
-        self.btnChoup.move(745*scale, 530*scale)
+        self.btnChoup.move(745*self.scale, 530*self.scale)
         self.btnChoup.clicked.connect(self.Cho_up)
 
         
         self.btnPhdn.resize(self.btnPhdn.minimumSizeHint())
-        self.btnPhdn.move(640*scale, 550*scale)
+        self.btnPhdn.move(640*self.scale, 550*self.scale)
         self.btnPhdn.clicked.connect(self.Phase_dn)
 
         self.btnPhup.resize(self.btnPhdn.size())
-        self.btnPhup.move(640*scale, 530*scale)
+        self.btnPhup.move(640*self.scale, 530*self.scale)
         self.btnPhup.clicked.connect(self.Phase_up)
 
 
         self.btnCrup.resize(self.btnCrup.minimumSizeHint())
-        self.btnCrup.move(810*scale, 530*scale)
+        self.btnCrup.move(810*self.scale, 530*self.scale)
         self.btnCrup.clicked.connect(self.Cr_up)
 
         self.btnCrdn.resize(self.btnCrup.size())
-        self.btnCrdn.move(810*scale, 550*scale)
+        self.btnCrdn.move(810*self.scale, 550*self.scale)
         self.btnCrdn.clicked.connect(self.Cr_dn)
 
         self.btnfit.resize(self.btnfit.minimumSizeHint())
-        self.btnfit.move(400*scale, 530*scale)
+        self.btnfit.move(400*self.scale, 530*self.scale)
         self.btnfit.clicked.connect(self.plotfit)
 
         # -------Add text-------------------------------------------------------
         self.lbl = QtGui.QLabel(self)
-        self.lbl.move(10*scale, (40+dy)*scale)
+        self.lbl.move(10*self.scale, (40+dy)*self.scale)
         self.lbl.setText("Open directory name:")
         self.lbl.adjustSize()
 
         self.lbl2 = QtGui.QLabel(self)
-        self.lbl2.move(10*scale, (55+dy)*scale)
+        self.lbl2.move(10*self.scale, (55+dy)*self.scale)
         self.lbl2.setText("Save directory name:")
         self.lbl2.adjustSize()
 
         self.lbl3 = QtGui.QLabel(self)
-        self.lbl3.move(10*scale, (80+dy)*scale)
+        self.lbl3.move(10*self.scale, (80+dy)*self.scale)
         self.lbl3.setText("Current Spectrum: ")
         self.lbl3.adjustSize()
 
         self.lbl4 = QtGui.QLabel(self)
-        self.lbl4.move(300*scale, (80+dy)*scale)
+        self.lbl4.move(300*self.scale, (80+dy)*self.scale)
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
         self.lbl5 = QtGui.QLabel(self)
-        self.lbl5.move(540*scale, (80+dy)*scale)
+        self.lbl5.move(540*self.scale, (80+dy)*self.scale)
         self.lbl5.setText("Current Frame: ")
         self.lbl5.adjustSize()
         self.def_col = self.lbl5.palette().button().color();
@@ -305,7 +307,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption("foreground", "k")
 
         self.pw1 = pg.PlotWidget(self)
-        self.pw1.setGeometry(QtCore.QRect(10, 100+dy, int(500*self.width()/self.initial_width), int(400*self.height()/self.initial_height)))
+        self.pw1.setGeometry(QtCore.QRect(10*self.scale, (100+dy)*self.scale, int(500*self.width()*self.scale/self.initial_width), int(400*self.height()*self.scale/self.initial_height)))
         self.pw1.show()
         self.pw1.getViewBox().invertX(True)
         self.pw1.setXRange(0.4, 4.8, padding=0)
@@ -316,7 +318,7 @@ class Maingui(QtGui.QMainWindow):
         self.p3 = self.pw1.plot(pen={"color": "r", "width": 2})
 
         self.pw2 = pg.PlotWidget(self)
-        self.pw2.setGeometry(QtCore.QRect(540*scale, (100+dy)*scale, 500*scale, 400*scale))
+        self.pw2.setGeometry(QtCore.QRect(540*self.scale, (100+dy)*self.scale, 500*self.scale, 400*self.scale))
         self.pw2.getViewBox().invertX(True)
         self.pw2.setXRange(0.4, 4.8, padding=0)
         self.pw2.setYRange(-0.02, 0.08, padding=0)
@@ -329,7 +331,7 @@ class Maingui(QtGui.QMainWindow):
         # --------Add Message Box---------------
         # Note this opens a separate windpw with a message
         self.mssg = QtGui.QMessageBox()
-        self.mssg.setGeometry(310*scale, 240*scale, 280*scale, 280*scale)
+        self.mssg.setGeometry(310*self.scale, 240*self.scale, 280*self.scale, 280*self.scale)
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
             "Version 1.4.1 \n\n"
@@ -338,7 +340,7 @@ class Maingui(QtGui.QMainWindow):
         )
 
         self.dcmfmt = QtGui.QMessageBox()
-        self.dcmfmt.setGeometry(310*scale, 240*scale, 280*scale, 280*scale)
+        self.dcmfmt.setGeometry(310*self.scale, 240*self.scale, 280*self.scale, 280*self.scale)
         self.dcmfmt.setWindowTitle("DICOM formats")
         self.dcmfmt.setText("Only Dicom4 data can be processed\n\n")
 
@@ -378,60 +380,60 @@ class Maingui(QtGui.QMainWindow):
 
 #        print(f'App size {w}x{h} px')
 
-        self.btnreport.move(int(600*self.wf*scale), int((10+dy)*self.hf*scale))
+        self.btnreport.move(int(600*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
 
         if "2) " in self.btnopen.text():
-             self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf*scale))
+             self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf*self.scale))
    
-        self.btnup.move(int(20*self.wf*scale), int(530*self.hf*scale))
+        self.btnup.move(int(20*self.wf*self.scale), int(530*self.hf*self.scale))
         
-        self.btndown.move(int(20*self.wf*scale), int(550*self.hf*scale))
+        self.btndown.move(int(20*self.wf*self.scale), int(550*self.hf*self.scale))
         
-        self.btnfup.move(int(533*self.wf*scale), int(530*self.hf*scale))
+        self.btnfup.move(int(533*self.wf*self.scale), int(530*self.hf*self.scale))
         
-        self.btnfdown.move(int(533*self.wf*scale), int(550*self.hf*scale))
+        self.btnfdown.move(int(533*self.wf*self.scale), int(550*self.hf*self.scale))
         
-        self.btninc.move(int(930*self.wf*scale), int(530*self.hf*scale))
+        self.btninc.move(int(930*self.wf*self.scale), int(530*self.hf*self.scale))
         
-        self.btnexc.move(int(930*self.wf*scale), int(550*self.hf*scale))
+        self.btnexc.move(int(930*self.wf*self.scale), int(550*self.hf*self.scale))
         
-        self.btnorig.move(int(120*self.wf*scale), int(530*self.hf*scale))
+        self.btnorig.move(int(120*self.wf*self.scale), int(530*self.hf*self.scale))
         
-        self.btnnophase.move(int(280*self.wf*scale), int(self.hf*550*scale))
+        self.btnnophase.move(int(280*self.wf*self.scale), int(self.hf*550*self.scale))
         
-        self.btnnoshift.move(int(280*self.wf*scale), int(self.hf*530*scale))
+        self.btnnoshift.move(int(280*self.wf*self.scale), int(self.hf*530*self.scale))
         
-        self.btnproc.move(int(120*self.wf*scale), int(self.hf*550*scale))
+        self.btnproc.move(int(120*self.wf*self.scale), int(self.hf*550*self.scale))
         
-        self.btnChoup.move(int(745*self.wf*scale), int(self.hf*530*scale))
+        self.btnChoup.move(int(745*self.wf*self.scale), int(self.hf*530*self.scale))
        
-        self.btnChodn.move(int(745*self.wf*scale), int(self.hf*550*scale))
+        self.btnChodn.move(int(745*self.wf*self.scale), int(self.hf*550*self.scale))
         
-        self.btnPhup.move(int(640*self.wf*scale), int(self.hf*530*scale))
+        self.btnPhup.move(int(640*self.wf*self.scale), int(self.hf*530*self.scale))
         
-        self.btnPhdn.move(int(640*self.wf*scale), int(self.hf*550*scale))
+        self.btnPhdn.move(int(640*self.wf*self.scale), int(self.hf*550*self.scale))
         
-        self.btnCrup.move(int(810*self.wf*scale), int(self.hf*530*scale))
+        self.btnCrup.move(int(810*self.wf*self.scale), int(self.hf*530*self.scale))
         
-        self.btnCrdn.move(int(810*self.wf*scale), int(self.hf*550*scale))
+        self.btnCrdn.move(int(810*self.wf*self.scale), int(self.hf*550*self.scale))
         
-        self.btnfit.move(int(400*self.wf*scale), int(self.hf*530*scale))
+        self.btnfit.move(int(400*self.wf*self.scale), int(self.hf*530*self.scale))
         
-        self.lbl.move(int(10*self.wf*scale), int(self.hf*(40+dy)*scale))
+        self.lbl.move(int(10*self.wf*self.scale), int(self.hf*(40+dy)*self.scale))
         
-        self.lbl2.move(int(10*self.wf*scale), int(self.hf*(55+dy)*scale))
+        self.lbl2.move(int(10*self.wf*self.scale), int(self.hf*(55+dy)*self.scale))
         
-        self.lbl3.move(int(10*self.wf*scale), int(self.hf*(80+dy)*scale))
+        self.lbl3.move(int(10*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
-        self.lbl4.move(int(300*self.wf*scale), int(self.hf*(80+dy)*scale))
+        self.lbl4.move(int(300*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
-        self.lbl5.move(int(540*self.wf*scale), int(self.hf*(80+dy)*scale))
+        self.lbl5.move(int(540*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
 
-        self.pw1.move(int(10*self.wf*scale), int((100+dy)*self.hf*scale))
-        self.pw1.resize(int(500*self.wf*scale), int((400)*self.hf*scale))
+        self.pw1.move(int(10*self.wf*self.scale), int((100+dy)*self.hf*self.scale))
+        self.pw1.resize(int(500*self.wf*self.scale), int((400)*self.hf*self.scale))
 
-        self.pw2.move(int(540*self.wf*scale), int((100+dy)*self.hf*scale))
-        self.pw2.resize(int(500*self.wf*scale), int((400)*self.hf*scale))
+        self.pw2.move(int(540*self.wf*self.scale), int((100+dy)*self.hf*self.scale))
+        self.pw2.resize(int(500*self.wf*self.scale), int((400)*self.hf*self.scale))
 
 
     def btnopen_clicked(self):
@@ -454,7 +456,7 @@ class Maingui(QtGui.QMainWindow):
     def check_btnopen(self):
         
         if "2) " in self.btnopen.text():
-            self.btnopen.move(int(200*self.wf*scale), int((10+dy)*self.hf*scale))
+            self.btnopen.move(int(200*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
             framenum = self.specoblist[self.curobject].curframe + 1
             totalframes = int(self.specoblist[self.curobject].Frames / 2)    
             self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
