@@ -141,14 +141,14 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(dcmmssg)
 
 
-        self.self.scale = 1.6
-        self.initial_width = int(1060*self.self.scale)
-        self.initial_height = int(580*self.self.scale)
+        self.scale = 1.6
+        self.initial_width = int(1060*self.scale)
+        self.initial_height = int(580*self.scale)
         self.wf = 1
         self.hf = 1
 # ------Main Window Geometry-----------
         # This should come at the end once all GUI item are created
-        self.setGeometry(300*self.self.scale, 300*self.self.scale, self.initial_width, self.initial_height)
+        self.setGeometry(300*self.scale, 300*self.scale, self.initial_width, self.initial_height)
 
         self.setWindowTitle("Tarquin Conversion Tool")
         self.setWindowIcon(QtGui.QIcon(tarqIcon))
@@ -183,7 +183,7 @@ class Maingui(QtGui.QMainWindow):
 
 
         self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
-        self.btnreport.move(600*self.self.scale, (10+dy)*self.self.scale)
+        self.btnreport.move(600*self.scale, (10+dy)*self.scale)
         self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold ;min-width: 10em;padding: 6px;}")
         self.btnreport.adjustSize() 
         self.btnreport.resize(self.btnreport.sizeHint())
@@ -194,7 +194,7 @@ class Maingui(QtGui.QMainWindow):
         self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
         # self.btnopen.resize(250, 30)
-        self.btnopen.move(10*self.self.scale, (10+dy)*self.self.scale)
+        self.btnopen.move(10*self.scale, (10+dy)*self.scale)
         self.btnopen.adjustSize()  
 
         self.btnopen.clicked.connect(self.btnopen_clicked)
