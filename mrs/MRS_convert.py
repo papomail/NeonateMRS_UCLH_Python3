@@ -141,9 +141,9 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(dcmmssg)
 
 
-
-        self.initial_width = 1060
-        self.initial_height = 580
+        scale = 1.6
+        self.initial_width = int(1060*scale)
+        self.initial_height = int(580*scale)
         self.wf = 1
         self.hf = 1
 # ------Main Window Geometry-----------
