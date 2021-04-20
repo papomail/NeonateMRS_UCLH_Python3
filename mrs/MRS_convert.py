@@ -383,7 +383,7 @@ class Maingui(QtGui.QMainWindow):
         self.btnreport.move(int(600*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
 
         if "2) " in self.btnopen.text():
-             self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf*self.scale))
+             self.btnopen.move(int(200*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
    
         self.btnup.move(int(20*self.wf*self.scale), int(530*self.hf*self.scale))
         
