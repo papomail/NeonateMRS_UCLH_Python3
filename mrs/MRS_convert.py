@@ -445,7 +445,7 @@ class Maingui(QtGui.QMainWindow):
             totalframes = int(self.specoblist[self.curobject].Frames / 2)  
             self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
             self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
-            self.btnopen.move(int(200*self.wf), int((10+dy)*self.hf))
+            self.btnopen.move(int(200*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
             self.btnopen.adjustSize()
 
         elif "2) " in self.btnopen.text():
