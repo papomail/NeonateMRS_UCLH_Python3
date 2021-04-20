@@ -2,7 +2,7 @@
 """
 MRS_Convert.py
 
-Version 1.4 
+Version 1.4.2
 Modified 21/02/2020
 
 Python3 version of the script. Converted from: Version 1.3.1
@@ -45,25 +45,32 @@ BASE_DIR = Path(__file__).parent
 ICONS_DIR = BASE_DIR / "Icons"
 
 HOME_DIR = Path.home()
-dy = 25
+
+
+#move the contextual buttons down in windows as it clashes with the menu
+if sys.platform == "darwin":
+    dy = 5
+else:
+    dy = 25
+
+
 # Define class for main GUI
 class Maingui(QtGui.QMainWindow):
     # class Maingui(QtWidgets.QWidget):
 
     # --------Class Construction--------------------
-    def __init__(self):
-        super(Maingui, self).__init__()
+    def __init__(self, screen_height):
+        super().__init__()
         self.specoblist = []  # Hold list of spec objects
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
-        self.initUI()
-        self.version = "1.4.1"
+        self.initUI(screen_height)
+        self.version = "1.4.2"
         self.resized.connect(self.resizeFunction)
+        self.screen_height = screen_height
 
-    def initUI(self):
-        
-        
-        
+    def initUI(self,screen_height):  
+        self.screen_height = screen_height
         # ---------Add menubar--------------------------------------------------
         menubar = self.menuBar()
 
@@ -140,15 +147,17 @@ class Maingui(QtGui.QMainWindow):
         helpMenu.addAction(about)
         helpMenu.addAction(dcmmssg)
 
+        print(f'screen height = {self.screen_height}')
+        self.scale = np.round(np.sqrt(self.screen_height/580),3)
+        print(f'scale = {self.scale}')
 
-        self.scale = 1.6
         self.initial_width = int(1060*self.scale)
         self.initial_height = int(580*self.scale)
         self.wf = 1
         self.hf = 1
 # ------Main Window Geometry-----------
         # This should come at the end once all GUI item are created
-        self.setGeometry(300*self.scale, 300*self.scale, self.initial_width, self.initial_height)
+        self.setGeometry(int(300*self.scale), int(300*self.scale), self.initial_width, self.initial_height)
 
         self.setWindowTitle("Tarquin Conversion Tool")
         self.setWindowIcon(QtGui.QIcon(tarqIcon))
@@ -183,7 +192,7 @@ class Maingui(QtGui.QMainWindow):
 
 
         self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
-        self.btnreport.move(600*self.scale, (10+dy)*self.scale)
+        self.btnreport.move(int(600*self.scale), int((10+dy)*self.scale))
         self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold ;min-width: 10em;padding: 6px;}")
         self.btnreport.adjustSize() 
         self.btnreport.resize(self.btnreport.sizeHint())
@@ -194,108 +203,108 @@ class Maingui(QtGui.QMainWindow):
         self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
         # self.btnopen.resize(250, 30)
-        self.btnopen.move(10*self.scale, (10+dy)*self.scale)
+        self.btnopen.move(int(5*self.scale), int((10+dy)*self.scale))
         self.btnopen.adjustSize()  
 
         self.btnopen.clicked.connect(self.btnopen_clicked)
 
 
         self.btnup.resize(self.btnup.sizeHint())
-        self.btnup.move(20*self.scale, 530*self.scale)
+        self.btnup.move(int(20*self.scale), int(530*self.scale))
         self.btnup.clicked.connect(self.specup)
 
         self.btndown.resize(self.btndown.sizeHint())
-        self.btndown.move(20*self.scale, 550*self.scale)
+        self.btndown.move(int(20*self.scale), int(550*self.scale))
         self.btndown.clicked.connect(self.specdown)
 
         
         self.btnfdown.resize(self.btnfdown.minimumSizeHint())
-        self.btnfdown.move(533*self.scale, 550*self.scale)
+        self.btnfdown.move(int(533*self.scale), int(550*self.scale))
         self.btnfdown.clicked.connect(self.framedown)
 
         self.btnfup.resize(self.btnfdown.size())
-        self.btnfup.move(533*self.scale, 530*self.scale)
+        self.btnfup.move(int(533*self.scale), int(530*self.scale))
         self.btnfup.clicked.connect(self.frameup)
 
 
         self.btnexc.resize(self.btnexc.minimumSizeHint())
-        self.btnexc.move(930*self.scale, 550*self.scale)
+        self.btnexc.move(int(930*self.scale), int(550*self.scale))
         self.btnexc.clicked.connect(self.ExcFrame)
 
         self.btninc.resize(self.btnexc.size())
-        self.btninc.move(930*self.scale, 530*self.scale)
+        self.btninc.move(int(930*self.scale), int(530*self.scale))
         self.btninc.clicked.connect(self.IncFrame)
 
 
         self.btnorig.resize(self.btnorig.minimumSizeHint())
-        self.btnorig.move(120*self.scale, 530*self.scale)
+        self.btnorig.move(int(120*self.scale), int(530*self.scale))
         self.btnorig.clicked.connect(self.plotorigspec)
 
         self.btnnophase.resize(self.btnnophase.minimumSizeHint())
-        self.btnnophase.move(280*self.scale, 550*self.scale)
+        self.btnnophase.move(int(280*self.scale), int(550*self.scale))
         self.btnnophase.clicked.connect(self.undophase)
 
         self.btnnoshift.resize(self.btnnoshift.minimumSizeHint())
-        self.btnnoshift.move(280*self.scale, 530*self.scale)
+        self.btnnoshift.move(int(280*self.scale), int(530*self.scale))
         self.btnnoshift.clicked.connect(self.undoshift)
 
         self.btnproc.resize(self.btnproc.minimumSizeHint())
-        self.btnproc.move(120*self.scale, 550*self.scale)
+        self.btnproc.move(int(120*self.scale), int(550*self.scale))
         self.btnproc.clicked.connect(self.plotprocspec)
 
         self.btnChodn.resize(self.btnChodn.minimumSizeHint())
-        self.btnChodn.move(745*self.scale, 550*self.scale)
+        self.btnChodn.move(int(745*self.scale), int(550*self.scale))
         self.btnChodn.clicked.connect(self.Cho_dn)
         
         self.btnChoup.resize(self.btnChodn.size())
-        self.btnChoup.move(745*self.scale, 530*self.scale)
+        self.btnChoup.move(int(745*self.scale), int(530*self.scale))
         self.btnChoup.clicked.connect(self.Cho_up)
 
         
         self.btnPhdn.resize(self.btnPhdn.minimumSizeHint())
-        self.btnPhdn.move(640*self.scale, 550*self.scale)
+        self.btnPhdn.move(int(640*self.scale), int(550*self.scale))
         self.btnPhdn.clicked.connect(self.Phase_dn)
 
         self.btnPhup.resize(self.btnPhdn.size())
-        self.btnPhup.move(640*self.scale, 530*self.scale)
+        self.btnPhup.move(int(640*self.scale), int(530*self.scale))
         self.btnPhup.clicked.connect(self.Phase_up)
 
 
         self.btnCrup.resize(self.btnCrup.minimumSizeHint())
-        self.btnCrup.move(810*self.scale, 530*self.scale)
+        self.btnCrup.move(int(810*self.scale), int(530*self.scale))
         self.btnCrup.clicked.connect(self.Cr_up)
 
         self.btnCrdn.resize(self.btnCrup.size())
-        self.btnCrdn.move(810*self.scale, 550*self.scale)
+        self.btnCrdn.move(int(810*self.scale), int(550*self.scale))
         self.btnCrdn.clicked.connect(self.Cr_dn)
 
         self.btnfit.resize(self.btnfit.minimumSizeHint())
-        self.btnfit.move(400*self.scale, 530*self.scale)
+        self.btnfit.move(int(400*self.scale), int(530*self.scale))
         self.btnfit.clicked.connect(self.plotfit)
 
         # -------Add text-------------------------------------------------------
         self.lbl = QtGui.QLabel(self)
-        self.lbl.move(10*self.scale, (40+dy)*self.scale)
+        self.lbl.move(int(10*self.scale), int((40+dy)*self.scale))
         self.lbl.setText("Open directory name:")
         self.lbl.adjustSize()
 
         self.lbl2 = QtGui.QLabel(self)
-        self.lbl2.move(10*self.scale, (55+dy)*self.scale)
+        self.lbl2.move(int(10*self.scale), int((55+dy)*self.scale))
         self.lbl2.setText("Save directory name:")
         self.lbl2.adjustSize()
 
         self.lbl3 = QtGui.QLabel(self)
-        self.lbl3.move(10*self.scale, (80+dy)*self.scale)
+        self.lbl3.move(int(10*self.scale), int((80+dy)*self.scale))
         self.lbl3.setText("Current Spectrum: ")
         self.lbl3.adjustSize()
 
         self.lbl4 = QtGui.QLabel(self)
-        self.lbl4.move(300*self.scale, (80+dy)*self.scale)
+        self.lbl4.move(int(300*self.scale), int((80+dy)*self.scale))
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
         self.lbl5 = QtGui.QLabel(self)
-        self.lbl5.move(540*self.scale, (80+dy)*self.scale)
+        self.lbl5.move(int(540*self.scale), int((80+dy)*self.scale))
         self.lbl5.setText("Current Frame: ")
         self.lbl5.adjustSize()
         self.def_col = self.lbl5.palette().button().color();
@@ -307,7 +316,7 @@ class Maingui(QtGui.QMainWindow):
         pg.setConfigOption("foreground", "k")
 
         self.pw1 = pg.PlotWidget(self)
-        self.pw1.setGeometry(QtCore.QRect(10*self.scale, (100+dy)*self.scale, int(500*self.width()*self.scale/self.initial_width), int(400*self.height()*self.scale/self.initial_height)))
+        self.pw1.setGeometry(QtCore.QRect(int(10*self.scale), int((100+dy)*self.scale), int(500*self.width()*self.scale/self.initial_width), int(400*self.height()*self.scale/self.initial_height)))
         self.pw1.show()
         self.pw1.getViewBox().invertX(True)
         self.pw1.setXRange(0.4, 4.8, padding=0)
@@ -318,7 +327,7 @@ class Maingui(QtGui.QMainWindow):
         self.p3 = self.pw1.plot(pen={"color": "r", "width": 2})
 
         self.pw2 = pg.PlotWidget(self)
-        self.pw2.setGeometry(QtCore.QRect(540*self.scale, (100+dy)*self.scale, 500*self.scale, 400*self.scale))
+        self.pw2.setGeometry(QtCore.QRect(int(540*self.scale), int((100+dy)*self.scale), int(500*self.scale), int(400*self.scale)))
         self.pw2.getViewBox().invertX(True)
         self.pw2.setXRange(0.4, 4.8, padding=0)
         self.pw2.setYRange(-0.02, 0.08, padding=0)
@@ -331,7 +340,7 @@ class Maingui(QtGui.QMainWindow):
         # --------Add Message Box---------------
         # Note this opens a separate windpw with a message
         self.mssg = QtGui.QMessageBox()
-        self.mssg.setGeometry(310*self.scale, 240*self.scale, 280*self.scale, 280*self.scale)
+        self.mssg.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
             "Version 1.4.1 \n\n"
@@ -340,7 +349,7 @@ class Maingui(QtGui.QMainWindow):
         )
 
         self.dcmfmt = QtGui.QMessageBox()
-        self.dcmfmt.setGeometry(310*self.scale, 240*self.scale, 280*self.scale, 280*self.scale)
+        self.dcmfmt.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.dcmfmt.setWindowTitle("DICOM formats")
         self.dcmfmt.setText("Only Dicom4 data can be processed\n\n")
 
@@ -440,13 +449,14 @@ class Maingui(QtGui.QMainWindow):
         
         if "1) " in self.btnopen.text():
             
-            self.getdir()
-            framenum = self.specoblist[self.curobject].curframe + 1
-            totalframes = int(self.specoblist[self.curobject].Frames / 2)  
-            self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
-            self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
-            self.btnopen.move(int(200*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
-            self.btnopen.adjustSize()
+            selection = self.getdir()
+            if selection:
+                framenum = self.specoblist[self.curobject].curframe + 1
+                totalframes = int(self.specoblist[self.curobject].Frames / 2)  
+                self.btnopen.setText(f"2) Check and adjust spectra if needed: {str(framenum)}/{str(totalframes)}")
+                self.btnopen.setStyleSheet("QPushButton {color: #f2c885;}")
+                self.btnopen.move(int(200*self.wf*self.scale), int((10+dy)*self.hf*self.scale))
+                self.btnopen.adjustSize()
 
         elif "2) " in self.btnopen.text():
             self.frameup()
@@ -488,68 +498,66 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0
 
         # Standard Open Directory Dialog box
-        self.dirname = str(
-            QtGui.QFileDialog.getExistingDirectory(
-                self, "Open Directory", str(HOME_DIR.resolve())
-            )
-        )
+        self.dirname = QtGui.QFileDialog.getExistingDirectory(self, "Open Directory", str(HOME_DIR.resolve()))
 
-        # Display name of 'open' directory in main window (self.lb1)
-        textout = "Open directory name: " + self.dirname
-        self.lbl.setText(textout)
-        self.lbl.adjustSize()
+        if self.dirname:
+            # Display name of 'open' directory in main window (self.lb1)
+            textout = "Open directory name: " + self.dirname
+            self.lbl.setText(textout)
+            self.lbl.adjustSize()
 
-        # dirpass string passed when initialising SpecObject object
-        # Used for naming files that are written later
-        dirpass = self.dirname.replace(":", "").replace("\\", "_")
-        # use os.chdir to get into chosen directory
-        os.chdir(self.dirname)
-
-        # get list of files in chosen directory
-        filelist = os.listdir(self.dirname)
-
-        # loop through files in dir and determine which ones are enhanced dicoms
-        for curfile in filelist:
-
-            # If curfile is a directory
-            if os.path.isdir(curfile):
-                # change to daughter directory
-                # curdir = self.dirname + '\\' + curfile
-                curdir = str(Path(self.dirname, curfile).resolve())
-
-                os.chdir(curdir)
-                # Get filelist in daughter directory
-                filelist2 = os.listdir(curdir)
-                # Loop through files in daughter directory
-                for curfile2 in filelist2:
-                    # Create object of type SpecObject
-                    temp_spec_object = sp.SpecObject(curfile2, dirpass)
-                    # If temp_spec_object is from a DICOM 4 MRS file
-                    if temp_spec_object.isspec != 0:
-                        # Append to self.specoblist
-                        self.specoblist.append(temp_spec_object)
-                        # Call function to plot original spectrum in window
-                        self.plotorigspec()
-            # Make sure we are in parent directory
+            # dirpass string passed when initialising SpecObject object
+            # Used for naming files that are written later
+            dirpass = self.dirname.replace(":", "").replace("\\", "_")
+            # use os.chdir to get into chosen directory
             os.chdir(self.dirname)
-            # Create object of type SpecObject
 
-            temp_spec_object = sp.SpecObject(curfile, dirpass)
-            # If temp_spec_object is from a DICOM 4 MRS file
-            if temp_spec_object.isspec != 0:
-                # Append to self.specoblist
-                self.specoblist.append(temp_spec_object)
-                # Call function to plot original spectrum in window
-                self.plotorigspec()
-                self.plotframe()
+            # get list of files in chosen directory
+            filelist = os.listdir(self.dirname)
 
-                print(self.specoblist)  # Patcheck
+            # loop through files in dir and determine which ones are enhanced dicoms
+            for curfile in filelist:
 
-        # Display message in main window (self.lb4): number of MRS files found
-        textout = "Number of MRS files found: " + str(np.size(self.specoblist))
-        self.lbl4.setText(textout)
-        self.lbl4.adjustSize()
+                # If curfile is a directory
+                if os.path.isdir(curfile):
+                    # change to daughter directory
+                    # curdir = self.dirname + '\\' + curfile
+                    curdir = str(Path(self.dirname, curfile).resolve())
 
+                    os.chdir(curdir)
+                    # Get filelist in daughter directory
+                    filelist2 = os.listdir(curdir)
+                    # Loop through files in daughter directory
+                    for curfile2 in filelist2:
+                        # Create object of type SpecObject
+                        temp_spec_object = sp.SpecObject(curfile2, dirpass)
+                        # If temp_spec_object is from a DICOM 4 MRS file
+                        if temp_spec_object.isspec != 0:
+                            # Append to self.specoblist
+                            self.specoblist.append(temp_spec_object)
+                            # Call function to plot original spectrum in window
+                            self.plotorigspec()
+                # Make sure we are in parent directory
+                os.chdir(self.dirname)
+                # Create object of type SpecObject
+
+                temp_spec_object = sp.SpecObject(curfile, dirpass)
+                # If temp_spec_object is from a DICOM 4 MRS file
+                if temp_spec_object.isspec != 0:
+                    # Append to self.specoblist
+                    self.specoblist.append(temp_spec_object)
+                    # Call function to plot original spectrum in window
+                    self.plotorigspec()
+                    self.plotframe()
+
+                    print(self.specoblist)  # Patcheck
+
+            # Display message in main window (self.lb4): number of MRS files found
+            textout = "Number of MRS files found: " + str(np.size(self.specoblist))
+            self.lbl4.setText(textout)
+            self.lbl4.adjustSize()
+
+        return self.dirname
     # Plot original, unprocessed spectrum in main window
     def plotorigspec(self):
         self.p1.clear()
@@ -661,6 +669,7 @@ class Maingui(QtGui.QMainWindow):
         self.lbl2.setText(textout)
         self.lbl2.adjustSize()
         self.setsavedir = 1
+        return self.savedirname
 
     def specup(self):
         self.curobject += 1
@@ -674,27 +683,34 @@ class Maingui(QtGui.QMainWindow):
             self.curobject -= 1
             self.plotorigspec()
 
-    def Tarquin(self):
+    def Tarquin(self):   
         if self.setsavedir == 0:
-            self.savedir()
+            selected_dir = self.savedir()
+            if not selected_dir:
+                self.setsavedir = 0
+                return None  
         self.specoblist[self.curobject].writeTarquin(self.savedirname)
 
     def convert_to_all(self):
         if self.setsavedir == 0:
-            self.savedir()
-
+            selected_dir = self.savedir()
+            if not selected_dir:
+                self.setsavedir = 0
+                return None 
         self.specoblist[self.curobject].writeTarquin(self.savedirname)
         self.specoblist[self.curobject].writelogfile(self.savedirname, self.version)
         self.specoblist[self.curobject].fitTarquin(self.savedirname)
         # self.plotfit()
-
         self.lbl2.setText(self.specoblist[self.curobject].report_completed_msg)
         self.lbl2.adjustSize()
         self.lbl2.setStyleSheet("QLabel {color: green;}")
 
     def Tarquinorig(self):
         if self.setsavedir == 0:
-            self.savedir()
+            selected_dir = self.savedir()
+            if not selected_dir:
+                self.setsavedir = 0
+                return None 
         self.specoblist[self.curobject].writeTarquinorig(self.savedirname)
 
     def frameup(self):
@@ -907,8 +923,12 @@ class PhaseDialog(QtWidgets.QDialog):
 def main():
 
     app = QtGui.QApplication(sys.argv)
-    ex = Maingui()
+    screen_resolution = app.desktop().screenGeometry()
+    height = screen_resolution.height()
+   
+    ex = Maingui(height)
     sys.exit(app.exec_())
+    
 
 
 if __name__ == "__main__":

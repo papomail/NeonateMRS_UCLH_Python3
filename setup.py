@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mrs',
-    version='1.4.1',
+    version='1.4.2',
     description='Software to process and produce PDF reports from NMR spectra acquired at 3T MRI scanners at University College London Hospital',
     author='Patxi Torrealdea and Alan Bainbridge',
     author_email='francisco.torrealdea@nhs.net',

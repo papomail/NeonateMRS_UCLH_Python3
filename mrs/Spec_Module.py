@@ -3,7 +3,7 @@
 
 Spec_Module
 
-Version 1.4 
+Version 1.4.2
 Modified 21/02/2020
 
 Python3 version of the script. Converted from: Version 1.3.1
@@ -133,7 +133,7 @@ class SpecObject():
         apod = np.ones(shape = [int(self.Datapoints)], dtype = float)
         
         for cntexp in range(512, int(self.Datapoints)):
-            apod[cntexp] = np.exp(old_div(-(cntexp-512),self.apod_const))
+            apod[cntexp] = np.exp(-(cntexp-512)/self.apod_const)
         self.apod = apod
 
         #Loop through each frame
