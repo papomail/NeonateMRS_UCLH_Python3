@@ -2,8 +2,8 @@
 """
 MRS_Convert.py
 
-Version 1.4.2
-Modified 21/02/2020
+Version 1.4.3
+Modified 22/04/2021
 
 Python3 version of the script. Converted from: Version 1.3.1
 
@@ -65,7 +65,7 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI(screen_height)
-        self.version = "1.4.2"
+        self.version = "1.4.3"
         self.resized.connect(self.resizeFunction)
         self.screen_height = screen_height
 
