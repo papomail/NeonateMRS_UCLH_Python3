@@ -704,6 +704,7 @@ class Maingui(QtGui.QMainWindow):
         self.lbl2.setText(self.specoblist[self.curobject].report_completed_msg)
         self.lbl2.adjustSize()
         self.lbl2.setStyleSheet("QLabel {color: green;}")
+        self.setsavedir = 0
 
     def Tarquinorig(self):
         if self.setsavedir == 0:
