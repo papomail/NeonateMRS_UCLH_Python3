@@ -693,6 +693,10 @@ class Maingui(QtGui.QMainWindow):
 
     def convert_to_all(self):
         if self.setsavedir == 0:
+            textout = "Save directory name: " 
+            self.lbl2.setText(textout)
+            self.lbl2.adjustSize()
+            self.lbl2.setStyleSheet("QLabel {color: self.def_col;}")
             selected_dir = self.savedir()
             if not selected_dir:
                 self.setsavedir = 0
@@ -705,7 +709,8 @@ class Maingui(QtGui.QMainWindow):
         self.lbl2.adjustSize()
         self.lbl2.setStyleSheet("QLabel {color: green;}")
         self.setsavedir = 0
-
+        
+        
     def Tarquinorig(self):
         if self.setsavedir == 0:
             selected_dir = self.savedir()
