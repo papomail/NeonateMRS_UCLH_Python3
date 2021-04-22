@@ -343,7 +343,7 @@ class Maingui(QtGui.QMainWindow):
         self.mssg.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
-            "Version 1.4.1 \n\n"
+            "Version 1.4.3 \n\n"
             + "Convert spectroscopy data to Tarquin and Jmrui format.\n\n"
             + "Please send any errors to balangb@gmail.com or papomail@gmail.com"
         )
