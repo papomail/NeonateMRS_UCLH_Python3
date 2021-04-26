@@ -93,7 +93,7 @@ class Maingui(QtGui.QMainWindow):
 
         # Items in 'Tools' menu ++++++++++++++++++++++++
         # Convert individual file to JMRUI format
-        tarqIcon = ICONS_DIR / "hat.ico"
+        tarqIcon = ICONS_DIR / "hat2.png"
         tarqIcon = str(tarqIcon.resolve())
 
         convfile = QtGui.QAction(
