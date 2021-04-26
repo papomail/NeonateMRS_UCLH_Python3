@@ -2,8 +2,8 @@
 """
 MRS_Convert.py
 
-Version 1.4.2
-Modified 21/02/2020
+Version 1.4.3
+Modified 22/04/2021
 
 Python3 version of the script. Converted from: Version 1.3.1
 
@@ -65,7 +65,7 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI(screen_height)
-        self.version = "1.4.2"
+        self.version = "1.4.3"
         self.resized.connect(self.resizeFunction)
         self.screen_height = screen_height
 
@@ -343,7 +343,7 @@ class Maingui(QtGui.QMainWindow):
         self.mssg.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
-            "Version 1.4.1 \n\n"
+            "Version 1.4.3 \n\n"
             + "Convert spectroscopy data to Tarquin and Jmrui format.\n\n"
             + "Please send any errors to balangb@gmail.com or papomail@gmail.com"
         )
@@ -693,6 +693,10 @@ class Maingui(QtGui.QMainWindow):
 
     def convert_to_all(self):
         if self.setsavedir == 0:
+            textout = "Save directory name: " 
+            self.lbl2.setText(textout)
+            self.lbl2.adjustSize()
+            self.lbl2.setStyleSheet("QLabel {color: self.def_col;}")
             selected_dir = self.savedir()
             if not selected_dir:
                 self.setsavedir = 0
@@ -704,7 +708,9 @@ class Maingui(QtGui.QMainWindow):
         self.lbl2.setText(self.specoblist[self.curobject].report_completed_msg)
         self.lbl2.adjustSize()
         self.lbl2.setStyleSheet("QLabel {color: green;}")
-
+        self.setsavedir = 0
+        
+        
     def Tarquinorig(self):
         if self.setsavedir == 0:
             selected_dir = self.savedir()
