@@ -329,7 +329,7 @@ class Maingui(QtGui.QMainWindow):
         self.pw2 = pg.PlotWidget(self)
         self.pw2.setGeometry(QtCore.QRect(int(540*self.scale), int((100+dy)*self.scale), int(500*self.scale), int(400*self.scale)))
         self.pw2.getViewBox().invertX(True)
-        self.pw2.setXRange(0.4, 4.8, padding=0)
+        self.pw2.setXRange(1.7, 3.7, padding=0)
         self.pw2.setYRange(-0.02, 0.08, padding=0)
 
         self.pw2.show()

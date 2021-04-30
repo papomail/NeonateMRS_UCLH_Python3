@@ -146,3 +146,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 mrs/qt_resize.py
+mrs/MRS_convert copy.py
