@@ -648,13 +648,13 @@ class Maingui(QtGui.QMainWindow):
         self.plotprocspec()
 
     def savedir(self):
-        proposed_savedir = Path(self.dirname).parent
+        proposed_savedir = Path(self.dirname)
         proposed_savedir = proposed_savedir / "resultsMRS"
         if proposed_savedir.exists():
             self.savedirname = QtGui.QFileDialog.getExistingDirectory(
                     self,
                     'Save Directory (WARNING: saving in "resultMRS" will overwrite previous results)',
-                    str(Path(self.dirname).parent.resolve()),)
+                    str(Path(self.dirname).resolve()),)
         
         else:
             proposed_savedir.mkdir(parents=True, exist_ok=True)
