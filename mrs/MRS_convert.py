@@ -299,7 +299,7 @@ class Maingui(QtGui.QMainWindow):
         self.lbl3.adjustSize()
 
         self.lbl4 = QtGui.QLabel(self)
-        self.lbl4.move(int(300*self.scale), int((80+dy)*self.scale))
+        self.lbl4.move(int(350*self.scale), int((80+dy)*self.scale))
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
@@ -434,7 +434,7 @@ class Maingui(QtGui.QMainWindow):
         
         self.lbl3.move(int(10*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
-        self.lbl4.move(int(300*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
+        self.lbl4.move(int(350*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
         self.lbl5.move(int(540*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
 
