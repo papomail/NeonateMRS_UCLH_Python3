@@ -547,10 +547,11 @@ class Maingui(QtGui.QMainWindow):
                     # Append to self.specoblist
                     self.specoblist.append(temp_spec_object)
                     # Call function to plot original spectrum in window
-                    self.plotorigspec()
                     self.plotframe()
+                    self.plotorigspec()
+#                     self.plotframe()
 
-                    print(self.specoblist)  # Patcheck
+#                     print(self.specoblist)  # Patcheck
 
             # Display message in main window (self.lb4): number of MRS files found
             textout = "Number of MRS files found: " + str(np.size(self.specoblist))
