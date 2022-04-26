@@ -22,7 +22,7 @@ setup(
         'pathlib==1.0.1',
         'pydicom==1.4.1',# do not update to pydicom version 2
         'pyparsing==2.4.7',
-        'PyPDF2==1.26.0',
+        'PyPDF2==1.27.5',
         'PyQt5==5.15.4',
         'PyQt5-Qt5==5.15.2',
         'PyQt5-sip==12.8.1',
