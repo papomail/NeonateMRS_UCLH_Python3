@@ -557,6 +557,13 @@ class Maingui(QtGui.QMainWindow):
             self.lbl4.setText(textout)
             self.lbl4.adjustSize()
 
+
+            if self.setsavedir == 0:
+                selected_dir = self.savedir()
+                if not selected_dir:
+                    self.setsavedir = 0
+                    return None 
+
         return self.dirname
     # Plot original, unprocessed spectrum in main window
     def plotorigspec(self):
@@ -648,7 +655,11 @@ class Maingui(QtGui.QMainWindow):
         self.plotprocspec()
 
     def savedir(self):
-        proposed_savedir = Path(self.dirname).parent
+        if 'dicom' in str(Path(self.dirname)).lower():
+            proposed_savedir = Path(self.dirname).parent
+        else:
+            proposed_savedir = Path(self.dirname)
+
         proposed_savedir = proposed_savedir / "resultsMRS"
         if proposed_savedir.exists():
             self.savedirname = QtGui.QFileDialog.getExistingDirectory(
