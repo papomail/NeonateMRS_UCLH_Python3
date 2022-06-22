@@ -18,7 +18,7 @@ setup(
         'future==0.18.2',
         'kiwisolver==1.3.1',
         'matplotlib==3.4.1',
-        'numpy==1.21.0',
+        'numpy==1.22.0',
         'pathlib==1.0.1',
         'pydicom==1.4.1',# do not update to pydicom version 2
         'pyparsing==2.4.7',
