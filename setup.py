@@ -12,7 +12,7 @@ setup(
     # packages=['mrs','mrs.Icons','mrs.3_0T_basis_threonine_no_MM','mrs.UnittestFiles'],
 
     install_requires=[
-        'wheel==0.36.2',
+        'wheel==0.38.1',
         'cycler==0.10.0',
         'fpdf==1.7.2',
         'future==0.18.2',
