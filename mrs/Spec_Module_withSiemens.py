@@ -906,7 +906,7 @@ class SpecObject():
         pdf.cell(40,10, textout, 1,0,'C')
         textout = str(round(SNR, 2))
         pdf.cell(40,10, textout, 1,0,'C')
-        pdf.cell(40,10, self.displayTE, 1,1,'C')
+        pdf.cell(40,10, f'{int(float(self.displayTE))}', 1,1,'C')
         
         pdf.ln(3)
         pdf.cell(10)
