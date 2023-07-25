@@ -144,9 +144,13 @@ class SpecObject():
                 self.displayTE = info['[CSA Image Header Info]']['EchoTime']
                 self.curframe = 0
                 # self.fake_ppms = np.linspace(-10.9754, 20.33273,int(self.Datapoints))
-                self.fake_ppms = np.linspace(20.33273, -10.9754,int(self.Datapoints)) 
-                self.plim_l = int(1110/2)
-                self.plim_r = int(1140/2)
+                # self.fake_ppms = np.linspace(20.33273, -10.9754,int(self.Datapoints)) 
+                self.fake_ppms = np.linspace(-3.1964, 12.504, int(self.Datapoints)) 
+                # self.plim_l = int(1110/2)
+                self.plim_l = int(780) # siemens 1.5T
+
+                # self.plim_r = int(1140/2)
+                self.plim_r = int(840) # siemens 1.5T
                 
             
             

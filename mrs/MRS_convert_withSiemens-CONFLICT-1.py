@@ -586,10 +586,9 @@ class Maingui(QtGui.QMainWindow):
         y_marker[0] = min(np.real(self.specoblist[self.curobject].OriginalSpectrum))
         y_marker[1] = max(np.real(self.specoblist[self.curobject].OriginalSpectrum))
         # Get phase limits for x marker
-        # x1_marker[0] = self.specoblist[self.curobject].plim_l*(int((3.1964+ 12.504)/self.specoblist[self.curobject].Datapoints))+5.33273
-        x1_marker[0] = 3.3
+        x1_marker[0] = self.specoblist[self.curobject].plim_l*(-0.01529464093)+20.33273
         x1_marker[1] = x1_marker[0]
-        x2_marker[0] = 2.8
+        x2_marker[0] = self.specoblist[self.curobject].plim_r*(-0.01529464093)+20.33273
         x2_marker[1] = x2_marker[0]
         # Set pens p2 and p3 as the phase area limits
         self.p2.setData(x1_marker, y_marker)
@@ -617,10 +616,10 @@ class Maingui(QtGui.QMainWindow):
         y_marker[1] = max(np.real(self.specoblist[self.curobject].FinalSpectrumauto))
         # Get phase limits for x marker
         # x1_marker[0] = self.specoblist[self.curobject].plim_l*(-0.01529464093)+20.33273
-        x1_marker[0] = 3.3
+        x1_marker[0] = self.specoblist[self.curobject].plim_l*(-0.01529464093)+20.33273
         x1_marker[1] = x1_marker[0]
         # x2_marker[0] = self.specoblist[self.curobject].plim_r*(-0.01529464093)+20.33273
-        x2_marker[0] = 2.8
+        x2_marker[0] = self.specoblist[self.curobject].plim_r*(-0.01529464093)+20.33273
         x2_marker[1] = x2_marker[0]
         self.p2.setData(x1_marker, y_marker)
         self.p3.setData(x2_marker, y_marker)
@@ -759,9 +758,9 @@ class Maingui(QtGui.QMainWindow):
         y_marker = np.ones(2)
         y_marker[0] = min(np.real(self.specoblist[self.curobject].current_frame))
         y_marker[1] = max(np.real(self.specoblist[self.curobject].current_frame))
-        x1_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][0]*(-0.01529464093)+15.13273
+        x1_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][0]*(-0.01529464093)+20.33273
         x1_marker[1] = x1_marker[0]
-        x2_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][1]*(-0.01529464093)+15.04273
+        x2_marker[0] = self.specoblist[self.curobject].peakposarr[cur_frame][1]*(-0.01529464093)+20.33273
         x2_marker[1] = x2_marker[0]
         self.p22.setData(x1_marker, y_marker)
         # self.p22.getViewBox().invertX(True)
