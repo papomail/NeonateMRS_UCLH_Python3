@@ -299,7 +299,7 @@ class Maingui(QtGui.QMainWindow):
         self.lbl3.adjustSize()
 
         self.lbl4 = QtGui.QLabel(self)
-        self.lbl4.move(int(300*self.scale), int((80+dy)*self.scale))
+        self.lbl4.move(int(350*self.scale), int((80+dy)*self.scale))
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
@@ -434,7 +434,7 @@ class Maingui(QtGui.QMainWindow):
         
         self.lbl3.move(int(10*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
-        self.lbl4.move(int(300*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
+        self.lbl4.move(int(350*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
         
         self.lbl5.move(int(540*self.wf*self.scale), int(self.hf*(80+dy)*self.scale))
 
@@ -547,10 +547,11 @@ class Maingui(QtGui.QMainWindow):
                     # Append to self.specoblist
                     self.specoblist.append(temp_spec_object)
                     # Call function to plot original spectrum in window
-                    self.plotorigspec()
                     self.plotframe()
+                    self.plotorigspec()
+#                     self.plotframe()
 
-                    print(self.specoblist)  # Patcheck
+#                     print(self.specoblist)  # Patcheck
 
             # Display message in main window (self.lb4): number of MRS files found
             textout = "Number of MRS files found: " + str(np.size(self.specoblist))
@@ -665,7 +666,7 @@ class Maingui(QtGui.QMainWindow):
             self.savedirname = QtGui.QFileDialog.getExistingDirectory(
                     self,
                     'Save Directory (WARNING: saving in "resultMRS" will overwrite previous results)',
-                    str(Path(self.dirname).parent.resolve()),)
+                    str(Path(self.dirname).resolve()),)
         
         else:
             proposed_savedir.mkdir(parents=True, exist_ok=True)
