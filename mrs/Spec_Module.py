@@ -4,6 +4,19 @@
 
 Spec_Module
 
+Version 1.5.2
+Modified 26/05/2025
+
+Siemens data support and enhanced compatibility 
+
+Major changes in v1.5.2:
+- format (1.5T scanners) (beta)
+- Automatic display adjustment for 1.5T vs 3T scanners based on field strength (beta)
+- Enhanced field strength detection and parameter adjustment
+- Integrated read_dicom_siemens module for CSA header parsing
+- Maintains compatibility with NumPy 1.24.4+, PyDICOM 2.4.4+, PyQt5, and PyQtGraph
+- Full backward compatibility with all previous formats
+
 Version 1.5.1
 Modified 26/05/2025
 
@@ -62,6 +75,12 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from pathlib import Path
 import shutil 
 import sys
+import struct
+try:
+    import read_dicom_siemens as rds
+except ImportError:
+    rds = None
+    print("Warning: read_dicom_siemens module not available. Siemens data support will be limited.")
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 # BASE_DIR = Path(__file__).parent.parent
@@ -161,6 +180,13 @@ class SpecObject():
                 self._extract_enhanced_spectro_data()
                 if self.isspec != 0:  # Only load parameters if data extraction succeeded
                     self._load_common_parameters()
+        
+        # Check for Siemens SPEC NUM 4 format
+        elif [0x0029, 0x1008] in self.ds:
+            if self.ds[0x0029, 0x1008].value == 'SPEC NUM 4':
+                print('Siemens SPEC NUM 4 detected')
+                self.isspec = 3
+                self._load_siemens_data()
                 
         if self.isspec == 0:
             self.SpecData = []
@@ -179,7 +205,13 @@ class SpecObject():
         self.Datapoints = getattr(self.ds, 'DataPointColumns', 0)
         self.SpectralWidth = getattr(self.ds, 'SpectralWidth', 0)
         self.TransmitterFrequency = getattr(self.ds, 'TransmitterFrequency', 0)
-        self.FieldStrength = 3.0  # Default value
+        
+        # Try to get field strength from DICOM tag, default to 3.0T
+        try:
+            self.FieldStrength = float(getattr(self.ds, 'MagneticFieldStrength', 3.0))
+        except:
+            self.FieldStrength = 3.0
+            
         self.PatID = getattr(self.ds, 'PatientID', 'Unknown')
         self.AcquisitionDateTime = getattr(self.ds, 'AcquisitionDateTime', '')
         self.ProtocolName = getattr(self.ds, 'ProtocolName', 'Unknown')            
@@ -203,12 +235,22 @@ class SpecObject():
         
         # Try to get display TE - might not be present in enhanced format
         try:
-            self.displayTE = self.ds[0x2001, 0x1025].value
+            self.displayTE = str(self.ds[0x2001, 0x1025].value)
         except:
-            self.displayTE = 0  # Default value if not found
+            self.displayTE = "0"  # Default value if not found
             
         self.curframe = 0
-        self.fake_ppms = np.linspace(20.33273, -10.9754, int(self.Datapoints))
+        
+        # Set display parameters based on field strength
+        if self.FieldStrength <= 1.6:  # 1.5T scanner
+            self.fake_ppms = np.linspace(-3.1964, 12.504, int(self.Datapoints))
+            self.plim_l = 780  # Adjusted for 1.5T
+            self.plim_r = 840  # Adjusted for 1.5T
+            print(f"Display adjusted for 1.5T scanner")
+        else:  # 3T or higher
+            self.fake_ppms = np.linspace(20.33273, -10.9754, int(self.Datapoints))
+            self.plim_l = 1110  # Standard for 3T
+            self.plim_r = 1140  # Standard for 3T
         
     def _extract_enhanced_spectro_data(self):
         """Extract spectroscopy data from enhanced DICOM format"""
@@ -256,6 +298,145 @@ class SpecObject():
                 raise ValueError("Could not interpret pixel data as spectroscopy data")
                 
         except Exception as e:
+            self.SpecData = []
+            self.isspec = 0
+            
+    def _load_siemens_data(self):
+        """Load Siemens SPEC NUM 4 format data"""
+        try:
+            if rds is None:
+                print("Warning: read_dicom_siemens module not available. Cannot process Siemens data.")
+                self.isspec = 0
+                return
+                
+            # Parse Siemens CSA headers
+            info = rds.dicom_elements(self.ds)
+            
+            # Load basic patient/study information
+            self.PatName = getattr(self.ds, 'PatientName', 'Unknown')
+            self.StudyDate = getattr(self.ds, 'StudyDate', '')
+            self.StudyTime = getattr(self.ds, 'StudyTime', '')
+            self.SeriesDate = getattr(self.ds, 'SeriesDate', '')
+            self.SeriesTime = getattr(self.ds, 'SeriesTime', '')
+            self.PatID = getattr(self.ds, 'PatientID', 'Unknown')
+            self.AcquisitionDateTime = getattr(self.ds, 'AcquisitionDate', '')
+            
+            # Extract spectroscopy data from Siemens format using robust bytes conversion
+            # Try to get data from the standard Siemens spectroscopy tag
+            raw_data = None
+            if [0x7fe1, 0x1010] in self.ds:
+                raw_data = self.ds[0x7fe1, 0x1010].value
+            else:
+                raise ValueError("No spectroscopy data found in Siemens file")
+            
+            # Apply the same robust bytes conversion logic used for Philips data
+            if isinstance(raw_data, bytes):
+                # Convert bytes to numpy array - try different data types
+                # Most common: float32 (4 bytes per value)
+                try:
+                    self.SpecData = np.frombuffer(raw_data, dtype=np.float32)
+                    print(f"Siemens: Converted bytes to float32 array: {len(self.SpecData)} values")
+                except Exception as e:
+                    # Try float64 if float32 fails
+                    try:
+                        self.SpecData = np.frombuffer(raw_data, dtype=np.float64)
+                        print(f"Siemens: Converted bytes to float64 array: {len(self.SpecData)} values")
+                    except Exception as e2:
+                        # Try int16 as last resort
+                        try:
+                            temp_data = np.frombuffer(raw_data, dtype=np.int16)
+                            self.SpecData = temp_data.astype(np.float32)
+                            print(f"Siemens: Converted bytes to int16->float32 array: {len(self.SpecData)} values")
+                        except Exception as e3:
+                            # Try the original struct.unpack approach as final fallback
+                            try:
+                                self.SpecData = struct.unpack("<%df" % (len(raw_data) // 4), raw_data)
+                                self.SpecData = np.array(self.SpecData, dtype=np.float32)
+                                print(f"Siemens: Used struct.unpack fallback: {len(self.SpecData)} values")
+                            except Exception as e4:
+                                print(f"Siemens: Failed to convert bytes data: {e}, {e2}, {e3}, {e4}")
+                                self.isspec = 0
+                                return
+            elif not isinstance(raw_data, np.ndarray):
+                # Convert other types to numpy array
+                self.SpecData = np.array(raw_data, dtype=np.float32)
+                print(f"Siemens: Converted to numpy array: {len(self.SpecData)} values")
+            else:
+                # Already a numpy array - ensure consistent dtype
+                self.SpecData = raw_data.astype(np.float32)
+                print(f"Siemens: Used existing numpy array: {len(self.SpecData)} values")
+            
+            # Extract parameters from CSA headers
+            csa_info = {}
+            if '[CSA Image Header Info]' in info:
+                csa_info = info['[CSA Image Header Info]']
+            
+            # Get parameters with fallbacks to DICOM tags
+            self.Datapoints = int(csa_info.get('DataPointColumns', 
+                                              getattr(self.ds, 'DataPointColumns', 1024)))
+            self.SpectralWidth = float(csa_info.get('PixelBandwidth', 
+                                                   getattr(self.ds, 'PixelBandwidth', 2000)))
+            self.FieldStrength = float(csa_info.get('MagneticFieldStrength', 
+                                                   getattr(self.ds, 'MagneticFieldStrength', 1.5)))
+            self.ProtocolName = csa_info.get('SequenceName', 
+                                           getattr(self.ds, 'ProtocolName', 'Unknown'))
+            self.Frames = int(csa_info.get('NumberOfFrames', 
+                                          getattr(self.ds, 'NumberOfFrames', 1)))
+            self.displayTE = str(csa_info.get('EchoTime', 
+                                               getattr(self.ds, 'EchoTime', 0)))
+            
+            # Validate critical parameters
+            if self.Datapoints <= 0:
+                # Try to infer from data length
+                if len(self.SpecData) > 0:
+                    # Assume complex data (real + imaginary pairs)
+                    estimated_points = len(self.SpecData) // (self.Frames * 2)
+                    if estimated_points > 0:
+                        self.Datapoints = estimated_points
+                        print(f"Siemens: Inferred DataPoints from data length: {self.Datapoints}")
+                    else:
+                        raise ValueError(f"Cannot determine valid DataPointColumns")
+                else:
+                    raise ValueError(f"Invalid DataPointColumns: {self.Datapoints}")
+                    
+            if self.Frames <= 0:
+                self.Frames = 1
+                
+            # Validate data length and adjust if necessary
+            expected_length = self.Datapoints * self.Frames * 2  # Real + Imaginary
+            if len(self.SpecData) != expected_length:
+                print(f"Siemens: Data length mismatch. Expected: {expected_length}, Got: {len(self.SpecData)}")
+                # Try to adjust frames if data length suggests different frame count
+                if len(self.SpecData) % (self.Datapoints * 2) == 0:
+                    calculated_frames = len(self.SpecData) // (self.Datapoints * 2)
+                    print(f"Siemens: Adjusting frames from {self.Frames} to {calculated_frames}")
+                    self.Frames = calculated_frames
+                elif len(self.SpecData) % 2 == 0:
+                    # Try to adjust datapoints if frames seem correct
+                    calculated_points = len(self.SpecData) // (self.Frames * 2)
+                    if calculated_points > 0:
+                        print(f"Siemens: Adjusting datapoints from {self.Datapoints} to {calculated_points}")
+                        self.Datapoints = calculated_points
+                
+            # Set display parameters based on field strength (same logic as common parameters)
+            self.curframe = 0
+            if self.FieldStrength <= 1.6:  # 1.5T scanner
+                self.fake_ppms = np.linspace(-3.1964, 12.504, int(self.Datapoints))
+                self.plim_l = 780  # Adjusted for 1.5T
+                self.plim_r = 840  # Adjusted for 1.5T
+                print(f"Siemens: Display adjusted for 1.5T scanner")
+            else:  # 3T or higher
+                self.fake_ppms = np.linspace(20.33273, -10.9754, int(self.Datapoints))
+                self.plim_l = 1110  # Standard for 3T
+                self.plim_r = 1140  # Standard for 3T
+                print(f"Siemens: Display adjusted for {self.FieldStrength}T scanner")
+            
+            print(f"Siemens data loaded successfully: {self.Datapoints} points, {self.Frames} frames, {self.FieldStrength}T")
+            
+        except Exception as e:
+            print(f"Error loading Siemens data: {e}")
+            import traceback
+            traceback.print_exc()
             self.SpecData = []
             self.isspec = 0
             
@@ -1067,7 +1248,7 @@ class SpecObject():
         pdf.cell(40,10, textout, 1,0,'C')
         textout = str(round(SNR, 2))
         pdf.cell(40,10, textout, 1,0,'C')
-        pdf.cell(40,10, self.displayTE, 1,1,'C')
+        pdf.cell(40,10, str(self.displayTE), 1,1,'C')
         
         pdf.ln(3)
         pdf.cell(10)

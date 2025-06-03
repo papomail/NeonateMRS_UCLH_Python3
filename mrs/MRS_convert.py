@@ -2,6 +2,18 @@
 """
 MRS_Convert.py
 
+Version 1.5.2
+Modified 26/05/2025
+
+Siemens data support and enhanced compatibility
+
+Major changes in v1.5.2:
+- Added support for Siemens SPEC NUM 4 format (beta)
+- Automatic display adjustment for 1.5T vs 3T scanners (beta)
+- Enhanced field strength detection and parameter adjustment
+- Maintains compatibility with NumPy 1.24.4+, PyDICOM 2.4.4+, PyQt5, and PyQtGraph
+- Full backward compatibility with all previous formats
+
 Version 1.5.1
 Modified 26/05/2025
 
@@ -36,7 +48,7 @@ Created on 11 Dic 2019 @author: Patxi Torrealdea
 Version 1.3.1
 Modified 28/07/2017
 
-Script to convert Philips MRS data to tarquin format for spectral processing
+Script to convert Philips and Siemens MRS data to tarquin format for spectral processing
 This script will deal with data acquired with multiple dynamic acquisitions
 and saved in DICOM4 format.  Phasing and peak picking is done automatically but
 can be adjusted manually
@@ -88,7 +100,7 @@ class Maingui(QtWidgets.QMainWindow):
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI(screen_height)
-        self.version = "1.5.0"
+        self.version = "1.5.2"
         self.resized.connect(self.resizeFunction)
         self.screen_height = screen_height
 
