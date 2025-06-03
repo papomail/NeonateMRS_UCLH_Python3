@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 
@@ -74,42 +75,115 @@ class SpecObject():
         
         try:
             self.ds = dcm.read_file(self.filename)
-        except:
-            self.ds = []
+        except Exception as e:
+            self.ds = None
             SpecObject.NumSpecObjects -= 1
             
-        # If it is a DICOM4 MRS file, get data and useful parameters       
-        if [0x5600,0x0020] in self.ds:
-            self.isspec = 2
-            self.PatName = self.ds.PatientName
-            self.StudyDate = self.ds.StudyDate
-            self.StudyTime = self.ds.StudyTime
-            self.SeriesDate = self.ds.SeriesDate
-            self.SeriesTime = self.ds.SeriesTime
-            self.SpecData = self.ds[0x5600,0x0020].value
-            self.Datapoints = self.ds.DataPointColumns
-            self.SpectralWidth = self.ds.SpectralWidth
-            self.TransmitterFrequency = self.ds.TransmitterFrequency
-            #self.FieldStrength = self.ds[0x0018,0x0087].value
-            self.FieldStrength = 3.0
-            self.PatID = self.ds.PatientID
-            self.AcquisitionDateTime = self.ds.AcquisitionDateTime
-            self.ProtocolName = self.ds.ProtocolName            
-            self.Frames = self.ds.NumberOfFrames
-            self.displayTE = self.ds[0x2001, 0x1025].value
-            self.curframe = 0
-            # self.fake_ppms = np.linspace(-10.9754, 20.33273,int(self.Datapoints))
-            self.fake_ppms = np.linspace(20.33273, -10.9754,int(self.Datapoints))
-            # print(f'self.SpectralWidth = {self.SpectralWidth}')
-            # print(f'self.Datapoints = {self.Datapoints}')
-            # print(f'self.TransmitterFrequency = {self.TransmitterFrequency}')
-            
-        else:
-            self.isspec = 0
+        # Check if it is a spectroscopy file - handle both traditional and enhanced DICOM formats
+        self.isspec = 0
+        self.SpecData = []
+        
+        if self.ds is None:
+            return
+        
+        # Check SOP Class UID to identify spectroscopy files
+        sop_class = getattr(self.ds, 'SOPClassUID', '')
+        is_spectroscopy = ('1.2.840.10008.5.1.4.1.1.4' in sop_class)  # Both classic and enhanced MR spectroscopy
+        
+        if is_spectroscopy:
+            # Try traditional DICOM4 MRS format first
+            if [0x5600,0x0020] in self.ds:
+                self.isspec = 2
+                self.SpecData = self.ds[0x5600,0x0020].value
+                self._load_common_parameters()
+                
+            # Try enhanced DICOM format (data might be in PixelData)
+            elif hasattr(self.ds, 'PixelData') and hasattr(self.ds, 'DataPointColumns'):
+                self.isspec = 2
+                self._extract_enhanced_spectro_data()
+                if self.isspec != 0:  # Only load parameters if data extraction succeeded
+                    self._load_common_parameters()
+                
+        if self.isspec == 0:
             self.SpecData = []
      
         if self.isspec != 0:
             self.complex_data()
+            
+    def _load_common_parameters(self):
+        """Load common parameters for both traditional and enhanced DICOM formats"""
+        # Use getattr with default values for potentially missing tags
+        self.PatName = getattr(self.ds, 'PatientName', 'Unknown')
+        self.StudyDate = getattr(self.ds, 'StudyDate', '')
+        self.StudyTime = getattr(self.ds, 'StudyTime', '')
+        self.SeriesDate = getattr(self.ds, 'SeriesDate', '')
+        self.SeriesTime = getattr(self.ds, 'SeriesTime', '')
+        self.Datapoints = getattr(self.ds, 'DataPointColumns', 0)
+        self.SpectralWidth = getattr(self.ds, 'SpectralWidth', 0)
+        self.TransmitterFrequency = getattr(self.ds, 'TransmitterFrequency', 0)
+        self.FieldStrength = 3.0  # Default value
+        self.PatID = getattr(self.ds, 'PatientID', 'Unknown')
+        self.AcquisitionDateTime = getattr(self.ds, 'AcquisitionDateTime', '')
+        self.ProtocolName = getattr(self.ds, 'ProtocolName', 'Unknown')            
+        self.Frames = getattr(self.ds, 'NumberOfFrames', 1)
+        
+        # Try to get display TE - might not be present in enhanced format
+        try:
+            self.displayTE = self.ds[0x2001, 0x1025].value
+        except:
+            self.displayTE = 0  # Default value if not found
+            
+        self.curframe = 0
+        self.fake_ppms = np.linspace(20.33273, -10.9754, int(self.Datapoints))
+        
+    def _extract_enhanced_spectro_data(self):
+        """Extract spectroscopy data from enhanced DICOM format"""
+        try:
+            # In enhanced DICOM, spectroscopy data is typically stored in PixelData
+            pixel_data = self.ds.PixelData
+            
+            # Try different data type interpretations
+            expected_points = getattr(self.ds, 'DataPointColumns', 0)
+            expected_frames = getattr(self.ds, 'NumberOfFrames', 1)
+            expected_total = expected_points * expected_frames * 2  # Real + Imaginary
+            
+            # Check if we have valid parameters
+            if expected_points == 0:
+                raise ValueError("DataPointColumns not found or is zero")
+            
+            # Try float32 first (most common for enhanced DICOM)
+            data_float32 = np.frombuffer(pixel_data, dtype=np.float32)
+            if len(data_float32) == expected_total:
+                self.SpecData = data_float32
+                return
+                
+            # Try float64
+            data_float64 = np.frombuffer(pixel_data, dtype=np.float64)
+            if len(data_float64) == expected_total:
+                self.SpecData = data_float64
+                return
+                
+            # Try int16
+            data_int16 = np.frombuffer(pixel_data, dtype=np.int16)
+            if len(data_int16) == expected_total:
+                self.SpecData = data_int16.astype(np.float32)  # Convert to float for processing
+                return
+                
+            # Try int32
+            data_int32 = np.frombuffer(pixel_data, dtype=np.int32)
+            if len(data_int32) == expected_total:
+                self.SpecData = data_int32.astype(np.float32)  # Convert to float for processing
+                return
+                
+            # If none of the standard interpretations work, try the first one that has data
+            if len(data_float32) > 0:
+                self.SpecData = data_float32
+            else:
+                raise ValueError("Could not interpret pixel data as spectroscopy data")
+                
+        except Exception as e:
+            self.SpecData = []
+            self.isspec = 0
             
  
 
@@ -441,9 +515,35 @@ class SpecObject():
                 Spec_temp[counter] = -self.Kspacewrite[b][a].imag 
                 counter = counter + 1
                 
-        self.ds[0x5600,0x0020].value = Spec_temp  
+        # Try to update the spectroscopy data in the DICOM file
+        try:
+            if [0x5600,0x0020] in self.ds:
+                self.ds[0x5600,0x0020].value = Spec_temp  
+            else:
+                # For enhanced DICOM or other formats, we might need to handle differently
+                # For now, just save without updating the spectroscopy data
+                print("Warning: Cannot update spectroscopy data - tag [0x5600,0x0020] not found")
+        except Exception as e:
+            print(f"Warning: Could not update spectroscopy data: {e}")
+            
         self.ds.save_as(str(file_path.resolve()))
  
+    def writeTarquinorig(self, outpath):
+        """Write original (unprocessed) spectroscopy data to Tarquin format"""
+        outpath = Path(outpath)
+        Tarquindir = outpath / 'Tarquin_files'
+        Tarquindir.resolve().mkdir(parents=True, exist_ok=True)
+
+        name = self.filename[(self.filename.rfind('\\')+1):].translate(str.maketrans('','', r'.'))
+        file_path = Path(Tarquindir, name + 'orig_Tarquin')
+        
+        # For original data, we don't modify the spectroscopy data
+        # Just save the original DICOM file with a different name
+        try:
+            self.ds.save_as(str(file_path.resolve()))
+            print(f"Original Tarquin file saved: {file_path}")
+        except Exception as e:
+            print(f"Error saving original Tarquin file: {e}")
        
         
     def undophase(self):    
@@ -970,6 +1070,3 @@ class PatNameDialog(QtWidgets.QDialog):
         self.buttonbox.accepted.connect(self.accept)
 
         self.setWindowTitle("Check Name")     
-
-
-
