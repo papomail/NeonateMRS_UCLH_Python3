@@ -2,6 +2,18 @@
 """
 MRS_Convert.py
 
+Version 1.5.0
+Modified 26/05/2025
+
+Enhanced DICOM format support and improved error handling
+
+Major changes in v1.5.0:
+- Added support for Enhanced DICOM MR Spectroscopy format (new Philips scanners)
+- Implemented safe DICOM attribute access to prevent crashes on missing tags
+- Enhanced error handling throughout the processing pipeline
+- Maintains full backward compatibility with traditional DICOM4 MRS format
+
+...
 Version 1.4.3
 Modified 22/04/2021
 
@@ -65,7 +77,7 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0  # Index of current object
         self.setsavedir = 0  # Flag.  Has save dir been set (1:Yes, 0:No)
         self.initUI(screen_height)
-        self.version = "1.4.3"
+        self.version = "1.5.0"
         self.resized.connect(self.resizeFunction)
         self.screen_height = screen_height
 

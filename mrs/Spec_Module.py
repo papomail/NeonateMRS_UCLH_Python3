@@ -4,6 +4,21 @@
 
 Spec_Module
 
+Version 1.5.0
+Modified 26/05/2025
+
+Enhanced DICOM format support and improved error handling
+
+Major changes in v1.5.0:
+- Added support for Enhanced DICOM MR Spectroscopy format (SOP Class UID: 1.2.840.10008.5.1.4.1.1.4.2)
+- Implemented safe DICOM attribute access using getattr() with default values
+- Added _load_common_parameters() method for centralized parameter loading
+- Added _extract_enhanced_spectro_data() method for PixelData extraction
+- Enhanced writeTarquin() method with improved error handling
+- Added missing writeTarquinorig() method implementation
+- Maintains full backward compatibility with traditional DICOM4 MRS format
+
+...
 Version 1.4.2
 Modified 21/02/2020
 
