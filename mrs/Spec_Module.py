@@ -4,6 +4,18 @@
 
 Spec_Module
 
+Version 1.5.1
+Modified 26/05/2025
+
+PyQt5 compatibility and data loading fixes
+
+Major changes in v1.5.1:
+- Fixed PyQt5 widget imports in PatNameDialog (moved from QtGui to QtWidgets)
+- Fixed bytes data conversion for newer PyDICOM versions (handles raw DICOM data as bytes)
+- Enhanced data type handling with multiple fallback options (float32, float64, int16)
+- Improved error handling and validation for data loading
+- Maintains full backward compatibility with all previous versions
+
 Version 1.5.0
 Modified 26/05/2025
 
@@ -109,8 +121,39 @@ class SpecObject():
             # Try traditional DICOM4 MRS format first
             if [0x5600,0x0020] in self.ds:
                 self.isspec = 2
-                self.SpecData = self.ds[0x5600,0x0020].value
-                self._load_common_parameters()
+                raw_data = self.ds[0x5600,0x0020].value
+                
+                # Handle different data formats returned by pydicom
+                if isinstance(raw_data, bytes):
+                    # Convert bytes to numpy array - try different data types
+                    # Most common: float32 (4 bytes per value)
+                    try:
+                        self.SpecData = np.frombuffer(raw_data, dtype=np.float32)
+                        print(f"Converted bytes to float32 array: {len(self.SpecData)} values")
+                    except Exception as e:
+                        # Try float64 if float32 fails
+                        try:
+                            self.SpecData = np.frombuffer(raw_data, dtype=np.float64)
+                            print(f"Converted bytes to float64 array: {len(self.SpecData)} values")
+                        except Exception as e2:
+                            # Try int16 as last resort
+                            try:
+                                temp_data = np.frombuffer(raw_data, dtype=np.int16)
+                                self.SpecData = temp_data.astype(np.float32)
+                                print(f"Converted bytes to int16->float32 array: {len(self.SpecData)} values")
+                            except Exception as e3:
+                                print(f"Failed to convert bytes data: {e}, {e2}, {e3}")
+                                self.isspec = 0
+                                return
+                elif not isinstance(raw_data, np.ndarray):
+                    # Convert other types to numpy array
+                    self.SpecData = np.array(raw_data, dtype=np.float32)
+                else:
+                    # Already a numpy array - ensure consistent dtype
+                    self.SpecData = raw_data.astype(np.float32)
+                
+                if self.isspec != 0:
+                    self._load_common_parameters()
                 
             # Try enhanced DICOM format (data might be in PixelData)
             elif hasattr(self.ds, 'PixelData') and hasattr(self.ds, 'DataPointColumns'):
@@ -142,6 +185,22 @@ class SpecObject():
         self.ProtocolName = getattr(self.ds, 'ProtocolName', 'Unknown')            
         self.Frames = getattr(self.ds, 'NumberOfFrames', 1)
         
+        # Validate critical parameters
+        if self.Datapoints <= 0:
+            raise ValueError(f"Invalid DataPointColumns: {self.Datapoints}")
+        if self.Frames <= 0:
+            self.Frames = 1
+            
+        # Validate data length
+        expected_length = self.Datapoints * self.Frames * 2  # Real + Imaginary
+        if len(self.SpecData) != expected_length:
+            print(f"Warning: Data length mismatch. Expected: {expected_length}, Got: {len(self.SpecData)}")
+            # Try to adjust frames if data length suggests different frame count
+            if len(self.SpecData) % (self.Datapoints * 2) == 0:
+                calculated_frames = len(self.SpecData) // (self.Datapoints * 2)
+                print(f"Adjusting frames from {self.Frames} to {calculated_frames}")
+                self.Frames = calculated_frames
+        
         # Try to get display TE - might not be present in enhanced format
         try:
             self.displayTE = self.ds[0x2001, 0x1025].value
@@ -169,13 +228,13 @@ class SpecObject():
             # Try float32 first (most common for enhanced DICOM)
             data_float32 = np.frombuffer(pixel_data, dtype=np.float32)
             if len(data_float32) == expected_total:
-                self.SpecData = data_float32
+                self.SpecData = data_float32.astype(np.float32)  # Ensure consistent dtype
                 return
                 
             # Try float64
             data_float64 = np.frombuffer(pixel_data, dtype=np.float64)
             if len(data_float64) == expected_total:
-                self.SpecData = data_float64
+                self.SpecData = data_float64.astype(np.float32)  # Convert to float32 for consistency
                 return
                 
             # Try int16
@@ -192,7 +251,7 @@ class SpecObject():
                 
             # If none of the standard interpretations work, try the first one that has data
             if len(data_float32) > 0:
-                self.SpecData = data_float32
+                self.SpecData = data_float32.astype(np.float32)
             else:
                 raise ValueError("Could not interpret pixel data as spectroscopy data")
                 
@@ -213,6 +272,12 @@ class SpecObject():
         self.Spectrum = []      #To store raw spectrum
         self.Spectrumapod = []  #To store apodised spectrum
         self.IncludeFrame = []  #To store include frame flags
+        
+        # Ensure SpecData is a numpy array with consistent dtype
+        if not isinstance(self.SpecData, np.ndarray):
+            self.SpecData = np.array(self.SpecData, dtype=np.float32)
+        else:
+            self.SpecData = self.SpecData.astype(np.float32)
               
         #Set up apodisation function
         #apod = 1 in range [0:512] pts
@@ -237,8 +302,18 @@ class SpecObject():
             #extract R and I data pairs and then store as an array of complex
             #numbers of size self.Datapoints
             for a in range(0, self.Datapoints*2, 2):
-                dummyKspace[counter] = complex(self.SpecData[(b*self.Datapoints*2) + a], self.SpecData[(b*self.Datapoints*2)+a+1])
-                #dummyKspaceapod[counter] = dummyKspace[counter] * apod[counter]
+                # Ensure we have valid indices
+                real_idx = (b*self.Datapoints*2) + a
+                imag_idx = (b*self.Datapoints*2) + a + 1
+                
+                if real_idx < len(self.SpecData) and imag_idx < len(self.SpecData):
+                    # Explicit type conversion for compatibility
+                    real_part = float(self.SpecData[real_idx])
+                    imag_part = float(self.SpecData[imag_idx])
+                    dummyKspace[counter] = complex(real_part, imag_part)
+                else:
+                    # Handle case where data is shorter than expected
+                    dummyKspace[counter] = complex(0.0, 0.0)
                 counter  = counter + 1
 
             #Apply apodisation 
@@ -357,15 +432,40 @@ class SpecObject():
             max_height = np.max(currealf)
             inc = old_div(max_height,100)    #increment size
             thresh = 0
+            
+            # Adaptive peak search range based on data size
+            data_length = len(currealf)
+            if data_length >= 2048:
+                # Full resolution data - use original range
+                search_start = 1100
+                search_end = 1160
+            elif data_length >= 1024:
+                # Half resolution - scale the range
+                search_start = int(1100 * data_length / 2048)
+                search_end = int(1160 * data_length / 2048)
+            else:
+                # Lower resolution - use central portion
+                search_start = int(data_length * 0.4)  # Around 40% through
+                search_end = int(data_length * 0.6)    # Around 60% through
+            
+            # Ensure we don't go out of bounds
+            search_start = max(5, min(search_start, data_length - 11))
+            search_end = max(search_start + 10, min(search_end, data_length - 6))
+            
             while got_peaks < 1:
                 found_peaks = 0
                 peak_pos = []
-                for cntr in range(1100,1160):
-                    if currealf[cntr] > thresh:
-                        local = currealf[cntr-5:cntr+6]
-                        if np.argmax(local) == 5:
-                            found_peaks = found_peaks + 1
-                            peak_pos.append(cntr)
+                for cntr in range(search_start, search_end):
+                    if cntr < len(currealf) and currealf[cntr] > thresh:
+                        # Ensure we have enough points for local maximum check
+                        local_start = max(0, cntr - 5)
+                        local_end = min(len(currealf), cntr + 6)
+                        if local_end - local_start >= 11:  # Need at least 11 points
+                            local = currealf[local_start:local_end]
+                            expected_peak_pos = cntr - local_start
+                            if len(local) > expected_peak_pos and np.argmax(local) == expected_peak_pos:
+                                found_peaks = found_peaks + 1
+                                peak_pos.append(cntr)
                             
                 if found_peaks > 2:
                     thresh = thresh + inc
@@ -375,8 +475,14 @@ class SpecObject():
                         
             if np.size(peak_pos) < 2:
                 peak_pos = []
-                peak_pos.append(1120)
-                peak_pos.append(peak_pos[0] + 10)
+                # Use adaptive fallback positions based on data size
+                if data_length >= 2048:
+                    peak_pos.append(1120)
+                elif data_length >= 1024:
+                    peak_pos.append(int(1120 * data_length / 2048))
+                else:
+                    peak_pos.append(int(data_length * 0.45))  # 45% through data
+                peak_pos.append(peak_pos[0] + max(10, int(data_length * 0.01)))  # 1% spacing
             #Store peak position arrays for each frame in a list
             self.peakposarr.append(peak_pos)
             
@@ -403,7 +509,7 @@ class SpecObject():
             
             '''Remove try/if block & include negative values to the median   Patxi'''
             # try:
-            #     ind = np.int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
+            #     ind = int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
             #     self.shiftindex.append(ind)
             # except:
             #     ind = 0
@@ -412,7 +518,7 @@ class SpecObject():
             # if ind > 0:
             #     self.med.append(ind)  
             
-            ind = np.int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
+            ind = int(np.floor(old_div((self.peakposarr[cnt][0] + self.peakposarr[cnt][1]),2))) 
             self.shiftindex.append(ind)
             self.med.append(ind) 
 
@@ -751,12 +857,12 @@ class SpecObject():
                     # print('type of fields[14] is: ',type(fields[14]))
                     # print('fields[14] is: ',fields[14])
                     
-                    Lac = np.float(fields[14])
-                    Naa =  np.float(fields[15])
-                    NaaG =  np.float(fields[16])
-                    Thre = np.float(fields[21])
-                    Cr = np.float(fields[6])
-                    tCho = np.float(fields[23])
+                    Lac = float(fields[14])
+                    Naa =  float(fields[15])
+                    NaaG =  float(fields[16])
+                    Thre = float(fields[21])
+                    Cr = float(fields[6])
+                    tCho = float(fields[23])
                     L_N = old_div((Lac + Thre), (Naa + NaaG))
                     N_Ch = old_div((Naa + NaaG), tCho)
                     N_Cr = old_div((Naa + NaaG), Cr)
@@ -776,12 +882,12 @@ class SpecObject():
                     # #dummy = dummy.translate(None, ''.join(["[", "'", "]"]))
                     #dummy = dummy.translate(''.join(["[", "'", "]"]))
                     fields = row
-                    Lace = np.float(fields[14])
-                    Naae =  np.float(fields[15])
-                    NaaGe =  np.float(fields[16])
-                    Three = np.float(fields[21])
-                    Cre = np.float(fields[6])
-                    tChoe = np.float(fields[23])
+                    Lace = float(fields[14])
+                    Naae =  float(fields[15])
+                    NaaGe =  float(fields[16])
+                    Three = float(fields[21])
+                    Cre = float(fields[6])
+                    tChoe = float(fields[23])
                     
                     Lerr = np.sqrt(np.power(Lace,2) + np.power(Three,2))
                     Nerr = np.sqrt(np.power(Naae,2) + np.power(NaaGe,2))
@@ -804,8 +910,8 @@ class SpecObject():
                     #dummy = dummy.translate(''.join(["[", "'", "]"]))
                     #fields = dummy.split(", ")
                     fields = row
-                    FWHM = np.float(fields[7])
-                    SNR =  np.float(fields[9])
+                    FWHM = float(fields[7])
+                    SNR =  float(fields[9])
             
             
                 CSVstore.append(row)
@@ -1063,14 +1169,14 @@ class PatNameDialog(QtWidgets.QDialog):
         self.name_string = str(nameinit)
 
         
-        namelabel = QtGui.QLabel("&Patient ID:")
-        self.name = QtGui.QLineEdit(self.name_string)
+        namelabel = QtWidgets.QLabel("&Patient ID:")
+        self.name = QtWidgets.QLineEdit(self.name_string)
         namelabel.setBuddy(self.name)
         
-        #buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
-        self.buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        #buttonbox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok|QtWidgets.QDialogButtonBox.Cancel)
+        self.buttonbox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         
-        grid = QtGui.QGridLayout()
+        grid = QtWidgets.QGridLayout()
         grid.addWidget(namelabel, 0,0)
         grid.addWidget(self.name, 0,1)
         grid.addWidget(self.buttonbox, 2,0,3,2)

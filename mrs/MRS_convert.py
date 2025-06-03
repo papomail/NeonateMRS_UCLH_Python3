@@ -2,6 +2,17 @@
 """
 MRS_Convert.py
 
+Version 1.5.1
+Modified 26/05/2025
+
+PyQt5 compatibility and data loading fixes
+
+Major changes in v1.5.1:
+- Fixed PyQt5 widget imports (moved from QtGui to QtWidgets)
+- Fixed bytes data conversion for newer PyDICOM versions
+- Enhanced error handling for DICOM data loading
+- Maintains full backward compatibility with all previous versions
+
 Version 1.5.0
 Modified 26/05/2025
 
@@ -67,7 +78,7 @@ else:
 
 
 # Define class for main GUI
-class Maingui(QtGui.QMainWindow):
+class Maingui(QtWidgets.QMainWindow):
     # class Maingui(QtWidgets.QWidget):
 
     # --------Class Construction--------------------
@@ -92,14 +103,14 @@ class Maingui(QtGui.QMainWindow):
         # Get Directory Name
         OpenDirIcon = ICONS_DIR / "opened-folder.png"
         OpenDirIcon = str(OpenDirIcon.resolve())
-        openDir = QtGui.QAction(QtGui.QIcon(OpenDirIcon), "Open Dir", self)
+        openDir = QtWidgets.QAction(QtGui.QIcon(OpenDirIcon), "Open Dir", self)
         openDir.setShortcut("Ctrl+D")
         openDir.triggered.connect(self.getdir)
 
         # Get Save Directory Name
         SaveDirIcon = ICONS_DIR / "save-48.png"
         SaveDirIcon = str(SaveDirIcon.resolve())
-        saveDir = QtGui.QAction(QtGui.QIcon(SaveDirIcon), "Save Dir", self)
+        saveDir = QtWidgets.QAction(QtGui.QIcon(SaveDirIcon), "Save Dir", self)
         saveDir.setShortcut("Ctrl+S")
         saveDir.triggered.connect(self.savedir)
 
@@ -108,18 +119,18 @@ class Maingui(QtGui.QMainWindow):
         tarqIcon = ICONS_DIR / "hat2.png"
         tarqIcon = str(tarqIcon.resolve())
 
-        convfile = QtGui.QAction(
+        convfile = QtWidgets.QAction(
             QtGui.QIcon(tarqIcon), "Convert to JMRUI and Tarquin", self
         )
         convfile.triggered.connect(self.convert_to_all)
 
         # Convert individual file to Tarquin format
-        convfileTarquin = QtGui.QAction(
+        convfileTarquin = QtWidgets.QAction(
             QtGui.QIcon(tarqIcon), "Convert processed to Tarquin", self
         )
         convfileTarquin.triggered.connect(self.Tarquin)
 
-        convfileTarquinorig = QtGui.QAction(
+        convfileTarquinorig = QtWidgets.QAction(
             QtGui.QIcon(tarqIcon), "Convert original to Tarquin", self
         )
         convfileTarquinorig.triggered.connect(self.Tarquinorig)
@@ -127,7 +138,7 @@ class Maingui(QtGui.QMainWindow):
         # Items in 'Phasing' menu +++++++++++++++++++++++++++
         phaseIcon = ICONS_DIR / "wave.png"
         phaseIcon = str(phaseIcon.resolve())
-        phaseregion = QtGui.QAction(
+        phaseregion = QtWidgets.QAction(
             QtGui.QIcon(phaseIcon), "Phasing and Apodisation", self
         )
         phaseregion.triggered.connect(self.Phasereg)
@@ -137,10 +148,10 @@ class Maingui(QtGui.QMainWindow):
         about_icon = str(about_icon.resolve())
 
         # Program Notes +++++++++++++++++++++++++++++++++++++++
-        about = QtGui.QAction(QtGui.QIcon(about_icon), "About", self)
+        about = QtWidgets.QAction(QtGui.QIcon(about_icon), "About", self)
         about.triggered.connect(self.about)
 
-        dcmmssg = QtGui.QAction(QtGui.QIcon(about_icon), "DICOM formats", self)
+        dcmmssg = QtWidgets.QAction(QtGui.QIcon(about_icon), "DICOM formats", self)
         dcmmssg.triggered.connect(self.dcmmssg)
 
         # Add the created items to menubar
@@ -184,26 +195,26 @@ class Maingui(QtGui.QMainWindow):
 
 
         # --------Add buttons---------------------------------------------------
-        self.btnup = QtGui.QPushButton("Spec Up", self)
-        self.btndown = QtGui.QPushButton("Spec Down", self)
-        self.btnfup = QtGui.QPushButton("Next Frame", self)
-        self.btnfdown = QtGui.QPushButton("Prev Frame", self)
-        self.btninc = QtGui.QPushButton("Include Frame", self)
-        self.btnexc = QtGui.QPushButton("Exclude Frame", self)
-        self.btnorig = QtGui.QPushButton("Original", self)
-        self.btnproc = QtGui.QPushButton("Processed", self)
-        self.btnChoup = QtGui.QPushButton("Cho -", self)
-        self.btnChodn = QtGui.QPushButton("Cho +", self)
-        self.btnPhup = QtGui.QPushButton("Phase Inc", self)
-        self.btnPhdn = QtGui.QPushButton("Phase Dec", self)
-        self.btnCrup = QtGui.QPushButton("Cr -", self)
-        self.btnCrdn = QtGui.QPushButton("Cr +", self)
-        self.btnnophase = QtGui.QPushButton("Undo Phase", self)
-        self.btnnoshift = QtGui.QPushButton("Undo Shift", self)
-        self.btnfit = QtGui.QPushButton("Show Fit", self)
+        self.btnup = QtWidgets.QPushButton("Spec Up", self)
+        self.btndown = QtWidgets.QPushButton("Spec Down", self)
+        self.btnfup = QtWidgets.QPushButton("Next Frame", self)
+        self.btnfdown = QtWidgets.QPushButton("Prev Frame", self)
+        self.btninc = QtWidgets.QPushButton("Include Frame", self)
+        self.btnexc = QtWidgets.QPushButton("Exclude Frame", self)
+        self.btnorig = QtWidgets.QPushButton("Original", self)
+        self.btnproc = QtWidgets.QPushButton("Processed", self)
+        self.btnChoup = QtWidgets.QPushButton("Cho -", self)
+        self.btnChodn = QtWidgets.QPushButton("Cho +", self)
+        self.btnPhup = QtWidgets.QPushButton("Phase Inc", self)
+        self.btnPhdn = QtWidgets.QPushButton("Phase Dec", self)
+        self.btnCrup = QtWidgets.QPushButton("Cr -", self)
+        self.btnCrdn = QtWidgets.QPushButton("Cr +", self)
+        self.btnnophase = QtWidgets.QPushButton("Undo Phase", self)
+        self.btnnoshift = QtWidgets.QPushButton("Undo Shift", self)
+        self.btnfit = QtWidgets.QPushButton("Show Fit", self)
 
 
-        self.btnreport  = QtGui.QPushButton(" 3) Compile MRS report ",self)
+        self.btnreport  = QtWidgets.QPushButton(" 3) Compile MRS report ",self)
         self.btnreport.move(int(600*self.scale), int((10+dy)*self.scale))
         self.btnreport.setStyleSheet("QPushButton {background-color: green; border-style: outset; border-width: 2px;border-radius: 10px;border-color: beige;font: bold ;min-width: 10em;padding: 6px;}")
         self.btnreport.adjustSize() 
@@ -212,7 +223,7 @@ class Maingui(QtGui.QMainWindow):
         self.btnreport.clicked.connect(self.convert_to_all)
         self.btnreport.hide()
 
-        self.btnopen = QtGui.QPushButton("1)  Select folder with MRS data ", self)
+        self.btnopen = QtWidgets.QPushButton("1)  Select folder with MRS data ", self)
         # Set button attributes
         # self.btnopen.resize(250, 30)
         self.btnopen.move(int(5*self.scale), int((10+dy)*self.scale))
@@ -295,27 +306,27 @@ class Maingui(QtGui.QMainWindow):
         self.btnfit.clicked.connect(self.plotfit)
 
         # -------Add text-------------------------------------------------------
-        self.lbl = QtGui.QLabel(self)
+        self.lbl = QtWidgets.QLabel(self)
         self.lbl.move(int(10*self.scale), int((40+dy)*self.scale))
         self.lbl.setText("Open directory name:")
         self.lbl.adjustSize()
 
-        self.lbl2 = QtGui.QLabel(self)
+        self.lbl2 = QtWidgets.QLabel(self)
         self.lbl2.move(int(10*self.scale), int((55+dy)*self.scale))
         self.lbl2.setText("Save directory name:")
         self.lbl2.adjustSize()
 
-        self.lbl3 = QtGui.QLabel(self)
+        self.lbl3 = QtWidgets.QLabel(self)
         self.lbl3.move(int(10*self.scale), int((80+dy)*self.scale))
         self.lbl3.setText("Current Spectrum: ")
         self.lbl3.adjustSize()
 
-        self.lbl4 = QtGui.QLabel(self)
+        self.lbl4 = QtWidgets.QLabel(self)
         self.lbl4.move(int(350*self.scale), int((80+dy)*self.scale))
         self.lbl4.setText("Number of MRS files found: 0")
         self.lbl4.adjustSize()
 
-        self.lbl5 = QtGui.QLabel(self)
+        self.lbl5 = QtWidgets.QLabel(self)
         self.lbl5.move(int(540*self.scale), int((80+dy)*self.scale))
         self.lbl5.setText("Current Frame: ")
         self.lbl5.adjustSize()
@@ -351,7 +362,7 @@ class Maingui(QtGui.QMainWindow):
 
         # --------Add Message Box---------------
         # Note this opens a separate windpw with a message
-        self.mssg = QtGui.QMessageBox()
+        self.mssg = QtWidgets.QMessageBox()
         self.mssg.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.mssg.setWindowTitle("About")
         self.mssg.setText(
@@ -360,7 +371,7 @@ class Maingui(QtGui.QMainWindow):
             + "Please send any errors to balangb@gmail.com or papomail@gmail.com"
         )
 
-        self.dcmfmt = QtGui.QMessageBox()
+        self.dcmfmt = QtWidgets.QMessageBox()
         self.dcmfmt.setGeometry(int(310*self.scale), int(240*self.scale), int(280*self.scale), int(280*self.scale))
         self.dcmfmt.setWindowTitle("DICOM formats")
         self.dcmfmt.setText("Only Dicom4 data can be processed\n\n")
@@ -510,7 +521,7 @@ class Maingui(QtGui.QMainWindow):
         self.curobject = 0
 
         # Standard Open Directory Dialog box
-        self.dirname = QtGui.QFileDialog.getExistingDirectory(self, "Open Directory", str(HOME_DIR.resolve()))
+        self.dirname = QtWidgets.QFileDialog.getExistingDirectory(self, "Open Directory", str(HOME_DIR.resolve()))
 
         if self.dirname:
             # Display name of 'open' directory in main window (self.lb1)
@@ -664,14 +675,14 @@ class Maingui(QtGui.QMainWindow):
         proposed_savedir = Path(self.dirname)
         proposed_savedir = proposed_savedir / "resultsMRS"
         if proposed_savedir.exists():
-            self.savedirname = QtGui.QFileDialog.getExistingDirectory(
+            self.savedirname = QtWidgets.QFileDialog.getExistingDirectory(
                     self,
                     'Save Directory (WARNING: saving in "resultMRS" will overwrite previous results)',
                     str(Path(self.dirname).resolve()),)
         
         else:
             proposed_savedir.mkdir(parents=True, exist_ok=True)
-            self.savedirname = QtGui.QFileDialog.getExistingDirectory(self,
+            self.savedirname = QtWidgets.QFileDialog.getExistingDirectory(self,
                     'Save Directory (default: "resultMRS" inside patient folder)',
                     str(proposed_savedir.resolve()),)
 
@@ -905,24 +916,24 @@ class PhaseDialog(QtWidgets.QDialog):
         self.right_string = str(rightinit)
         self.apod_string = str(apod_const)
 
-        rightlabel = QtGui.QLabel("&Right Limit:")
-        self.rightlim = QtGui.QLineEdit(self.right_string)
+        rightlabel = QtWidgets.QLabel("&Right Limit:")
+        self.rightlim = QtWidgets.QLineEdit(self.right_string)
         rightlabel.setBuddy(self.rightlim)
 
-        leftlabel = QtGui.QLabel("&Left Limit:")
-        self.leftlim = QtGui.QLineEdit(self.left_string)
+        leftlabel = QtWidgets.QLabel("&Left Limit:")
+        self.leftlim = QtWidgets.QLineEdit(self.left_string)
         leftlabel.setBuddy(self.leftlim)
 
-        apodlabel = QtGui.QLabel("&Apodisation:")
-        self.apod_const = QtGui.QLineEdit(self.apod_string)
+        apodlabel = QtWidgets.QLabel("&Apodisation:")
+        self.apod_const = QtWidgets.QLineEdit(self.apod_string)
         apodlabel.setBuddy(self.apod_const)
 
-        self.buttonbox = QtGui.QDialogButtonBox(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
+        self.buttonbox = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok
         )
-        # buttonbox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok)
+        # buttonbox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
 
-        grid = QtGui.QGridLayout()
+        grid = QtWidgets.QGridLayout()
         grid.addWidget(leftlabel, 0, 0)
         grid.addWidget(self.leftlim, 0, 1)
         grid.addWidget(rightlabel, 1, 0)
@@ -941,7 +952,7 @@ class PhaseDialog(QtWidgets.QDialog):
 # Main function - needed to run script
 def main():
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     screen_resolution = app.desktop().screenGeometry()
     height = screen_resolution.height()
    
