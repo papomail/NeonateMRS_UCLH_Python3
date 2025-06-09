@@ -1,5 +1,33 @@
 # Main script:  MRS_Convert.py
 
+## Recent Updates
+
+### Version 1.5.2 (26/05/2025) - Siemens Support & Enhanced Compatibility
+- **Siemens SPEC NUM 4 Support**: Added beta support for Siemens IMA files with CSA header parsing
+- **Multi-Field Strength**: Automatic display adjustment for 1.5T vs 3T scanners
+- **Modern Package Compatibility**: Compatible with NumPy 1.24.4+, PyDICOM 2.4.4+, PyQt5, and PyQtGraph
+- **Enhanced Data Loading**: Robust bytes conversion with multiple fallbacks (float32 → float64 → int16)
+
+### Version 1.5.1 (26/05/2025) - PyQt5 Compatibility & Data Loading Fixes
+- **PyQt5 Migration**: Fixed widget imports (moved from QtGui to QtWidgets)
+- **Bytes Data Conversion**: Fixed DICOM data loading for newer PyDICOM versions
+- **Enhanced Error Handling**: Improved data type handling and validation
+
+### Version 1.5.0 (26/05/2025) - Enhanced DICOM Format Support
+- **Enhanced DICOM MRS**: Support for Enhanced DICOM MR Spectroscopy format (new Philips scanners)
+- **Safe DICOM Access**: Implemented safe attribute access to prevent crashes on missing tags
+- **Improved Error Handling**: Enhanced error handling throughout processing pipeline
+
+### Key Compatibility Fixes Applied
+- **PyQt5 Widget Migration**: Complete migration from QtGui to QtWidgets for modern PyQt5
+- **Data Loading Robustness**: Multiple data type fallbacks for bytes conversion
+- **PDF Generation Fixes**: Fixed TypeError by ensuring string conversion for displayTE parameter
+- **Backward Compatibility**: Maintains full compatibility with all previous DICOM formats
+
+---
+
+## Legacy Documentation
+
 Version 1.4
 Modified 21/02/2020
 
@@ -14,10 +42,10 @@ Created on 11 Dic 2019
 Version 1.3.1
 Modified 28/07/2017
 
-Script to convert Philips MRS data to Tarquin format for spectral processing
-This script will deal with data acquired with multiple dynamic acquisitions
-and saved in DICOM4 format. Phasing and peak picking is done automatically but
-can be adjusted manually.
+Script to convert Philips and Siemens MRS data to Tarquin format for spectral processing.
+This script handles data acquired with multiple dynamic acquisitions and saved in DICOM4 format.
+Supports both traditional DICOM4 MRS and Enhanced DICOM MR Spectroscopy formats.
+Phasing and peak picking is done automatically but can be adjusted manually.
 
 Created on Thu Oct 2015
 @author: Alan Bainbridge
@@ -31,16 +59,27 @@ Created on Thu Oct 2015
 The diagram shows the overview data-flow produced by the NeonateMRS-UCLH script; starting from the DICOM files to the generation of the PDF report.
 The *Class definitions* section below provides specific information on each component.  
 
+# Diagnostic Tools
 
+The package includes several diagnostic scripts for troubleshooting and validation:
+
+- **`diagnose_mrs_data.py`**: Comprehensive data analysis and spectrum visualization
+- **`test_compatibility.py`**: Package compatibility testing with modern Python versions
+- **`debug_data_loading.py`**: DICOM loading diagnostics for data format issues
+- **`test_siemens_bytes_fix.py`**: Siemens-specific data conversion testing
+- **`test_pdf_fix.py`**: PDF generation validation
+
+These tools help identify and resolve compatibility issues when upgrading Python packages or processing different DICOM formats.
 
 # Class definitions:
 
 ## Maingui(object):
-The class *Maingui()* builds the main Graphical User Interface (GUI) using QMainWindow class' functions of QtGui.   
+The class *Maingui()* builds the main Graphical User Interface (GUI) using QMainWindow class' functions of PyQt5.QtWidgets.   
 Creates the main application window and provides it with the functionality to open, preprocess and display NMR spectroscopy stored in DICOM4 format. 
+Supports both Philips and Siemens DICOM formats with enhanced compatibility for modern Python packages.
 
 Parameters:   
-It takes a QtGui.QMainWindow class object. (Refer to Qt modules' documentation on QMainWindow)
+It takes a QtWidgets.QMainWindow class object. (Refer to PyQt5 documentation on QMainWindow)
   
 >### Methods in Maingui() class:
 ___

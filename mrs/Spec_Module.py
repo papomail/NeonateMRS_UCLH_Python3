@@ -1266,18 +1266,18 @@ class SpecObject():
         pdfFileObj1 =open(tempout,'rb')
         pdfFileObj2 =open(pdfout,'rb')
         
-        pdfReader1 = PyPDF2.PdfFileReader(pdfFileObj1)
-        pdfReader2 = PyPDF2.PdfFileReader(pdfFileObj2)
+        pdfReader1 = PyPDF2.PdfReader(pdfFileObj1)
+        pdfReader2 = PyPDF2.PdfReader(pdfFileObj2)
         
         
         
-        pageObj1 = pdfReader1.getPage(0)
-        pageObj2 = pdfReader2.getPage(0)
-        pageObj2.rotateClockwise(270)
+        pageObj1 = pdfReader1.pages[0]
+        pageObj2 = pdfReader2.pages[0]
+        pageObj2.rotate(270)
         
-        pdf_writer = PyPDF2.PdfFileWriter()
-        pdf_writer.addPage(pageObj1)
-        pdf_writer.addPage(pageObj2)
+        pdf_writer = PyPDF2.PdfWriter()
+        pdf_writer.add_page(pageObj1)
+        pdf_writer.add_page(pageObj2)
         
         
         pdf_out = open(reportout, 'wb')

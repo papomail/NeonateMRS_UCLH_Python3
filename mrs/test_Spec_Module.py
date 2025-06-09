@@ -228,7 +228,7 @@ class TestSpecObject(unittest.TestCase):
         self.assertEqual(spec_obj.PatName, 'Unknown')
         self.assertEqual(spec_obj.PatID, 'Unknown')
         self.assertEqual(spec_obj.FieldStrength, 3.0)
-        self.assertEqual(spec_obj.displayTE, 0)
+        self.assertEqual(spec_obj.displayTE, "0")
         
     @patch('pydicom.read_file')
     def test_spectypes_dictionary(self, mock_read_file):

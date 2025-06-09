@@ -1,16 +1,27 @@
-cycler==0.10.0
-fpdf==1.7.2
-future==0.18.2
-kiwisolver==1.3.1
-matplotlib==3.4.1
-numpy==1.21.0
-pathlib==1.0.1
-pydicom==1.4.1
-pyparsing==2.4.7
-PyPDF2==1.27.5
-PyQt5==5.15.4
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.8.1
-pyqtgraph==0.12.0
-python-dateutil==2.8.1
-six==1.15.0
+# Core scientific computing packages
+numpy>=1.24.4
+matplotlib>=3.4.1
+
+# DICOM processing
+pydicom>=2.4.4
+
+# GUI framework
+PyQt5>=5.15.4
+PyQt5-Qt5>=5.15.2
+PyQt5-sip>=12.8.1
+pyqtgraph>=0.12.0
+
+# PDF generation and processing
+fpdf>=1.7.2
+PyPDF2>=1.27.5
+
+# Utility packages
+future>=0.18.2
+pathlib>=1.0.1
+python-dateutil>=2.8.1
+
+# Dependencies for matplotlib and other packages
+cycler>=0.10.0
+kiwisolver>=1.3.1
+pyparsing>=2.4.7
+six>=1.15.0
